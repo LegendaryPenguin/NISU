@@ -8,35 +8,47 @@ import {
   useCallback,
   ReactNode,
 } from "react";
-import { DailyProgress, Challenge, FitnessActivityLog } from "@/lib/types";
-import { DEFAULT_CHALLENGES } from "@/lib/challenges";
+import {
+  DailyProgress,
+  FitnessActivityLog,
+  SkillItem,
+  SkillActivityLog,
+  DailyWheelSelection,
+} from "@/lib/types";
 import {
   getTodayKey,
   getDefaultDailyProgress,
   loadAllProgress,
   saveDailyProgress,
-  loadChallenges,
-  saveChallenges,
   calculateFitnessCompletion,
   calculateFuelCompletion,
   calculateSkillCompletion,
   calculateResetCompletion,
   getWeeklyFunActiveCount,
+  getRequiredSkillBlocks,
 } from "@/lib/helpers";
 import {
   getTodayFitnessLog,
   getWeeklyFunActiveCountFromDb,
   logFitnessActivity,
 } from "@/lib/fitness-actions";
+import {
+  getTodaySkillLogs,
+  getTodayWheelSelection,
+  spinWheelForToday as spinWheelAction,
+  logSkillActivity,
+  markWheelSelectionComplete,
+  markItemInactiveIfNonRepeatable,
+} from "@/lib/skill-actions";
 
 interface DailyProgressContextValue {
   progress: DailyProgress;
-  challenges: Challenge[];
   weeklyFunActiveCount: number;
   overallProgress: number;
   isLoaded: boolean;
   fitnessLog: FitnessActivityLog | null;
 
+  // Fitness
   completeFitnessViaWorkout: (
     workoutId: string,
     workoutName: string
@@ -45,16 +57,21 @@ interface DailyProgressContextValue {
   completeFitnessViaFunActive: (description: string) => Promise<void>;
   refreshFitnessStatus: () => Promise<void>;
 
+  // Fuel
   toggleProtein: () => void;
   toggleWater: () => void;
   incrementSugar: () => void;
   decrementSugar: () => void;
 
-  completeMainSkill: () => void;
-  spinChallenge: () => void;
-  completeChallenge: () => void;
-  clearSelectedChallenge: () => void;
+  // Skill (Supabase-backed)
+  todaySkillLogs: SkillActivityLog[];
+  todayWheelSelection: DailyWheelSelection | null;
+  completeMainSkillActivity: (skillItem: SkillItem) => Promise<void>;
+  spinWheelForToday: () => Promise<void>;
+  completeWheelSkillActivity: () => Promise<void>;
+  refreshSkillStatus: () => Promise<void>;
 
+  // Reset
   toggleReading: () => void;
   toggleJournaling: () => void;
   toggleMeditation: () => void;
@@ -74,19 +91,22 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
   const [progress, setProgress] = useState<DailyProgress>(
     getDefaultDailyProgress(todayKey)
   );
-  const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
+  // Fitness state
   const [fitnessLog, setFitnessLog] = useState<FitnessActivityLog | null>(
     null
   );
   const [weeklyFunActiveCount, setWeeklyFunActiveCount] = useState(0);
 
+  // Skill state
+  const [todaySkillLogs, setTodaySkillLogs] = useState<SkillActivityLog[]>([]);
+  const [todayWheelSelection, setTodayWheelSelection] =
+    useState<DailyWheelSelection | null>(null);
+
   // Load from localStorage on mount
   useEffect(() => {
     const stored = loadAllProgress();
-    const storedChallenges = loadChallenges();
-
     setAllProgress(stored);
 
     if (stored[todayKey]) {
@@ -95,17 +115,10 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
       setProgress(getDefaultDailyProgress(todayKey));
     }
 
-    if (storedChallenges.length > 0) {
-      setChallenges(storedChallenges);
-    } else {
-      setChallenges(DEFAULT_CHALLENGES);
-      saveChallenges(DEFAULT_CHALLENGES);
-    }
-
     setIsLoaded(true);
   }, [todayKey]);
 
-  // Sync fitness state from Supabase after localStorage loads
+  // Sync fitness state from Supabase
   const refreshFitnessStatus = useCallback(async () => {
     try {
       const [log, funActiveCount] = await Promise.all([
@@ -135,10 +148,40 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
     }
   }, [todayKey]);
 
+  // Sync skill state from Supabase
+  const refreshSkillStatus = useCallback(async () => {
+    try {
+      const [logs, wheelSel] = await Promise.all([
+        getTodaySkillLogs(todayKey),
+        getTodayWheelSelection(todayKey),
+      ]);
+
+      setTodaySkillLogs(logs);
+      setTodayWheelSelection(wheelSel);
+
+      const completedBlocks = logs.length;
+      const requiredBlocks = getRequiredSkillBlocks(todayKey);
+
+      setProgress((prev) => ({
+        ...prev,
+        skill: {
+          ...prev.skill,
+          completedBlocks,
+          requiredBlocks,
+          completed: completedBlocks >= requiredBlocks,
+        },
+      }));
+    } catch {
+      // Supabase unavailable — fall back to localStorage state
+    }
+  }, [todayKey]);
+
+  // Fetch from Supabase after localStorage loads
   useEffect(() => {
     if (!isLoaded) return;
     refreshFitnessStatus();
-  }, [isLoaded, refreshFitnessStatus]);
+    refreshSkillStatus();
+  }, [isLoaded, refreshFitnessStatus, refreshSkillStatus]);
 
   // Persist on every progress change (after initial load)
   useEffect(() => {
@@ -148,12 +191,6 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
     saveDailyProgress(updated);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [progress, isLoaded]);
-
-  // Persist challenges
-  useEffect(() => {
-    if (!isLoaded) return;
-    saveChallenges(challenges);
-  }, [challenges, isLoaded]);
 
   // Fall back to localStorage-based count when Supabase hasn't loaded yet
   const localFunActiveCount = getWeeklyFunActiveCount(
@@ -312,8 +349,87 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
     );
   }, [recalcCompletion]);
 
-  // --- SKILL ---
-  const completeMainSkill = useCallback(() => {
+  // --- SKILL (Supabase-backed) ---
+  const completeMainSkillActivity = useCallback(
+    async (skillItem: SkillItem) => {
+      await logSkillActivity({
+        user_id: null,
+        date_key: todayKey,
+        type: "main",
+        skill_item_id: skillItem.id,
+        skill_name: skillItem.name,
+        skill_time: skillItem.time,
+        skill_description: skillItem.description,
+      });
+      await markItemInactiveIfNonRepeatable(skillItem.id);
+
+      // Optimistic local update then re-sync
+      setTodaySkillLogs((prev) => [
+        ...prev,
+        {
+          id: crypto.randomUUID(),
+          user_id: null,
+          date_key: todayKey,
+          type: "main",
+          skill_item_id: skillItem.id,
+          skill_name: skillItem.name,
+          skill_time: skillItem.time,
+          skill_description: skillItem.description,
+          completed_at: new Date().toISOString(),
+        },
+      ]);
+
+      setProgress((prev) => {
+        const newBlocks = prev.skill.completedBlocks + 1;
+        return recalcCompletion({
+          ...prev,
+          skill: { ...prev.skill, completedBlocks: newBlocks },
+        });
+      });
+    },
+    [todayKey, recalcCompletion]
+  );
+
+  const spinWheelForToday = useCallback(async () => {
+    const selection = await spinWheelAction(todayKey);
+    setTodayWheelSelection(selection);
+  }, [todayKey]);
+
+  const completeWheelSkillActivity = useCallback(async () => {
+    if (!todayWheelSelection || todayWheelSelection.completed) return;
+
+    await logSkillActivity({
+      user_id: null,
+      date_key: todayKey,
+      type: "wheel",
+      skill_item_id: todayWheelSelection.skill_item_id,
+      skill_name: todayWheelSelection.skill_name,
+      skill_time: todayWheelSelection.skill_time,
+      skill_description: todayWheelSelection.skill_description,
+    });
+
+    const updated = await markWheelSelectionComplete(todayWheelSelection.id);
+    setTodayWheelSelection(updated);
+
+    await markItemInactiveIfNonRepeatable(
+      todayWheelSelection.skill_item_id
+    );
+
+    setTodaySkillLogs((prev) => [
+      ...prev,
+      {
+        id: crypto.randomUUID(),
+        user_id: null,
+        date_key: todayKey,
+        type: "wheel",
+        skill_item_id: todayWheelSelection.skill_item_id,
+        skill_name: todayWheelSelection.skill_name,
+        skill_time: todayWheelSelection.skill_time,
+        skill_description: todayWheelSelection.skill_description,
+        completed_at: new Date().toISOString(),
+      },
+    ]);
+
     setProgress((prev) => {
       const newBlocks = prev.skill.completedBlocks + 1;
       return recalcCompletion({
@@ -321,56 +437,7 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
         skill: { ...prev.skill, completedBlocks: newBlocks },
       });
     });
-  }, [recalcCompletion]);
-
-  const spinChallenge = useCallback(() => {
-    const activeChallenges = challenges.filter((c) => c.active);
-    if (activeChallenges.length === 0) return;
-    const random =
-      activeChallenges[Math.floor(Math.random() * activeChallenges.length)];
-    setProgress((prev) => ({
-      ...prev,
-      skill: { ...prev.skill, selectedChallenge: random },
-    }));
-  }, [challenges]);
-
-  const completeChallenge = useCallback(() => {
-    setProgress((prev) => {
-      if (!prev.skill.selectedChallenge) return prev;
-      const challengeId = prev.skill.selectedChallenge.id;
-      if (prev.skill.completedChallengeIds.includes(challengeId)) return prev;
-
-      const newBlocks = prev.skill.completedBlocks + 1;
-      const updated = recalcCompletion({
-        ...prev,
-        skill: {
-          ...prev.skill,
-          completedBlocks: newBlocks,
-          completedChallengeIds: [
-            ...prev.skill.completedChallengeIds,
-            challengeId,
-          ],
-          selectedChallenge: null,
-        },
-      });
-
-      const challenge = challenges.find((c) => c.id === challengeId);
-      if (challenge && !challenge.repeatable) {
-        setChallenges((prev) =>
-          prev.map((c) => (c.id === challengeId ? { ...c, active: false } : c))
-        );
-      }
-
-      return updated;
-    });
-  }, [recalcCompletion, challenges]);
-
-  const clearSelectedChallenge = useCallback(() => {
-    setProgress((prev) => ({
-      ...prev,
-      skill: { ...prev.skill, selectedChallenge: null },
-    }));
-  }, []);
+  }, [todayKey, todayWheelSelection, recalcCompletion]);
 
   // --- RESET ---
   const toggleReading = useCallback(() => {
@@ -419,7 +486,6 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
     <DailyProgressContext.Provider
       value={{
         progress,
-        challenges,
         weeklyFunActiveCount: effectiveFunActiveCount,
         overallProgress,
         isLoaded,
@@ -432,10 +498,12 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
         toggleWater,
         incrementSugar,
         decrementSugar,
-        completeMainSkill,
-        spinChallenge,
-        completeChallenge,
-        clearSelectedChallenge,
+        todaySkillLogs,
+        todayWheelSelection,
+        completeMainSkillActivity,
+        spinWheelForToday,
+        completeWheelSkillActivity,
+        refreshSkillStatus,
         toggleReading,
         toggleJournaling,
         toggleMeditation,

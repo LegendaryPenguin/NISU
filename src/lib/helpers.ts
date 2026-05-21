@@ -1,7 +1,11 @@
 import { DailyProgress } from "./types";
 
 export function getTodayKey(): string {
-  return new Date().toISOString().split("T")[0];
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 export function isWeekend(dateStr?: string): boolean {
@@ -34,8 +38,6 @@ export function getDefaultDailyProgress(dateStr: string): DailyProgress {
     skill: {
       requiredBlocks: getRequiredSkillBlocks(dateStr),
       completedBlocks: 0,
-      selectedChallenge: null,
-      completedChallengeIds: [],
       completed: false,
     },
     reset: {
@@ -125,7 +127,6 @@ export function getWeeklyFunActiveCount(
 }
 
 const STORAGE_KEY = "nisu_daily_progress";
-const CHALLENGES_KEY = "nisu_challenges";
 
 export function loadAllProgress(): Record<string, DailyProgress> {
   if (typeof window === "undefined") return {};
@@ -142,23 +143,6 @@ export function saveDailyProgress(
 ): void {
   if (typeof window === "undefined") return;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(allProgress));
-}
-
-export function loadChallenges(): import("./types").Challenge[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = localStorage.getItem(CHALLENGES_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-}
-
-export function saveChallenges(
-  challenges: import("./types").Challenge[]
-): void {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(CHALLENGES_KEY, JSON.stringify(challenges));
 }
 
 export function formatDateDisplay(dateStr: string): string {

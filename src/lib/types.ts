@@ -17,9 +17,10 @@ export interface FuelState {
 export interface SkillState {
   requiredBlocks: number;
   completedBlocks: number;
-  selectedChallenge: Challenge | null;
-  completedChallengeIds: string[];
   completed: boolean;
+  // Legacy fields kept for backward compat with older localStorage entries
+  selectedChallenge?: Challenge | null;
+  completedChallengeIds?: string[];
 }
 
 export interface ResetState {
@@ -87,4 +88,44 @@ export interface FitnessActivityLog {
   steps_confirmed: boolean | null;
   fun_active_description: string | null;
   completed_at: string;
+}
+
+// --- Skill / Supabase types ---
+
+export interface SkillItem {
+  id: string;
+  user_id: string | null;
+  kind: "main" | "wheel";
+  name: string;
+  time: string;
+  description: string;
+  repeatable: boolean;
+  active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SkillActivityLog {
+  id: string;
+  user_id: string | null;
+  date_key: string;
+  type: "main" | "wheel";
+  skill_item_id: string | null;
+  skill_name: string;
+  skill_time: string | null;
+  skill_description: string | null;
+  completed_at: string;
+}
+
+export interface DailyWheelSelection {
+  id: string;
+  user_id: string | null;
+  date_key: string;
+  skill_item_id: string;
+  skill_name: string;
+  skill_time: string | null;
+  skill_description: string | null;
+  completed: boolean;
+  created_at: string;
+  completed_at: string | null;
 }

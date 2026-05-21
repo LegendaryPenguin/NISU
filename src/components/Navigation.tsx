@@ -14,6 +14,11 @@ const NAV_ITEMS = [
   { href: "/practice", label: "Practice", emoji: "🎯" },
 ];
 
+function isActive(pathname: string, href: string) {
+  if (href === "/daily") return pathname === "/daily";
+  return pathname === href || pathname.startsWith(href + "/");
+}
+
 export default function Navigation() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -36,7 +41,7 @@ export default function Navigation() {
               key={item.href}
               href={item.href}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-                pathname === item.href
+                isActive(pathname, item.href)
                   ? "bg-gray-900 text-white"
                   : "text-gray-500 hover:text-gray-800 hover:bg-gray-100"
               }`}
@@ -80,7 +85,7 @@ export default function Navigation() {
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
                 className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
-                  pathname === item.href
+                  isActive(pathname, item.href)
                     ? "bg-gray-900 text-white"
                     : "text-gray-600 hover:bg-gray-100"
                 }`}
@@ -101,7 +106,7 @@ export default function Navigation() {
               key={item.href}
               href={item.href}
               className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg transition-all ${
-                pathname === item.href
+                isActive(pathname, item.href)
                   ? "text-violet-600"
                   : "text-gray-400"
               }`}

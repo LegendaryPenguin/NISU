@@ -22,6 +22,8 @@ export function getDefaultDailyProgress(dateStr: string): DailyProgress {
       stepCount: false,
       funActive: false,
       completed: false,
+      completionType: null,
+      completionDetail: null,
     },
     fuel: {
       protein: false,
@@ -104,7 +106,7 @@ export function getCurrentWeekDates(todayStr: string): string[] {
   return dates;
 }
 
-/** Count how many times Fun Active was used this week across all stored days */
+/** Count how many times Fun Active was used this week across all stored days (localStorage fallback) */
 export function getWeeklyFunActiveCount(
   allProgress: Record<string, DailyProgress>,
   todayStr: string,
@@ -167,4 +169,12 @@ export function formatDateDisplay(dateStr: string): string {
     month: "long",
     day: "numeric",
   });
+}
+
+export function formatDuration(totalSeconds: number): string {
+  const m = Math.floor(totalSeconds / 60);
+  const s = totalSeconds % 60;
+  if (m === 0) return `${s}s`;
+  if (s === 0) return `${m}m`;
+  return `${m}m ${s}s`;
 }

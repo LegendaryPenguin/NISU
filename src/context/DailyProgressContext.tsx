@@ -8,7 +8,7 @@ import {
   useCallback,
   ReactNode,
 } from "react";
-import { DailyProgress, Challenge } from "@/lib/types";
+import { DailyProgress, Challenge, FitnessActivityLog } from "@/lib/types";
 import { DEFAULT_CHALLENGES } from "@/lib/challenges";
 import {
   getTodayKey,
@@ -23,6 +23,11 @@ import {
   calculateResetCompletion,
   getWeeklyFunActiveCount,
 } from "@/lib/helpers";
+import {
+  getTodayFitnessLog,
+  getWeeklyFunActiveCountFromDb,
+  logFitnessActivity,
+} from "@/lib/fitness-actions";
 
 interface DailyProgressContextValue {
   progress: DailyProgress;
@@ -30,10 +35,15 @@ interface DailyProgressContextValue {
   weeklyFunActiveCount: number;
   overallProgress: number;
   isLoaded: boolean;
+  fitnessLog: FitnessActivityLog | null;
 
-  toggleDesignatedWorkout: () => void;
-  toggleStepCount: () => void;
-  toggleFunActive: () => void;
+  completeFitnessViaWorkout: (
+    workoutId: string,
+    workoutName: string
+  ) => Promise<void>;
+  completeFitnessViaSteps: () => Promise<void>;
+  completeFitnessViaFunActive: (description: string) => Promise<void>;
+  refreshFitnessStatus: () => Promise<void>;
 
   toggleProtein: () => void;
   toggleWater: () => void;
@@ -67,6 +77,11 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
+  const [fitnessLog, setFitnessLog] = useState<FitnessActivityLog | null>(
+    null
+  );
+  const [weeklyFunActiveCount, setWeeklyFunActiveCount] = useState(0);
+
   // Load from localStorage on mount
   useEffect(() => {
     const stored = loadAllProgress();
@@ -90,6 +105,41 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
     setIsLoaded(true);
   }, [todayKey]);
 
+  // Sync fitness state from Supabase after localStorage loads
+  const refreshFitnessStatus = useCallback(async () => {
+    try {
+      const [log, funActiveCount] = await Promise.all([
+        getTodayFitnessLog(todayKey),
+        getWeeklyFunActiveCountFromDb(todayKey),
+      ]);
+
+      setFitnessLog(log);
+      setWeeklyFunActiveCount(funActiveCount);
+
+      if (log) {
+        setProgress((prev) => ({
+          ...prev,
+          fitness: {
+            designatedWorkout: log.type === "workout",
+            stepCount: log.type === "steps",
+            funActive: log.type === "fun_active",
+            completed: true,
+            completionType: log.type,
+            completionDetail:
+              log.workout_name || log.fun_active_description || null,
+          },
+        }));
+      }
+    } catch {
+      // Supabase unavailable — fall back to localStorage state
+    }
+  }, [todayKey]);
+
+  useEffect(() => {
+    if (!isLoaded) return;
+    refreshFitnessStatus();
+  }, [isLoaded, refreshFitnessStatus]);
+
   // Persist on every progress change (after initial load)
   useEffect(() => {
     if (!isLoaded) return;
@@ -105,11 +155,14 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
     saveChallenges(challenges);
   }, [challenges, isLoaded]);
 
-  const weeklyFunActiveCount = getWeeklyFunActiveCount(
+  // Fall back to localStorage-based count when Supabase hasn't loaded yet
+  const localFunActiveCount = getWeeklyFunActiveCount(
     allProgress,
     todayKey,
     progress.fitness.funActive
   );
+  const effectiveFunActiveCount =
+    weeklyFunActiveCount > 0 ? weeklyFunActiveCount : localFunActiveCount;
 
   const recalcCompletion = useCallback(
     (p: DailyProgress, funActiveCount?: number): DailyProgress => {
@@ -130,45 +183,94 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
     [allProgress, todayKey]
   );
 
-  // --- FITNESS ---
-  const toggleDesignatedWorkout = useCallback(() => {
+  // --- FITNESS (Supabase-backed) ---
+  const completeFitnessViaWorkout = useCallback(
+    async (workoutId: string, workoutName: string) => {
+      const log = await logFitnessActivity({
+        user_id: null,
+        date_key: todayKey,
+        type: "workout",
+        workout_id: workoutId,
+        workout_name: workoutName,
+        description: null,
+        steps_confirmed: null,
+        fun_active_description: null,
+      });
+      setFitnessLog(log);
+      setProgress((prev) =>
+        recalcCompletion({
+          ...prev,
+          fitness: {
+            ...prev.fitness,
+            designatedWorkout: true,
+            completed: true,
+            completionType: "workout",
+            completionDetail: workoutName,
+          },
+        })
+      );
+    },
+    [todayKey, recalcCompletion]
+  );
+
+  const completeFitnessViaSteps = useCallback(async () => {
+    const log = await logFitnessActivity({
+      user_id: null,
+      date_key: todayKey,
+      type: "steps",
+      workout_id: null,
+      workout_name: null,
+      description: null,
+      steps_confirmed: true,
+      fun_active_description: null,
+    });
+    setFitnessLog(log);
     setProgress((prev) =>
       recalcCompletion({
         ...prev,
         fitness: {
           ...prev.fitness,
-          designatedWorkout: !prev.fitness.designatedWorkout,
+          stepCount: true,
+          completed: true,
+          completionType: "steps",
+          completionDetail: null,
         },
       })
     );
-  }, [recalcCompletion]);
+  }, [todayKey, recalcCompletion]);
 
-  const toggleStepCount = useCallback(() => {
-    setProgress((prev) =>
-      recalcCompletion({
-        ...prev,
-        fitness: { ...prev.fitness, stepCount: !prev.fitness.stepCount },
-      })
-    );
-  }, [recalcCompletion]);
-
-  const toggleFunActive = useCallback(() => {
-    setProgress((prev) => {
-      const newFunActive = !prev.fitness.funActive;
-      const newFac = getWeeklyFunActiveCount(
-        allProgress,
-        todayKey,
-        newFunActive
+  const completeFitnessViaFunActive = useCallback(
+    async (description: string) => {
+      const log = await logFitnessActivity({
+        user_id: null,
+        date_key: todayKey,
+        type: "fun_active",
+        workout_id: null,
+        workout_name: null,
+        description: null,
+        steps_confirmed: null,
+        fun_active_description: description,
+      });
+      setFitnessLog(log);
+      setWeeklyFunActiveCount((prev) => prev + 1);
+      setProgress((prev) =>
+        recalcCompletion(
+          {
+            ...prev,
+            fitness: {
+              ...prev.fitness,
+              funActive: true,
+              completed: true,
+              completionType: "fun_active",
+              completionDetail: description,
+            },
+          },
+          effectiveFunActiveCount + 1
+        )
       );
-      return recalcCompletion(
-        {
-          ...prev,
-          fitness: { ...prev.fitness, funActive: newFunActive },
-        },
-        newFac
-      );
-    });
-  }, [recalcCompletion, allProgress, todayKey]);
+    },
+    [todayKey, recalcCompletion, effectiveFunActiveCount]
+  );
 
   // --- FUEL ---
   const toggleProtein = useCallback(() => {
@@ -252,7 +354,6 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
         },
       });
 
-      // Remove non-repeatable challenges
       const challenge = challenges.find((c) => c.id === challengeId);
       if (challenge && !challenge.repeatable) {
         setChallenges((prev) =>
@@ -319,12 +420,14 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
       value={{
         progress,
         challenges,
-        weeklyFunActiveCount,
+        weeklyFunActiveCount: effectiveFunActiveCount,
         overallProgress,
         isLoaded,
-        toggleDesignatedWorkout,
-        toggleStepCount,
-        toggleFunActive,
+        fitnessLog,
+        completeFitnessViaWorkout,
+        completeFitnessViaSteps,
+        completeFitnessViaFunActive,
+        refreshFitnessStatus,
         toggleProtein,
         toggleWater,
         incrementSugar,

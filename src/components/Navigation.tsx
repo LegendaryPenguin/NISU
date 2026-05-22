@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 
 const NAV_ITEMS = [
   { href: "/daily", label: "Daily Routine", emoji: "📋" },
@@ -22,6 +23,9 @@ function isActive(pathname: string, href: string) {
 export default function Navigation() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { user, displayName, signOut } = useAuth();
+
+  if (pathname === "/login") return null;
 
   return (
     <>
@@ -49,6 +53,19 @@ export default function Navigation() {
             </Link>
           ))}
         </div>
+        {user && (
+          <div className="flex items-center gap-3 ml-3">
+            <span className="text-xs font-medium text-gray-500">
+              {displayName}
+            </span>
+            <button
+              onClick={signOut}
+              className="text-xs font-medium text-gray-400 hover:text-red-500 px-2 py-1 rounded-lg hover:bg-red-50 transition-colors cursor-pointer"
+            >
+              Sign out
+            </button>
+          </div>
+        )}
       </nav>
 
       {/* Mobile nav */}
@@ -60,20 +77,27 @@ export default function Navigation() {
           >
             NISU
           </Link>
-          <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
-          >
-            {mobileOpen ? (
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
+          <div className="flex items-center gap-2">
+            {user && (
+              <span className="text-[10px] font-medium text-gray-400">
+                {displayName}
+              </span>
             )}
-          </button>
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+            >
+              {mobileOpen ? (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
         {mobileOpen && (
           <div className="px-4 pb-3 space-y-1">
@@ -92,6 +116,14 @@ export default function Navigation() {
                 {item.label}
               </Link>
             ))}
+            {user && (
+              <button
+                onClick={signOut}
+                className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 transition-colors w-full cursor-pointer"
+              >
+                Sign out
+              </button>
+            )}
           </div>
         )}
       </nav>

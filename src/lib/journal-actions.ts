@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/client";
+import { getAuthUserId } from "./auth-helpers";
 import type { JournalEntry } from "./types";
 
 const supabase = () => createClient();
@@ -20,9 +21,10 @@ export async function createJournalEntry(input: {
   good_thing: string;
   extra_dump: string | null;
 }): Promise<JournalEntry> {
+  const userId = await getAuthUserId();
   const { data, error } = await supabase()
     .from("journal_entries")
-    .insert({ ...input, user_id: null })
+    .insert({ ...input, user_id: userId })
     .select()
     .single();
   if (error) throw error;

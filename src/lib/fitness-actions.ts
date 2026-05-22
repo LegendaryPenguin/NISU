@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/client";
+import { getAuthUserId } from "./auth-helpers";
 import type {
   Workout,
   WorkoutExercise,
@@ -44,9 +45,10 @@ export async function fetchWorkoutById(
 }
 
 export async function createWorkout(name: string): Promise<Workout> {
+  const userId = await getAuthUserId();
   const { data, error } = await supabase()
     .from("workouts")
-    .insert({ name })
+    .insert({ name, user_id: userId })
     .select()
     .single();
   if (error) throw error;
@@ -109,11 +111,12 @@ export async function replaceExercises(
 // ----- Fitness Activity Log -----
 
 export async function logFitnessActivity(
-  entry: Omit<FitnessActivityLog, "id" | "completed_at">
+  entry: Omit<FitnessActivityLog, "id" | "completed_at" | "user_id">
 ): Promise<FitnessActivityLog> {
+  const userId = await getAuthUserId();
   const { data, error } = await supabase()
     .from("fitness_activity_log")
-    .insert(entry)
+    .insert({ ...entry, user_id: userId })
     .select()
     .single();
   if (error) throw error;

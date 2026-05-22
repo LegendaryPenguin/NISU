@@ -126,12 +126,16 @@ export function getWeeklyFunActiveCount(
   return count;
 }
 
-const STORAGE_KEY = "nisu_daily_progress";
+const STORAGE_KEY_PREFIX = "nisu_daily_progress";
 
-export function loadAllProgress(): Record<string, DailyProgress> {
+function getStorageKey(userId?: string): string {
+  return userId ? `${STORAGE_KEY_PREFIX}_${userId}` : STORAGE_KEY_PREFIX;
+}
+
+export function loadAllProgress(userId?: string): Record<string, DailyProgress> {
   if (typeof window === "undefined") return {};
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(getStorageKey(userId));
     return raw ? JSON.parse(raw) : {};
   } catch {
     return {};
@@ -139,10 +143,11 @@ export function loadAllProgress(): Record<string, DailyProgress> {
 }
 
 export function saveDailyProgress(
-  allProgress: Record<string, DailyProgress>
+  allProgress: Record<string, DailyProgress>,
+  userId?: string
 ): void {
   if (typeof window === "undefined") return;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(allProgress));
+  localStorage.setItem(getStorageKey(userId), JSON.stringify(allProgress));
 }
 
 export function formatDateDisplay(dateStr: string): string {

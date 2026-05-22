@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/client";
+import { getAuthUserId } from "./auth-helpers";
 import type {
   Recipe,
   RecipeIngredient,
@@ -45,9 +46,10 @@ function normalize(r: Record<string, unknown>): RecipeWithDetails {
 }
 
 export async function createRecipe(name: string): Promise<Recipe> {
+  const userId = await getAuthUserId();
   const { data, error } = await supabase()
     .from("recipes")
-    .insert({ name })
+    .insert({ name, user_id: userId })
     .select()
     .single();
   if (error) throw error;

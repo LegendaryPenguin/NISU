@@ -11,7 +11,7 @@ export const updateSession = async (request: NextRequest) => {
     },
   });
 
-  createServerClient(
+  const supabase = createServerClient(
     supabaseUrl!,
     supabaseKey!,
     {
@@ -33,6 +33,28 @@ export const updateSession = async (request: NextRequest) => {
       },
     }
   );
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const pathname = request.nextUrl.pathname;
+
+  if (
+    !user &&
+    pathname !== "/login" &&
+    !pathname.startsWith("/auth/")
+  ) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
+  }
+
+  if (user && pathname === "/login") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/";
+    return NextResponse.redirect(url);
+  }
 
   return supabaseResponse;
 };

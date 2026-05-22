@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo } from "react";
 import PenguinMascot from "@/components/PenguinMascot";
 import StreakCalendar from "@/components/StreakCalendar";
+import { useAuth } from "@/context/AuthContext";
 
 function getGreeting() {
   const h = new Date().getHours();
@@ -18,6 +19,7 @@ const PLACEHOLDER_TOGETHER = 12;
 
 export default function LandingPage() {
   const greeting = useMemo(() => getGreeting(), []);
+  const { displayName, partnerName } = useAuth();
 
   return (
     <div className="min-h-[calc(100vh-56px)] flex flex-col">
@@ -29,7 +31,7 @@ export default function LandingPage() {
             <h1 className="text-3xl sm:text-4xl lg:text-[2.6rem] font-extrabold leading-tight tracking-tight">
               {greeting},
               <br />
-              <span style={{ color: "#ff787e" }}>Surender!</span>
+              <span style={{ color: "#ff787e" }}>{displayName}!</span>
             </h1>
             <p className="mt-3 text-gray-500 text-sm sm:text-base">
               Every small step today builds
@@ -101,7 +103,7 @@ export default function LandingPage() {
             <div>
               <div className="flex items-center gap-1.5">
                 <span className="text-sm font-semibold text-gray-600">
-                  Partner streak
+                  {partnerName}&apos;s streak
                 </span>
                 <span style={{ color: "#ff787e" }} className="text-xs">
                   &#10084;

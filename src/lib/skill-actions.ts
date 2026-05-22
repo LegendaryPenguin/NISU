@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/client";
+import { getAuthUserId } from "./auth-helpers";
 import type {
   SkillItem,
   SkillActivityLog,
@@ -39,9 +40,10 @@ export async function fetchActiveSkillItems(
 export async function createSkillItem(
   input: Pick<SkillItem, "kind" | "name" | "time" | "description" | "repeatable">
 ): Promise<SkillItem> {
+  const userId = await getAuthUserId();
   const { data, error } = await supabase()
     .from("skill_items")
-    .insert({ ...input, active: true })
+    .insert({ ...input, active: true, user_id: userId })
     .select()
     .single();
   if (error) throw error;
@@ -93,11 +95,12 @@ export async function getTodaySkillLogs(
 }
 
 export async function logSkillActivity(
-  entry: Omit<SkillActivityLog, "id" | "completed_at">
+  entry: Omit<SkillActivityLog, "id" | "completed_at" | "user_id">
 ): Promise<SkillActivityLog> {
+  const userId = await getAuthUserId();
   const { data, error } = await supabase()
     .from("skill_activity_log")
-    .insert(entry)
+    .insert({ ...entry, user_id: userId })
     .select()
     .single();
   if (error) throw error;
@@ -109,11 +112,12 @@ export async function logSkillActivity(
 export async function getTodayWheelSelection(
   dateKey: string
 ): Promise<DailyWheelSelection | null> {
+  const userId = await getAuthUserId();
   const { data, error } = await supabase()
     .from("daily_wheel_selection")
     .select("*")
     .eq("date_key", dateKey)
-    .is("user_id", null)
+    .eq("user_id", userId)
     .maybeSingle();
   if (error) throw error;
   return data;
@@ -122,23 +126,21 @@ export async function getTodayWheelSelection(
 export async function spinWheelForToday(
   dateKey: string
 ): Promise<DailyWheelSelection> {
-  // Check existing selection first
   const existing = await getTodayWheelSelection(dateKey);
   if (existing) return existing;
 
-  // Fetch active wheel items
   const activeItems = await fetchActiveSkillItems("wheel");
   if (activeItems.length === 0) {
     throw new Error("No active wheel skills available.");
   }
 
-  // Random pick
   const pick = activeItems[Math.floor(Math.random() * activeItems.length)];
+  const userId = await getAuthUserId();
 
   const { data, error } = await supabase()
     .from("daily_wheel_selection")
     .insert({
-      user_id: null,
+      user_id: userId,
       date_key: dateKey,
       skill_item_id: pick.id,
       skill_name: pick.name,

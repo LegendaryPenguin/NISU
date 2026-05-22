@@ -8,7 +8,6 @@ export default function ResetCard() {
   const {
     progress,
     toggleReading,
-    toggleJournaling,
     toggleMeditation,
     toggleOutside,
   } = useDailyProgress();
@@ -53,13 +52,55 @@ export default function ResetCard() {
 
       <p className="text-xs text-gray-500 mb-2 font-medium">Choose one:</p>
       <div className="space-y-1 mb-3">
-        <Checkbox
-          checked={reset.journaling}
-          onChange={toggleJournaling}
-          label="Journaling"
-          sublabel="5 minutes"
-          accentColor="bg-amber-500"
-        />
+        {/* Journaling navigates to the brain dump page */}
+        <Link href="/journal" className="block">
+          <div
+            className={`flex items-center gap-3 w-full text-left px-3 py-2.5 rounded-xl transition-all duration-200 hover:bg-black/[0.03] ${
+              reset.journaling ? "bg-black/[0.02]" : ""
+            }`}
+          >
+            <div
+              className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200 ${
+                reset.journaling
+                  ? "bg-amber-500 border-transparent"
+                  : "border-gray-300 bg-white"
+              }`}
+            >
+              {reset.journaling && (
+                <svg
+                  className="w-3 h-3 text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={3}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              )}
+            </div>
+            <div className="flex flex-col flex-1">
+              <span
+                className={`text-sm font-medium transition-all duration-200 ${
+                  reset.journaling
+                    ? "line-through text-gray-400"
+                    : "text-gray-700"
+                }`}
+              >
+                Journaling / Brain Dump
+              </span>
+              <span className="text-xs text-gray-400">
+                {reset.journaling ? "Done for today" : "5 minutes → open journal"}
+              </span>
+            </div>
+            {!reset.journaling && (
+              <span className="text-xs text-amber-500 font-medium">Go →</span>
+            )}
+          </div>
+        </Link>
         <Checkbox
           checked={reset.meditation}
           onChange={toggleMeditation}
@@ -78,15 +119,6 @@ export default function ResetCard() {
           sublabel="Optional — go touch grass"
           accentColor="bg-amber-500"
         />
-      </div>
-
-      <div className="flex gap-3">
-        <Link
-          href="/journal"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-500 hover:text-amber-700 transition-colors"
-        >
-          Open Journal →
-        </Link>
       </div>
     </div>
   );

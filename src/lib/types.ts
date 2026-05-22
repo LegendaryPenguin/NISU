@@ -129,3 +129,45 @@ export interface DailyWheelSelection {
   created_at: string;
   completed_at: string | null;
 }
+
+// --- Fuel / Recipe types ---
+
+export interface Recipe {
+  id: string;
+  user_id: string | null;
+  name: string;
+}
+
+export interface RecipeIngredient {
+  id: string;
+  recipe_id: string;
+  text: string;
+  order_index: number;
+}
+
+export interface RecipeStep {
+  id: string;
+  recipe_id: string;
+  instruction: string;
+  timer_seconds: number | null;
+  order_index: number;
+}
+
+export interface RecipeWithDetails extends Recipe {
+  recipe_ingredients: RecipeIngredient[];
+  recipe_steps: RecipeStep[];
+}
+
+// --- Journal / Brain Dump types ---
+
+export interface JournalEntry {
+  id: string;
+  user_id: string | null;
+  date_key: string;
+  mind: string;
+  next_action: string;
+  avoiding: string;
+  good_thing: string;
+  extra_dump: string | null;
+  created_at: string;
+}

@@ -23,8 +23,6 @@ export default function Navigation() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  if (pathname === "/") return null;
-
   return (
     <>
       {/* Desktop nav */}

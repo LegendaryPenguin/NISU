@@ -164,6 +164,22 @@ export async function markWheelSelectionComplete(
   return data;
 }
 
+// ----- Dev Reset -----
+
+export async function deleteTodaySkillData(dateKey: string): Promise<void> {
+  const client = supabase();
+  const { error: logErr } = await client
+    .from("skill_activity_log")
+    .delete()
+    .eq("date_key", dateKey);
+  if (logErr) throw logErr;
+  const { error: wheelErr } = await client
+    .from("daily_wheel_selection")
+    .delete()
+    .eq("date_key", dateKey);
+  if (wheelErr) throw wheelErr;
+}
+
 // ----- Helpers -----
 
 export async function markItemInactiveIfNonRepeatable(

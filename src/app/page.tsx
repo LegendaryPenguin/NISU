@@ -1,73 +1,169 @@
-import Link from "next/link";
+"use client";
 
-const PILLARS = [
-  {
-    emoji: "💪",
-    title: "Fitness",
-    desc: "Move your body every day",
-    color: "from-blue-500 to-blue-600",
-    bg: "bg-blue-50",
-  },
-  {
-    emoji: "🥗",
-    title: "Fuel",
-    desc: "Eat clean, stay hydrated",
-    color: "from-emerald-500 to-emerald-600",
-    bg: "bg-emerald-50",
-  },
-  {
-    emoji: "🧠",
-    title: "Skill",
-    desc: "Build something new",
-    color: "from-violet-500 to-violet-600",
-    bg: "bg-violet-50",
-  },
-  {
-    emoji: "🌙",
-    title: "Reset",
-    desc: "Recharge your mind",
-    color: "from-amber-500 to-amber-600",
-    bg: "bg-amber-50",
-  },
-];
+import Link from "next/link";
+import { useMemo } from "react";
+import PenguinMascot from "@/components/PenguinMascot";
+import StreakCalendar from "@/components/StreakCalendar";
+
+function getGreeting() {
+  const h = new Date().getHours();
+  if (h < 12) return "Good morning";
+  if (h < 17) return "Good afternoon";
+  return "Good evening";
+}
+
+const PLACEHOLDER_STREAK = 18;
+const PLACEHOLDER_PARTNER = 14;
+const PLACEHOLDER_TOGETHER = 12;
 
 export default function LandingPage() {
+  const greeting = useMemo(() => getGreeting(), []);
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-16">
-      <div className="max-w-lg w-full text-center">
-        <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight mb-3">
-          <span className="bg-gradient-to-r from-violet-600 via-pink-500 to-amber-500 bg-clip-text text-transparent">
-            NISU
-          </span>
-        </h1>
-        <p className="text-lg text-gray-500 mb-2 font-medium">
-          Your Summer Life Operating System
-        </p>
-        <p className="text-sm text-gray-400 mb-10 max-w-sm mx-auto">
-          Stay consistent with your goals, routines, fitness, fuel, skills, and
-          mindset — all in one place.
-        </p>
-
-        <div className="grid grid-cols-2 gap-3 mb-10">
-          {PILLARS.map((p) => (
-            <div
-              key={p.title}
-              className={`${p.bg} rounded-2xl p-4 text-left`}
+    <div className="min-h-[calc(100vh-56px)] flex flex-col">
+      {/* ─── Hero Section ─── */}
+      <section className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-6">
+        <div className="flex flex-col lg:flex-row items-center lg:items-start gap-4 lg:gap-8">
+          {/* Left: greeting + CTA */}
+          <div className="flex-shrink-0 text-center lg:text-left lg:pt-6 lg:max-w-xs">
+            <h1 className="text-3xl sm:text-4xl lg:text-[2.6rem] font-extrabold leading-tight tracking-tight">
+              {greeting},
+              <br />
+              <span style={{ color: "#ff787e" }}>Surender!</span>
+            </h1>
+            <p className="mt-3 text-gray-500 text-sm sm:text-base">
+              Every small step today builds
+              <br className="hidden sm:block" /> your best summer.{" "}
+              <span className="inline-block">&#10024;</span>
+            </p>
+            <Link
+              href="/daily"
+              className="inline-flex items-center gap-2 mt-6 px-7 py-3 rounded-full text-white font-bold text-sm shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-[1.03] active:scale-[0.98]"
+              style={{
+                background: "linear-gradient(135deg, #ff787e 0%, #ffb0ab 100%)",
+              }}
             >
-              <span className="text-2xl">{p.emoji}</span>
-              <p className="text-sm font-bold text-gray-800 mt-2">{p.title}</p>
-              <p className="text-xs text-gray-500">{p.desc}</p>
-            </div>
-          ))}
-        </div>
+              Go to Task Board
+              <span className="text-base">&rarr;</span>
+            </Link>
+          </div>
 
-        <Link
-          href="/daily"
-          className="inline-flex items-center justify-center gap-2 bg-gray-900 text-white text-sm font-bold px-8 py-3.5 rounded-full hover:bg-gray-800 transition-all duration-200 shadow-lg shadow-gray-900/20"
+          {/* Center: penguin mascot (desktop only, overlapping) */}
+          <div className="hidden lg:flex items-end justify-center flex-shrink-0 -mb-4 relative" style={{ marginLeft: "-10px", marginRight: "-30px" }}>
+            <PenguinMascot variant="hero" size={220} />
+          </div>
+
+          {/* Mobile penguin (shown above calendar on small screens) */}
+          <div className="lg:hidden flex justify-center -mb-2">
+            <PenguinMascot variant="hero" size={180} />
+          </div>
+
+          {/* Right: streak calendar */}
+          <div className="flex-1 w-full lg:w-auto flex justify-center lg:justify-end">
+            <StreakCalendar />
+          </div>
+        </div>
+      </section>
+
+      {/* ─── Stat Cards ─── */}
+      <section className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {/* Your streak */}
+          <div className="flex items-center gap-4 bg-white rounded-2xl px-5 py-4 shadow-sm border border-gray-100">
+            <PenguinMascot variant="small" size={56} />
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-sm font-semibold text-gray-600">
+                  Your streak
+                </span>
+                <span style={{ color: "#ff787e" }} className="text-xs">
+                  &#10084;
+                </span>
+              </div>
+              <p
+                className="text-3xl font-extrabold leading-none mt-0.5"
+                style={{ color: "#ff787e" }}
+              >
+                {PLACEHOLDER_STREAK}{" "}
+                <span className="text-sm font-semibold text-gray-500">
+                  days
+                </span>
+              </p>
+            </div>
+          </div>
+
+          {/* Partner streak */}
+          <div
+            className="flex items-center gap-4 rounded-2xl px-5 py-4 shadow-sm border border-gray-100"
+            style={{ backgroundColor: "#fff5f4" }}
+          >
+            <PenguinMascot variant="small" size={56} />
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-sm font-semibold text-gray-600">
+                  Partner streak
+                </span>
+                <span style={{ color: "#ff787e" }} className="text-xs">
+                  &#10084;
+                </span>
+              </div>
+              <p
+                className="text-3xl font-extrabold leading-none mt-0.5"
+                style={{ color: "#ff787e" }}
+              >
+                {PLACEHOLDER_PARTNER}{" "}
+                <span className="text-sm font-semibold text-gray-500">
+                  days
+                </span>
+              </p>
+            </div>
+          </div>
+
+          {/* Completed together */}
+          <div className="flex items-center gap-4 bg-white rounded-2xl px-5 py-4 shadow-sm border border-gray-100">
+            <div
+              className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0"
+              style={{ backgroundColor: "#fff8eb" }}
+            >
+              <span className="text-2xl">&#11088;</span>
+            </div>
+            <div>
+              <span className="text-sm font-semibold text-gray-600">
+                Completed together
+              </span>
+              <p
+                className="text-3xl font-extrabold leading-none mt-0.5"
+                style={{ color: "#fdb95c" }}
+              >
+                {PLACEHOLDER_TOGETHER}{" "}
+                <span className="text-sm font-semibold text-gray-500">
+                  days
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── Motivational Banner ─── */}
+      <section className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+        <div
+          className="rounded-2xl px-6 py-4 flex items-center justify-between overflow-hidden"
+          style={{ backgroundColor: "#fef0ee" }}
         >
-          Open Daily Routine →
-        </Link>
-      </div>
+          <p className="text-sm sm:text-base font-medium text-gray-700 flex items-center gap-2 flex-wrap">
+            <span style={{ color: "#73d9ff" }}>&#10024;</span>
+            <span className="font-bold">
+              Consistency is your superpower.
+            </span>{" "}
+            Keep stacking those wins!{" "}
+            <span style={{ color: "#ff787e" }}>&#10084;</span>
+          </p>
+          <div className="flex-shrink-0 ml-4 hidden sm:block">
+            <PenguinMascot variant="peek" size={70} />
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

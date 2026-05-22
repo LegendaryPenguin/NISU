@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useDailyProgress } from "@/context/DailyProgressContext";
 import { isWeekend, getTodayKey } from "@/lib/helpers";
 import { fetchActiveSkillItems } from "@/lib/skill-actions";
-import type { SkillItem } from "@/lib/types";
+import type { SkillItem, DailyWheelSelection } from "@/lib/types";
+import SkillWheel from "./SkillWheel";
 
 type CardFlow = "idle" | "mainSelect" | "wheelSpinning";
 
@@ -22,13 +23,24 @@ export default function SkillCard() {
   const { skill } = progress;
   const weekend = isWeekend(getTodayKey());
   const done = skill.completed;
-  const remaining = skill.requiredBlocks - skill.completedBlocks;
 
   const [flow, setFlow] = useState<CardFlow>("idle");
   const [mainSkills, setMainSkills] = useState<SkillItem[]>([]);
+  const [wheelSkills, setWheelSkills] = useState<SkillItem[]>([]);
   const [loadingMain, setLoadingMain] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // The skill the wheel needs to land on (set before animation starts)
+  const [wheelTarget, setWheelTarget] = useState<SkillItem | null>(null);
+  const [wheelAnimating, setWheelAnimating] = useState(false);
+
+  // Fetch wheel skills on mount so the wheel has segment data
+  useEffect(() => {
+    fetchActiveSkillItems("wheel")
+      .then(setWheelSkills)
+      .catch(() => {});
+  }, []);
 
   // Fetch main skills when panel opens
   useEffect(() => {
@@ -57,15 +69,34 @@ export default function SkillCard() {
     setFlow("wheelSpinning");
     setError(null);
     try {
-      await new Promise((r) => setTimeout(r, 600));
       await spinWheelForToday();
-      setFlow("idle");
     } catch (e) {
       setError(
         e instanceof Error ? e.message : "Failed to spin. Please try again."
       );
       setFlow("idle");
     }
+  };
+
+  // When todayWheelSelection arrives and we're in spinning flow, start the animation
+  useEffect(() => {
+    if (flow !== "wheelSpinning" || !todayWheelSelection || wheelAnimating) return;
+    const target = wheelSkills.find(
+      (s) => s.id === todayWheelSelection.skill_item_id
+    );
+    if (target) {
+      setWheelTarget(target);
+      setWheelAnimating(true);
+    } else {
+      // Skill not in local list (edge case) — skip animation
+      setFlow("idle");
+    }
+  }, [flow, todayWheelSelection, wheelSkills, wheelAnimating]);
+
+  const handleSpinComplete = () => {
+    setWheelAnimating(false);
+    setWheelTarget(null);
+    setFlow("idle");
   };
 
   const handleCompleteWheel = async () => {
@@ -199,15 +230,31 @@ export default function SkillCard() {
         </div>
       )}
 
-      {/* Spinning state */}
+      {/* Wheel spinning state — real animated wheel */}
       {flow === "wheelSpinning" && (
-        <div className="flex items-center justify-center py-6 mb-4">
-          <div className="flex flex-col items-center gap-2">
-            <div className="w-10 h-10 border-3 border-violet-200 border-t-violet-500 rounded-full animate-spin" />
-            <p className="text-sm font-semibold text-violet-600">
-              Spinning...
-            </p>
-          </div>
+        <div className="mb-4">
+          {wheelSkills.length > 0 ? (
+            <>
+              <SkillWheel
+                skills={wheelSkills}
+                targetSkill={wheelTarget}
+                spinning={wheelAnimating}
+                onSpinComplete={handleSpinComplete}
+              />
+              <p className="text-sm font-semibold text-violet-600 text-center">
+                Spinning...
+              </p>
+            </>
+          ) : (
+            <div className="flex items-center justify-center py-6">
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-10 h-10 border-[3px] border-violet-200 border-t-violet-500 rounded-full animate-spin" />
+                <p className="text-sm font-semibold text-violet-600">
+                  Spinning...
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -306,7 +353,7 @@ function WheelSelectionCard({
   onComplete,
   submitting,
 }: {
-  selection: import("@/lib/types").DailyWheelSelection;
+  selection: DailyWheelSelection;
   onComplete: () => void;
   submitting: boolean;
 }) {

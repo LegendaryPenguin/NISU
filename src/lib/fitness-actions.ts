@@ -134,6 +134,14 @@ export async function getTodayFitnessLog(
   return data;
 }
 
+export async function deleteTodayFitnessLog(dateKey: string): Promise<void> {
+  const { error } = await supabase()
+    .from("fitness_activity_log")
+    .delete()
+    .eq("date_key", dateKey);
+  if (error) throw error;
+}
+
 export async function getWeeklyFunActiveCountFromDb(
   todayKey: string
 ): Promise<number> {

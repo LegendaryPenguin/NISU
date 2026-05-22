@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useDailyProgress } from "@/context/DailyProgressContext";
 import ProgressHeader from "@/components/ProgressHeader";
 import FitnessCard from "@/components/FitnessCard";
@@ -9,15 +10,23 @@ import ResetCard from "@/components/ResetCard";
 import DailySummary from "@/components/DailySummary";
 
 export default function DailyRoutinePage() {
-  const { isLoaded } = useDailyProgress();
+  const { isLoaded, resetToday } = useDailyProgress();
+  const [resetting, setResetting] = useState(false);
 
   if (!isLoaded) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-3 border-violet-300 border-t-violet-600 rounded-full animate-spin" />
+        <div className="w-8 h-8 border-[3px] border-violet-300 border-t-violet-600 rounded-full animate-spin" />
       </div>
     );
   }
+
+  const handleReset = async () => {
+    if (!confirm("Reset all progress for today? This clears localStorage and Supabase data for today.")) return;
+    setResetting(true);
+    await resetToday();
+    setResetting(false);
+  };
 
   return (
     <div className="min-h-screen pb-28 md:pb-8">
@@ -32,6 +41,20 @@ export default function DailyRoutinePage() {
         </div>
 
         <DailySummary />
+
+        {/* Dev tools */}
+        <div className="mt-8 pt-6 border-t border-dashed border-gray-200">
+          <p className="text-[10px] uppercase tracking-widest text-gray-300 font-bold mb-2">
+            Dev Tools
+          </p>
+          <button
+            onClick={handleReset}
+            disabled={resetting}
+            className="text-xs font-medium text-red-400 border border-red-200 px-4 py-2 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+          >
+            {resetting ? "Resetting..." : "Reset Day (Dev)"}
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -31,6 +31,7 @@ import {
   getTodayFitnessLog,
   getWeeklyFunActiveCountFromDb,
   logFitnessActivity,
+  deleteTodayFitnessLog,
 } from "@/lib/fitness-actions";
 import {
   getTodaySkillLogs,
@@ -39,6 +40,7 @@ import {
   logSkillActivity,
   markWheelSelectionComplete,
   markItemInactiveIfNonRepeatable,
+  deleteTodaySkillData,
 } from "@/lib/skill-actions";
 
 interface DailyProgressContextValue {
@@ -74,8 +76,12 @@ interface DailyProgressContextValue {
   // Reset
   toggleReading: () => void;
   toggleJournaling: () => void;
+  completeJournaling: () => void;
   toggleMeditation: () => void;
   toggleOutside: () => void;
+
+  // Dev
+  resetToday: () => Promise<void>;
 }
 
 const DailyProgressContext = createContext<DailyProgressContextValue | null>(
@@ -458,6 +464,15 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
     );
   }, [recalcCompletion]);
 
+  const completeJournaling = useCallback(() => {
+    setProgress((prev) =>
+      recalcCompletion({
+        ...prev,
+        reset: { ...prev.reset, journaling: true },
+      })
+    );
+  }, [recalcCompletion]);
+
   const toggleMeditation = useCallback(() => {
     setProgress((prev) =>
       recalcCompletion({
@@ -475,6 +490,30 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
       })
     );
   }, [recalcCompletion]);
+
+  // --- DEV RESET ---
+  const resetToday = useCallback(async () => {
+    const fresh = getDefaultDailyProgress(todayKey);
+    setProgress(fresh);
+    setFitnessLog(null);
+    setWeeklyFunActiveCount(0);
+    setTodaySkillLogs([]);
+    setTodayWheelSelection(null);
+
+    const updated = { ...allProgress };
+    delete updated[todayKey];
+    setAllProgress(updated);
+    saveDailyProgress(updated);
+
+    try {
+      await Promise.all([
+        deleteTodayFitnessLog(todayKey),
+        deleteTodaySkillData(todayKey),
+      ]);
+    } catch {
+      // best-effort
+    }
+  }, [todayKey, allProgress]);
 
   const overallProgress =
     (progress.fitness.completed ? 1 : 0) +
@@ -506,8 +545,10 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
         refreshSkillStatus,
         toggleReading,
         toggleJournaling,
+        completeJournaling,
         toggleMeditation,
         toggleOutside,
+        resetToday,
       }}
     >
       {children}

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
+import PageHeader from "@/components/PageHeader";
 import type { WorkoutWithExercises, WorkoutExercise } from "@/lib/types";
 import { formatDuration } from "@/lib/helpers";
 import { fetchWorkouts } from "@/lib/fitness-actions";
@@ -126,7 +127,7 @@ export default function WorkoutStartPage() {
   // Already complete guard
   if (progress.fitness.completed) {
     return (
-      <div className="min-h-screen pb-8">
+      <div className="min-h-screen">
         <div className="max-w-2xl mx-auto px-4 py-12 text-center">
           <span className="text-5xl mb-4 block">✅</span>
           <h1 className="text-2xl font-extrabold text-gray-900 mb-2">
@@ -149,16 +150,14 @@ export default function WorkoutStartPage() {
   // PHASE: SELECT
   if (phase === "select") {
     return (
-      <div className="min-h-screen pb-8">
+      <div className="min-h-screen">
         <div className="max-w-2xl mx-auto px-4 py-6">
-          <div className="mb-6">
-            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight mb-1">
-              Choose Today&apos;s Workout
-            </h1>
-            <p className="text-sm text-gray-400">
-              Select a saved workout to begin.
-            </p>
-          </div>
+          <PageHeader
+            title="Start Workout"
+            section="fitness"
+            subtitle="Select a saved workout to begin."
+            showBack
+          />
 
           {error && (
             <div className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-xl mb-4">
@@ -168,10 +167,10 @@ export default function WorkoutStartPage() {
 
           {loading ? (
             <div className="flex justify-center py-12">
-              <div className="w-8 h-8 border-3 border-blue-200 border-t-blue-500 rounded-full animate-spin" />
+              <div className="w-8 h-8 border-3 border-[var(--nisu-pale-pink-2)] border-t-[var(--nisu-coral)] rounded-full animate-spin" />
             </div>
           ) : workouts.length === 0 ? (
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 text-center">
+            <div className="nisu-card p-8 text-center">
               <span className="text-4xl mb-3 block">🏋️</span>
               <p className="text-gray-600 font-semibold mb-1">
                 No workouts yet
@@ -181,7 +180,7 @@ export default function WorkoutStartPage() {
               </p>
               <button
                 onClick={() => router.push("/fitness")}
-                className="bg-blue-500 text-white text-sm font-bold px-5 py-2.5 rounded-xl hover:bg-blue-600 transition-colors cursor-pointer"
+                className="nisu-cta text-sm px-5 py-2.5 cursor-pointer"
               >
                 Go to Fitness Page
               </button>
@@ -193,7 +192,7 @@ export default function WorkoutStartPage() {
                 return (
                   <div
                     key={w.id}
-                    className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100"
+                    className="nisu-card p-5"
                   >
                     <div className="flex items-start justify-between">
                       <div>
@@ -215,9 +214,9 @@ export default function WorkoutStartPage() {
                       <button
                         onClick={() => hasExercises && startWorkout(w)}
                         disabled={!hasExercises}
-                        className={`text-sm font-bold px-5 py-2 rounded-xl transition-colors ${
+                        className={`text-sm font-bold px-5 py-2 rounded-full transition-colors ${
                           hasExercises
-                            ? "bg-blue-500 text-white hover:bg-blue-600 cursor-pointer"
+                            ? "nisu-cta cursor-pointer"
                             : "bg-gray-100 text-gray-400 cursor-not-allowed"
                         }`}
                       >
@@ -230,12 +229,6 @@ export default function WorkoutStartPage() {
             </div>
           )}
 
-          <button
-            onClick={() => router.push("/daily")}
-            className="mt-6 text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors cursor-pointer"
-          >
-            ← Back to Daily Routine
-          </button>
         </div>
       </div>
     );
@@ -246,11 +239,11 @@ export default function WorkoutStartPage() {
     const progressPct = ((currentIdx + 1) / totalExercises) * 100;
 
     return (
-      <div className="min-h-screen pb-8">
+      <div className="min-h-screen">
         <div className="max-w-lg mx-auto px-4 py-6">
           {/* Workout header */}
           <div className="mb-6">
-            <p className="text-xs font-semibold text-blue-500 uppercase tracking-wide mb-1">
+            <p className="text-xs font-semibold text-[var(--nisu-coral)] uppercase tracking-wide mb-1">
               {selectedWorkout?.name}
             </p>
             <div className="flex items-center justify-between mb-2">
@@ -263,7 +256,7 @@ export default function WorkoutStartPage() {
             </div>
             <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
               <div
-                className="h-full bg-blue-500 rounded-full transition-all duration-300"
+                className="h-full bg-[var(--nisu-sky)] rounded-full transition-all duration-300"
                 style={{ width: `${progressPct}%` }}
               />
             </div>
@@ -276,7 +269,7 @@ export default function WorkoutStartPage() {
           )}
 
           {/* Current Exercise Card */}
-          <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6 text-center">
+          <div className="nisu-card p-6 text-center">
             <h2 className="text-xl font-extrabold text-gray-900 mb-2">
               {currentExercise.name}
             </h2>
@@ -311,7 +304,7 @@ export default function WorkoutStartPage() {
                   {!timerDone && !timerRunning && (
                     <button
                       onClick={handleTimerStart}
-                      className="bg-blue-500 text-white font-bold px-6 py-3 rounded-xl hover:bg-blue-600 transition-colors cursor-pointer"
+                      className="nisu-cta font-bold px-6 py-3 cursor-pointer"
                     >
                       {timerSeconds ===
                       (currentExercise.duration_seconds ?? 60)
@@ -338,9 +331,9 @@ export default function WorkoutStartPage() {
                 <button
                   onClick={moveToNext}
                   disabled={!timerDone}
-                  className={`w-full py-3.5 rounded-xl font-bold text-sm transition-colors ${
+                  className={`w-full py-3.5 rounded-full font-bold text-sm transition-colors ${
                     timerDone
-                      ? "bg-green-500 text-white hover:bg-green-600 cursor-pointer"
+                      ? "nisu-cta cursor-pointer"
                       : "bg-gray-100 text-gray-400 cursor-not-allowed"
                   }`}
                 >
@@ -374,9 +367,9 @@ export default function WorkoutStartPage() {
                           key={i}
                           className={`w-8 h-2 rounded-full transition-all ${
                             i < currentSet - 1
-                              ? "bg-blue-500"
+                              ? "bg-[var(--nisu-coral)]"
                               : i === currentSet - 1
-                              ? "bg-blue-300"
+                              ? "bg-[var(--nisu-pink)]"
                               : "bg-gray-200"
                           }`}
                         />
@@ -387,7 +380,7 @@ export default function WorkoutStartPage() {
 
                 <button
                   onClick={handleLogSet}
-                  className="w-full py-4 rounded-xl bg-blue-500 text-white font-bold text-lg hover:bg-blue-600 transition-colors cursor-pointer mb-3"
+                  className="w-full py-4 rounded-full nisu-cta font-bold text-lg cursor-pointer mb-3"
                 >
                   Log {currentExercise.reps} reps ✓
                 </button>
@@ -412,7 +405,7 @@ export default function WorkoutStartPage() {
   // PHASE: COMPLETE
   if (phase === "complete") {
     return (
-      <div className="min-h-screen pb-8">
+      <div className="min-h-screen">
         <div className="max-w-lg mx-auto px-4 py-12 text-center">
           <span className="text-6xl mb-4 block">🎉</span>
           <h1 className="text-2xl font-extrabold text-gray-900 mb-2">
@@ -435,7 +428,7 @@ export default function WorkoutStartPage() {
           <button
             onClick={handleFinish}
             disabled={finishing}
-            className="bg-blue-500 text-white font-bold px-8 py-3.5 rounded-xl hover:bg-blue-600 transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed shadow-lg shadow-blue-500/20"
+            className="nisu-cta font-bold px-8 py-3.5 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
           >
             {finishing ? "Saving..." : "Finish & Mark Fitness Complete"}
           </button>

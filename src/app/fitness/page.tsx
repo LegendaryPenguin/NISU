@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import PageHeader from "@/components/PageHeader";
+import PageHeader, { PageActionRow } from "@/components/PageHeader";
 import { NISU_ASSETS } from "@/lib/nisu-assets";
 import type { WorkoutWithExercises, WorkoutExercise } from "@/lib/types";
 import { formatDuration } from "@/lib/helpers";
@@ -175,7 +175,7 @@ export default function FitnessManagementPage() {
   const previewWorkout = workouts.find((w) => w.id === previewId);
 
   return (
-    <div className="min-h-screen pb-8">
+    <div className="min-h-screen">
       <div className="max-w-2xl mx-auto px-4 py-6">
         <PageHeader
           title="Fitness"
@@ -190,19 +190,21 @@ export default function FitnessManagementPage() {
         )}
 
         {formMode === "idle" && (
-          <div className="mb-6">
-            <button
-              onClick={startCreate}
-              className="nisu-cta text-sm px-6 py-2.5 cursor-pointer"
-            >
-              + Create new workout
-            </button>
-          </div>
+          <PageActionRow
+            cta={
+              <button
+                onClick={startCreate}
+                className="nisu-cta text-sm px-6 py-2.5 cursor-pointer"
+              >
+                + Create new workout
+              </button>
+            }
+          />
         )}
 
         {/* Create / Edit Form */}
         {formMode !== "idle" && (
-          <div className="bg-white rounded-2xl shadow-md p-5 mb-6 border border-gray-100">
+          <div className="nisu-card p-5 mb-6">
             <h2 className="font-bold text-gray-800 text-lg mb-4">
               {formMode === "create" ? "Create Workout" : "Edit Workout"}
             </h2>
@@ -215,7 +217,7 @@ export default function FitnessManagementPage() {
               value={workoutName}
               onChange={(e) => setWorkoutName(e.target.value)}
               placeholder="e.g. Full Body Starter"
-              className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-300 mb-5"
+              className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--nisu-pink)] mb-5"
             />
 
             <label className="block text-xs font-semibold text-gray-500 mb-2">
@@ -239,7 +241,7 @@ export default function FitnessManagementPage() {
                         updateExerciseDraft(ex.tempId, "name", e.target.value)
                       }
                       placeholder="Exercise name"
-                      className="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      className="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--nisu-pink)]"
                     />
                     {exercises.length > 1 && (
                       <button
@@ -273,7 +275,7 @@ export default function FitnessManagementPage() {
                           e.target.value as "sets_reps" | "timed"
                         )
                       }
-                      className="px-3 py-2 rounded-lg border border-gray-200 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300 cursor-pointer"
+                      className="px-3 py-2 rounded-lg border border-gray-200 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[var(--nisu-pink)] cursor-pointer"
                     >
                       <option value="sets_reps">Sets &amp; Reps</option>
                       <option value="timed">Timed</option>
@@ -293,7 +295,7 @@ export default function FitnessManagementPage() {
                                 parseInt(e.target.value) || 1
                               )
                             }
-                            className="w-16 px-2 py-2 rounded-lg border border-gray-200 text-sm text-center text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                            className="w-16 px-2 py-2 rounded-lg border border-gray-200 text-sm text-center text-gray-800 focus:outline-none focus:ring-2 focus:ring-[var(--nisu-pink)]"
                           />
                           <span className="text-xs text-gray-400">sets</span>
                         </div>
@@ -309,7 +311,7 @@ export default function FitnessManagementPage() {
                                 parseInt(e.target.value) || 1
                               )
                             }
-                            className="w-16 px-2 py-2 rounded-lg border border-gray-200 text-sm text-center text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                            className="w-16 px-2 py-2 rounded-lg border border-gray-200 text-sm text-center text-gray-800 focus:outline-none focus:ring-2 focus:ring-[var(--nisu-pink)]"
                           />
                           <span className="text-xs text-gray-400">reps</span>
                         </div>
@@ -327,7 +329,7 @@ export default function FitnessManagementPage() {
                               parseInt(e.target.value) || 1
                             )
                           }
-                          className="w-20 px-2 py-2 rounded-lg border border-gray-200 text-sm text-center text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                          className="w-20 px-2 py-2 rounded-lg border border-gray-200 text-sm text-center text-gray-800 focus:outline-none focus:ring-2 focus:ring-[var(--nisu-pink)]"
                         />
                         <span className="text-xs text-gray-400">seconds</span>
                       </div>
@@ -352,7 +354,7 @@ export default function FitnessManagementPage() {
                   !workoutName.trim() ||
                   exercises.filter((e) => e.name.trim()).length === 0
                 }
-                className="bg-blue-500 text-white text-sm font-bold px-6 py-2.5 rounded-xl hover:bg-blue-600 transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+                className="nisu-cta text-sm px-6 py-2.5 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
               >
                 {saving
                   ? "Saving..."
@@ -426,7 +428,7 @@ export default function FitnessManagementPage() {
                     </button>
                     <button
                       onClick={() => startEdit(w)}
-                      className="text-xs font-medium text-blue-500 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors cursor-pointer"
+                      className="text-xs font-medium text-[var(--nisu-coral)] px-3 py-1.5 rounded-lg hover:bg-[var(--nisu-pale-pink)] transition-colors cursor-pointer"
                     >
                       Edit
                     </button>

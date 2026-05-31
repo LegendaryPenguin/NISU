@@ -114,11 +114,7 @@ export default function SkillCard() {
   };
 
   return (
-    <div
-      className={`rounded-2xl p-5 shadow-md transition-all duration-300 nisu-section-card-skill ${
-        done ? "opacity-95" : ""
-      }`}
-    >
+    <div className={`nisu-card p-5 ${done ? "opacity-95" : ""}`}>
       {/* Header */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
@@ -202,34 +198,32 @@ export default function SkillCard() {
           <button
             onClick={() => setFlow("mainSelect")}
             disabled={submitting}
-            className="flex items-center gap-3 w-full px-4 py-3 rounded-xl transition-colors text-left cursor-pointer hover:opacity-90"
-            style={{ backgroundColor: "var(--nisu-pale-pink)" }}
+            className="flex items-center justify-between gap-3 w-full px-4 py-3 rounded-xl nisu-row-tint-skill text-left cursor-pointer hover:opacity-90"
           >
-            <span className="text-lg">📚</span>
             <div>
               <p className="text-sm font-semibold text-gray-800">
                 Complete Main Skill
               </p>
               <p className="text-xs text-gray-400">
-                Pick an intentional skill to practice
+                Pick an intentional skill to practice.
               </p>
             </div>
+            <span className="text-lg flex-shrink-0">📚</span>
           </button>
 
           {!todayWheelSelection ? (
             <button
               onClick={handleSpin}
               disabled={submitting}
-              className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-white transition-colors text-left cursor-pointer shadow-sm hover:opacity-90"
-              style={{ backgroundColor: "var(--nisu-coral)" }}
+              className="flex items-center justify-between gap-3 w-full px-4 py-3 rounded-xl nisu-cta text-left cursor-pointer hover:opacity-90"
             >
-              <span className="text-lg">🎲</span>
               <div>
                 <p className="text-sm font-semibold">Spin Skill Wheel</p>
-                <p className="text-xs text-violet-200">
+                <p className="text-xs opacity-90">
                   Get a random challenge for today
                 </p>
               </div>
+              <span className="text-lg flex-shrink-0">🎲</span>
             </button>
           ) : !todayWheelSelection.completed ? (
             <WheelSelectionCard
@@ -252,15 +246,15 @@ export default function SkillCard() {
                 spinning={wheelAnimating}
                 onSpinComplete={handleSpinComplete}
               />
-              <p className="text-sm font-semibold text-violet-600 text-center">
+              <p className="text-sm font-semibold text-[var(--nisu-coral)] text-center">
                 Spinning...
               </p>
             </>
           ) : (
             <div className="flex items-center justify-center py-6">
               <div className="flex flex-col items-center gap-2">
-                <div className="w-10 h-10 border-[3px] border-violet-200 border-t-violet-500 rounded-full animate-spin" />
-                <p className="text-sm font-semibold text-violet-600">
+                <div className="w-10 h-10 border-[3px] border-[var(--nisu-pale-pink-2)] border-t-[var(--nisu-coral)] rounded-full animate-spin" />
+                <p className="text-sm font-semibold text-[var(--nisu-coral)]">
                   Spinning...
                 </p>
               </div>
@@ -271,13 +265,13 @@ export default function SkillCard() {
 
       {/* Main Skill Selection Panel */}
       {flow === "mainSelect" && (
-        <div className="bg-violet-50 border border-violet-200 rounded-xl p-4 mb-4">
+        <div className="bg-[var(--nisu-pale-pink)] border border-[var(--nisu-pale-pink-2)] rounded-xl p-4 mb-4">
           <p className="text-sm font-semibold text-gray-800 mb-3">
             Select a Main Skill
           </p>
           {loadingMain ? (
             <div className="flex justify-center py-4">
-              <div className="w-6 h-6 border-2 border-violet-200 border-t-violet-500 rounded-full animate-spin" />
+              <div className="w-6 h-6 border-2 border-[var(--nisu-pale-pink-2)] border-t-[var(--nisu-coral)] rounded-full animate-spin" />
             </div>
           ) : mainSkills.length === 0 ? (
             <div className="text-center py-3">
@@ -286,7 +280,7 @@ export default function SkillCard() {
               </p>
               <Link
                 href="/skill"
-                className="text-xs font-semibold text-violet-500 hover:text-violet-700"
+                className="text-xs font-semibold text-[var(--nisu-coral)] hover:opacity-80"
               >
                 Add skills on the Skill page →
               </Link>
@@ -298,7 +292,7 @@ export default function SkillCard() {
                   key={item.id}
                   onClick={() => handleCompleteMain(item)}
                   disabled={submitting}
-                  className="w-full flex items-start gap-3 px-3 py-2.5 rounded-lg bg-white hover:bg-violet-100 text-left transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+                  className="w-full flex items-start gap-3 px-3 py-2.5 rounded-lg bg-white hover:bg-[var(--nisu-pale-pink)] text-left transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
                 >
                   <span className="text-sm mt-0.5">📚</span>
                   <div className="flex-1 min-w-0">
@@ -339,8 +333,8 @@ export default function SkillCard() {
 
       {/* Wheel result shown as completed */}
       {todayWheelSelection?.completed && !done && flow === "idle" && (
-        <div className="bg-violet-50 rounded-xl px-4 py-3 mb-4">
-          <p className="text-xs text-violet-500 font-semibold mb-0.5">
+        <div className="bg-[var(--nisu-pale-pink)] rounded-xl px-4 py-3 mb-4">
+          <p className="text-xs text-[var(--nisu-coral)] font-semibold mb-0.5">
             🎲 Wheel — completed
           </p>
           <p className="text-sm font-bold text-gray-700">
@@ -369,8 +363,8 @@ function WheelSelectionCard({
   submitting: boolean;
 }) {
   return (
-    <div className="bg-violet-50 border border-violet-200 rounded-xl p-4">
-      <p className="text-xs text-violet-500 font-semibold mb-1 uppercase tracking-wide">
+    <div className="bg-[var(--nisu-pale-pink)] border border-[var(--nisu-pale-pink-2)] rounded-xl p-4">
+      <p className="text-xs text-[var(--nisu-coral)] font-semibold mb-1 uppercase tracking-wide">
         Today&apos;s Wheel Challenge
       </p>
       <p className="text-sm font-bold text-gray-800 mb-1">
@@ -382,14 +376,14 @@ function WheelSelectionCard({
         </p>
       )}
       {selection.skill_time && (
-        <p className="text-xs text-violet-400 font-medium mb-3">
+        <p className="text-xs text-gray-400 font-medium mb-3">
           ⏱ {selection.skill_time}
         </p>
       )}
       <button
         onClick={onComplete}
         disabled={submitting}
-        className="w-full py-2.5 px-4 rounded-lg bg-violet-500 text-white text-sm font-bold hover:bg-violet-600 transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+        className="w-full py-2.5 px-4 rounded-full nisu-cta text-sm disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
       >
         {submitting ? "Saving..." : "Mark Challenge Complete"}
       </button>

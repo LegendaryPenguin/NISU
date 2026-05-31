@@ -2,12 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useAuth } from "@/context/AuthContext";
 import { NISU_ASSETS, type NisuSection } from "@/lib/nisu-assets";
 
-function getSectionImage(section: NisuSection): string {
+function getSectionPenguin(section: NisuSection): string {
   if (section === "streaks") return NISU_ASSETS.penguins.streak;
-  if (section === "journal") return NISU_ASSETS.icons.journal;
+  if (section === "journal") return NISU_ASSETS.penguins.reset;
   return NISU_ASSETS.penguins[section];
 }
 
@@ -19,35 +18,23 @@ interface PageHeaderProps {
   backLabel?: string;
   subtitle?: string;
   children?: React.ReactNode;
+  actionRow?: React.ReactNode;
 }
 
 export default function PageHeader({
   title,
   section,
-  showBack = true,
+  showBack = false,
   backHref = "/daily",
   backLabel = "Daily Routine",
   subtitle,
   children,
+  actionRow,
 }: PageHeaderProps) {
-  const { displayName } = useAuth();
-  const penguinSrc = section ? getSectionImage(section) : null;
+  const penguinSrc = section ? getSectionPenguin(section) : null;
 
   return (
     <header className="mb-6">
-      <div className="flex items-center justify-between mb-4">
-        <Link href="/" className="flex items-center gap-2">
-          <Image
-            src={NISU_ASSETS.logoTransparent}
-            alt="NISU"
-            width={36}
-            height={36}
-            className="w-9 h-9 object-contain"
-          />
-          <span className="text-sm font-bold text-gray-800">{displayName}</span>
-        </Link>
-      </div>
-
       <div className="flex items-center gap-3 mb-2">
         {penguinSrc && (
           <Image
@@ -69,14 +56,39 @@ export default function PageHeader({
         </div>
       </div>
 
-      {showBack && (
+      {actionRow}
+
+      {showBack && !actionRow && (
         <Link
           href={backHref}
-          className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--nisu-coral)] hover:opacity-80 transition-opacity mt-1"
+          className="inline-flex items-center text-sm font-semibold text-[var(--nisu-coral)] hover:opacity-80 transition-opacity mt-2"
         >
-          ← {backLabel}
+          {backLabel}
         </Link>
       )}
     </header>
+  );
+}
+
+/** CTA + back link on same row (management pages) */
+export function PageActionRow({
+  cta,
+  backHref = "/daily",
+  backLabel = "Daily Routine",
+}: {
+  cta: React.ReactNode;
+  backHref?: string;
+  backLabel?: string;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-3 mb-6 flex-wrap">
+      {cta}
+      <Link
+        href={backHref}
+        className="text-sm font-semibold text-[var(--nisu-coral)] hover:opacity-80 transition-opacity whitespace-nowrap"
+      >
+        {backLabel}
+      </Link>
+    </div>
   );
 }

@@ -5,7 +5,7 @@ export const NISU_ASSETS = {
   logoTransparent: "/nisu/logo-transparent.png",
   banner: "/nisu/banner.png",
   icons: {
-    daily: "/nisu/penguins/daily.png",
+    daily: "/nisu/icons/daily.png",
     fitness: "/nisu/icons/fitness.png",
     fuel: "/nisu/icons/fuel.png",
     skill: "/nisu/icons/skill.png",

@@ -73,22 +73,23 @@ body {
   box-shadow: 0 2px 8px rgba(255, 120, 126, 0.06);
 }
 
-.nisu-section-card-fitness {
-  border-left: 4px solid var(--nisu-sky);
-  background: linear-gradient(to right, var(--nisu-pale-blue), white 40%);
+.nisu-row-tint-fitness {
+  background-color: var(--nisu-pale-blue);
 }
 
-.nisu-section-card-fuel {
-  border-left: 4px solid #6ee7b7;
-  background: linear-gradient(to right, #ecfdf5, white 40%);
+.nisu-row-tint-fuel {
+  background-color: #ecfdf5;
 }
 
-.nisu-section-card-skill {
-  border-left: 4px solid var(--nisu-pink);
-  background: linear-gradient(to right, var(--nisu-pale-pink), white 40%);
+.nisu-row-tint-skill {
+  background-color: var(--nisu-pale-pink);
 }
 
-.nisu-section-card-reset {
-  border-left: 4px solid var(--nisu-amber);
-  background: linear-gradient(to right, var(--nisu-cream), white 40%);
+.nisu-row-tint-reset {
+  background-color: var(--nisu-cream);
+}
+
+.nisu-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--nisu-pink);
 }

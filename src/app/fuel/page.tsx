@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import PageHeader from "@/components/PageHeader";
+import PageHeader, { PageActionRow } from "@/components/PageHeader";
 import { NISU_ASSETS } from "@/lib/nisu-assets";
 import type { RecipeWithDetails } from "@/lib/types";
 import { formatDuration } from "@/lib/helpers";
@@ -170,7 +170,7 @@ export default function FuelPage() {
   const preview = recipes.find((r) => r.id === previewId);
 
   return (
-    <div className="min-h-screen pb-8">
+    <div className="min-h-screen">
       <div className="max-w-3xl mx-auto px-4 py-6">
         <PageHeader
           title="Fuel"
@@ -189,14 +189,16 @@ export default function FuelPage() {
         )}
 
         {formMode === "idle" && (
-          <div className="mb-6">
-            <button
-              onClick={startCreate}
-              className="nisu-cta text-sm px-6 py-2.5 cursor-pointer"
-            >
-              + Add recipe
-            </button>
-          </div>
+          <PageActionRow
+            cta={
+              <button
+                onClick={startCreate}
+                className="nisu-cta text-sm px-6 py-2.5 cursor-pointer"
+              >
+                + Add recipe
+              </button>
+            }
+          />
         )}
 
         {/* Form */}
@@ -218,7 +220,7 @@ export default function FuelPage() {
         {/* Recipes */}
         {loading ? (
           <div className="flex justify-center py-16">
-            <div className="w-8 h-8 border-3 border-emerald-200 border-t-emerald-500 rounded-full animate-spin" />
+            <div className="w-8 h-8 border-3 border-[var(--nisu-pale-pink-2)] border-t-[var(--nisu-coral)] rounded-full animate-spin" />
           </div>
         ) : recipes.length === 0 ? (
           <div className="nisu-card p-10 text-center">
@@ -264,7 +266,7 @@ export default function FuelPage() {
                 <div className="flex gap-2 mt-auto flex-wrap">
                   <Link
                     href={`/fuel/cook/${r.id}`}
-                    className="bg-emerald-500 text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-emerald-600 transition-colors"
+                    className="nisu-cta text-xs px-4 py-2"
                   >
                     Cook
                   </Link>
@@ -278,7 +280,7 @@ export default function FuelPage() {
                   </button>
                   <button
                     onClick={() => startEdit(r)}
-                    className="text-xs font-medium text-emerald-600 px-3 py-2 rounded-lg hover:bg-emerald-50 transition-colors cursor-pointer"
+                    className="text-xs font-medium text-[var(--nisu-coral)] px-3 py-2 rounded-lg hover:bg-[var(--nisu-pale-pink)] transition-colors cursor-pointer"
                   >
                     Edit
                   </button>
@@ -303,7 +305,7 @@ export default function FuelPage() {
                             key={ing.id}
                             className="text-sm text-gray-600 flex items-start gap-1.5"
                           >
-                            <span className="text-emerald-400 mt-0.5">•</span>
+                            <span className="text-[var(--nisu-coral)] mt-0.5">•</span>
                             {ing.text}
                           </li>
                         ))}
@@ -325,7 +327,7 @@ export default function FuelPage() {
                             <span>
                               {s.instruction}
                               {s.timer_seconds && (
-                                <span className="ml-1.5 text-xs text-emerald-500 font-medium">
+                                <span className="ml-1.5 text-xs text-[var(--nisu-coral)] font-medium">
                                   ⏱ {formatDuration(s.timer_seconds)}
                                 </span>
                               )}
@@ -376,7 +378,7 @@ function RecipeForm({
     recipeName.trim() && validIngs.length > 0 && validSteps.length > 0;
 
   return (
-    <div className="bg-white rounded-2xl shadow-md p-5 mb-6 border border-gray-100">
+    <div className="nisu-card p-5 mb-6">
       <h2 className="font-bold text-gray-800 text-lg mb-4">
         {mode === "create" ? "Add Recipe" : "Edit Recipe"}
       </h2>
@@ -390,7 +392,7 @@ function RecipeForm({
         value={recipeName}
         onChange={(e) => setRecipeName(e.target.value)}
         placeholder="e.g. Chicken Rice Bowl"
-        className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-300 mb-5"
+        className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--nisu-pink)] mb-5"
       />
 
       {/* Ingredients */}
@@ -411,7 +413,7 @@ function RecipeForm({
                 )
               }
               placeholder={`Ingredient ${idx + 1}`}
-              className="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-300"
+              className="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--nisu-pink)]"
             />
             {ingredients.length > 1 && (
               <button
@@ -430,7 +432,7 @@ function RecipeForm({
       </div>
       <button
         onClick={() => setIngredients((p) => [...p, newIngredient()])}
-        className="text-sm font-semibold text-emerald-500 hover:text-emerald-700 mb-5 cursor-pointer"
+        className="text-sm font-semibold text-[var(--nisu-coral)] hover:opacity-80 mb-5 cursor-pointer"
       >
         + Add Ingredient
       </button>
@@ -462,7 +464,7 @@ function RecipeForm({
                   )
                 }
                 placeholder="Instruction"
-                className="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-300"
+                className="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--nisu-pink)]"
               />
               {steps.length > 1 && (
                 <button
@@ -489,7 +491,7 @@ function RecipeForm({
                   )
                 }
                 placeholder="0"
-                className="w-14 px-2 py-1.5 rounded-lg border border-gray-200 text-sm text-center text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-300"
+                className="w-14 px-2 py-1.5 rounded-lg border border-gray-200 text-sm text-center text-gray-800 focus:outline-none focus:ring-2 focus:ring-[var(--nisu-pink)]"
               />
               <span className="text-xs text-gray-400">min</span>
               <input
@@ -505,7 +507,7 @@ function RecipeForm({
                   )
                 }
                 placeholder="0"
-                className="w-14 px-2 py-1.5 rounded-lg border border-gray-200 text-sm text-center text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-300"
+                className="w-14 px-2 py-1.5 rounded-lg border border-gray-200 text-sm text-center text-gray-800 focus:outline-none focus:ring-2 focus:ring-[var(--nisu-pink)]"
               />
               <span className="text-xs text-gray-400">sec</span>
             </div>
@@ -514,7 +516,7 @@ function RecipeForm({
       </div>
       <button
         onClick={() => setSteps((p) => [...p, newStep()])}
-        className="text-sm font-semibold text-emerald-500 hover:text-emerald-700 mb-5 cursor-pointer"
+        className="text-sm font-semibold text-[var(--nisu-coral)] hover:opacity-80 mb-5 cursor-pointer"
       >
         + Add Step
       </button>
@@ -524,7 +526,7 @@ function RecipeForm({
         <button
           onClick={onSave}
           disabled={saving || !canSave}
-          className="bg-emerald-500 text-white text-sm font-bold px-6 py-2.5 rounded-xl hover:bg-emerald-600 transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+          className="nisu-cta text-sm px-6 py-2.5 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
         >
           {saving
             ? "Saving..."

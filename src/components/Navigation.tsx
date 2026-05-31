@@ -18,42 +18,42 @@ export default function Navigation() {
   if (pathname === "/login") return null;
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-[var(--nisu-pale-pink-2)] pt-[env(safe-area-inset-top)]">
-      {/* Top bar: logo + user */}
-      <div className="flex items-center justify-between px-4 py-2 max-w-6xl mx-auto">
-        <Link href="/" className="flex items-center gap-2">
-          <Image
-            src={NISU_ASSETS.logoTransparent}
-            alt="NISU"
-            width={40}
-            height={40}
-            className="w-10 h-10 object-contain"
-          />
-          <span className="text-lg font-extrabold tracking-tight text-[var(--nisu-coral)] hidden sm:inline">
-            NISU
-          </span>
-        </Link>
-
-        <div className="flex items-center gap-3">
-          {user && (
-            <>
-              <span className="text-xs font-semibold text-gray-500 truncate max-w-[120px] sm:max-w-none">
+    <>
+      {/* Slim top bar: logo + NISU + Name */}
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-[var(--nisu-pale-pink-2)] pt-[env(safe-area-inset-top)]">
+        <div className="flex items-center justify-between px-4 py-2.5 max-w-6xl mx-auto">
+          <Link href="/" className="flex items-center gap-2 min-w-0">
+            <Image
+              src={NISU_ASSETS.logoTransparent}
+              alt=""
+              width={36}
+              height={36}
+              className="w-9 h-9 object-contain flex-shrink-0"
+            />
+            <span className="text-base font-extrabold tracking-tight text-[var(--nisu-coral)]">
+              NISU
+            </span>
+            {user && (
+              <span className="text-sm font-semibold text-gray-700 truncate">
                 {displayName}
               </span>
-              <button
-                onClick={signOut}
-                className="text-xs font-medium text-gray-400 hover:text-[var(--nisu-coral)] px-2 py-1 rounded-lg hover:bg-[var(--nisu-pale-pink)] transition-colors cursor-pointer"
-              >
-                Sign out
-              </button>
-            </>
+            )}
+          </Link>
+
+          {user && (
+            <button
+              onClick={signOut}
+              className="text-xs font-medium text-gray-400 hover:text-[var(--nisu-coral)] px-2 py-1 rounded-lg hover:bg-[var(--nisu-pale-pink)] transition-colors cursor-pointer flex-shrink-0"
+            >
+              Sign out
+            </button>
           )}
         </div>
-      </div>
+      </header>
 
-      {/* Horizontal icon nav — scrollable on mobile, centered on desktop */}
-      <div className="overflow-x-auto scrollbar-hide px-2 pb-2 max-w-6xl mx-auto">
-        <div className="flex items-end justify-start md:justify-center gap-1 sm:gap-2 min-w-max md:min-w-0 px-1">
+      {/* Fixed bottom icon tab bar */}
+      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-[var(--nisu-pale-pink-2)] pb-[env(safe-area-inset-bottom)]">
+        <div className="flex items-center justify-around px-1 py-1.5 max-w-lg mx-auto">
           {NAV_ITEMS.map((item) => {
             const active = isActive(pathname, item.href);
             const iconSrc = NISU_ASSETS.icons[item.section];
@@ -61,31 +61,23 @@ export default function Navigation() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex flex-col items-center gap-0.5 py-1.5 px-2 sm:px-3 rounded-xl transition-all duration-200 min-w-[52px] sm:min-w-[64px] ${
-                  active
-                    ? "bg-[var(--nisu-pale-pink)] ring-2 ring-[var(--nisu-coral)] ring-offset-1"
-                    : "hover:bg-[var(--nisu-pale-pink)]/50"
+                className={`flex flex-col items-center justify-center py-1 px-1 rounded-xl transition-all duration-200 flex-1 max-w-[52px] ${
+                  active ? "bg-[var(--nisu-pale-pink)]" : ""
                 }`}
+                aria-label={item.label}
               >
                 <Image
                   src={iconSrc}
                   alt=""
-                  width={36}
-                  height={36}
-                  className="w-8 h-8 sm:w-9 sm:h-9 object-contain"
+                  width={32}
+                  height={32}
+                  className={`w-8 h-8 object-contain ${active ? "scale-105" : "opacity-80"}`}
                 />
-                <span
-                  className={`text-[9px] sm:text-[10px] font-semibold leading-tight text-center ${
-                    active ? "text-[var(--nisu-coral)]" : "text-gray-500"
-                  }`}
-                >
-                  {item.shortLabel}
-                </span>
               </Link>
             );
           })}
         </div>
-      </div>
-    </nav>
+      </nav>
+    </>
   );
 }

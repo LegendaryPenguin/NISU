@@ -2,13 +2,11 @@
 
 import Image from "next/image";
 import { useDailyProgress } from "@/context/DailyProgressContext";
-import { useAuth } from "@/context/AuthContext";
 import { formatDateDisplay, getTodayKey } from "@/lib/helpers";
 import { NISU_ASSETS } from "@/lib/nisu-assets";
 
 export default function ProgressHeader() {
   const { overallProgress } = useDailyProgress();
-  const { displayName } = useAuth();
   const todayKey = getTodayKey();
   const pct = (overallProgress / 4) * 100;
 
@@ -31,19 +29,6 @@ export default function ProgressHeader() {
 
   return (
     <div className="mb-8">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <Image
-            src={NISU_ASSETS.logoTransparent}
-            alt="NISU"
-            width={36}
-            height={36}
-            className="w-9 h-9 object-contain"
-          />
-          <span className="text-sm font-bold text-gray-800">{displayName}</span>
-        </div>
-      </div>
-
       <div className="flex items-center gap-3 mb-1">
         <Image
           src={NISU_ASSETS.penguins.daily}

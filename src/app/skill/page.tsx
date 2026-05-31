@@ -144,12 +144,13 @@ export default function SkillManagementPage() {
       : `Edit ${formKind === "main" ? "Main" : "Wheel"} Skill`;
 
   return (
-    <div className="min-h-screen pb-8">
+    <div className="min-h-screen">
       <div className="max-w-2xl mx-auto px-4 py-6">
         <PageHeader
           title="Skill"
           section="skill"
           subtitle="Manage your main skills and random wheel challenges."
+          showBack
         />
 
         {error && (
@@ -177,7 +178,7 @@ export default function SkillManagementPage() {
                     setForm((p) => ({ ...p, name: e.target.value }))
                   }
                   placeholder="e.g. Coding Practice"
-                  className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-300"
+                  className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--nisu-pink)]"
                 />
               </div>
               <div>
@@ -191,7 +192,7 @@ export default function SkillManagementPage() {
                     setForm((p) => ({ ...p, time: e.target.value }))
                   }
                   placeholder="e.g. 30 min"
-                  className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-300"
+                  className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--nisu-pink)]"
                 />
               </div>
               <div>
@@ -205,7 +206,7 @@ export default function SkillManagementPage() {
                   }
                   placeholder="What does this involve?"
                   rows={2}
-                  className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-300 resize-none"
+                  className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--nisu-pink)] resize-none"
                 />
               </div>
               <label className="flex items-center gap-2 cursor-pointer">
@@ -215,7 +216,7 @@ export default function SkillManagementPage() {
                   onChange={(e) =>
                     setForm((p) => ({ ...p, repeatable: e.target.checked }))
                   }
-                  className="w-4 h-4 accent-violet-500"
+                  className="w-4 h-4 accent-[var(--nisu-coral)]"
                 />
                 <span className="text-sm text-gray-700">
                   Repeatable{" "}
@@ -252,14 +253,13 @@ export default function SkillManagementPage() {
 
         {loading ? (
           <div className="flex justify-center py-12">
-            <div className="w-8 h-8 border-3 border-violet-200 border-t-violet-500 rounded-full animate-spin" />
+            <div className="w-8 h-8 border-3 border-[var(--nisu-pale-pink-2)] border-t-[var(--nisu-coral)] rounded-full animate-spin" />
           </div>
         ) : (
           <>
             {/* Main Skills Section */}
             <SkillSection
               title="Main Skills"
-              emoji="📚"
               description="Intentional skills you want to practice regularly."
               items={mainItems}
               onAdd={() => startCreate("main")}
@@ -272,7 +272,6 @@ export default function SkillManagementPage() {
             {/* Wheel Skills Section */}
             <SkillSection
               title="Wheel Skills"
-              emoji="🎲"
               description="Random challenge-style activities for the skill wheel."
               items={wheelItems}
               onAdd={() => startCreate("wheel")}
@@ -290,7 +289,6 @@ export default function SkillManagementPage() {
 
 function SkillSection({
   title,
-  emoji,
   description,
   items,
   onAdd,
@@ -300,7 +298,6 @@ function SkillSection({
   formMode,
 }: {
   title: string;
-  emoji: string;
   description: string;
   items: SkillItem[];
   onAdd: () => void;
@@ -314,7 +311,7 @@ function SkillSection({
       <div className="flex items-center justify-between mb-3">
         <div>
           <h2 className="font-bold text-gray-800 text-lg">
-            {emoji} {title}
+            {title}
           </h2>
           <p className="text-xs text-gray-400">{description}</p>
         </div>
@@ -363,7 +360,7 @@ function SkillSection({
                       </span>
                     )}
                     {item.repeatable && (
-                      <span className="text-[10px] font-bold text-violet-500 bg-violet-50 px-1.5 py-0.5 rounded">
+                      <span className="text-[10px] font-bold text-[var(--nisu-coral)] bg-[var(--nisu-pale-pink)] px-1.5 py-0.5 rounded">
                         Repeatable
                       </span>
                     )}
@@ -376,7 +373,7 @@ function SkillSection({
                 <div className="flex gap-1 flex-shrink-0">
                   <button
                     onClick={() => onEdit(item)}
-                    className="text-xs font-medium text-violet-500 px-2.5 py-1.5 rounded-lg hover:bg-violet-50 transition-colors cursor-pointer"
+                    className="text-xs font-medium text-[var(--nisu-coral)] px-2.5 py-1.5 rounded-lg hover:bg-[var(--nisu-pale-pink)] transition-colors cursor-pointer"
                   >
                     Edit
                   </button>

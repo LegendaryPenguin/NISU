@@ -15,7 +15,7 @@ export default function Checkbox({
   label,
   sublabel,
   disabled = false,
-  accentColor = "bg-blue-500",
+  accentColor = "bg-[var(--nisu-coral)]",
 }: CheckboxProps) {
   return (
     <button

@@ -50,7 +50,7 @@ export default function PageHeader({
             {title}
           </h1>
           {subtitle && (
-            <p className="text-sm text-gray-400 mt-0.5">{subtitle}</p>
+            <p className="text-sm nisu-text-muted mt-0.5">{subtitle}</p>
           )}
           {children}
         </div>

@@ -213,7 +213,7 @@ export default function JournalPage() {
                 <p className="text-gray-700 font-semibold mb-1">
                   You already dumped today
                 </p>
-                <p className="text-gray-400 text-sm mb-4">
+                <p className="text-gray-800 text-sm mb-4 font-semibold">
                   Want to dump again? Go for it.
                 </p>
                 <button
@@ -229,7 +229,7 @@ export default function JournalPage() {
                 <p className="text-gray-700 font-semibold mb-1">
                   Ready to clear your head?
                 </p>
-                <p className="text-gray-400 text-sm mb-4">
+                <p className="text-gray-800 text-sm mb-4 font-semibold">
                   Answer 4 quick questions. Takes less than 5 minutes.
                 </p>
                 <button

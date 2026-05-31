@@ -59,7 +59,7 @@ export default function Checkbox({
           {label}
         </span>
         {sublabel && (
-          <span className="text-xs text-gray-400">{sublabel}</span>
+          <span className="text-xs nisu-text-muted">{sublabel}</span>
         )}
       </div>
     </button>

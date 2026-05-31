@@ -29,7 +29,11 @@
   --nisu-pale-pink: #fff0ef;
   --nisu-pale-pink-2: #ffdedc;
   --nisu-amber: #fdb95c;
+  --nisu-amber-dark: #b45309;
   --nisu-cream: #ffecd0;
+  --nisu-coral-dark: #c93030;
+  --nisu-text-muted: #374151;
+  --nisu-text-strong: #111827;
   --nisu-sky: #73d9ff;
   --nisu-sky-bold: #73d9ff;
   --nisu-sky-action: #5ecfff;
@@ -125,6 +129,7 @@ body {
   border: 2px solid var(--nisu-border);
   border-radius: 1rem;
   box-shadow: var(--nisu-shadow);
+  color: var(--nisu-border);
 }
 
 .nisu-stat-bold {
@@ -132,6 +137,31 @@ body {
   border: 2px solid var(--nisu-border);
   border-radius: 1rem;
   box-shadow: var(--nisu-shadow);
+  color: var(--nisu-border);
+}
+
+/* Readable text helpers */
+.nisu-text-muted {
+  color: var(--nisu-text-muted);
+  font-weight: 600;
+}
+
+.nisu-text-caption {
+  color: var(--nisu-text-strong);
+  font-weight: 600;
+}
+
+.nisu-stat-num-coral {
+  color: var(--nisu-coral-dark);
+}
+
+.nisu-stat-num-amber {
+  color: var(--nisu-amber-dark);
+}
+
+.nisu-stat-num-on-bold {
+  color: white;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
 
 /* ── Daily pillar cards with hard offset shadow ── */
@@ -185,6 +215,7 @@ body {
   border: 2px solid var(--nisu-border);
   border-radius: 1rem;
   box-shadow: var(--nisu-shadow);
+  color: var(--nisu-border);
 }
 
 .nisu-pillar-fitness .nisu-pillar-inner {

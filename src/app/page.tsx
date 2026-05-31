@@ -73,7 +73,7 @@ export default function LandingPage() {
                   className="w-3.5 h-3.5 object-contain"
                 />
               </div>
-              <p className="text-3xl font-extrabold leading-none mt-0.5 text-[var(--nisu-coral)]">
+              <p className="text-3xl font-extrabold leading-none mt-0.5 nisu-stat-num-coral">
                 {PLACEHOLDER_STREAK}{" "}
                 <span className="text-sm font-bold text-gray-900">days</span>
               </p>
@@ -102,7 +102,7 @@ export default function LandingPage() {
                 />
               </div>
               <p className="text-3xl font-extrabold leading-none mt-0.5">
-                <span className="text-[var(--nisu-pale-pink)]">{PLACEHOLDER_PARTNER}</span>{" "}
+                <span className="nisu-stat-num-on-bold">{PLACEHOLDER_PARTNER}</span>{" "}
                 <span className="text-sm font-bold text-gray-900">days</span>
               </p>
             </div>
@@ -119,7 +119,7 @@ export default function LandingPage() {
               <span className="text-sm font-bold text-gray-900">
                 Completed together
               </span>
-              <p className="text-3xl font-extrabold leading-none mt-0.5 text-[var(--nisu-amber)]">
+              <p className="text-3xl font-extrabold leading-none mt-0.5 nisu-stat-num-amber">
                 {PLACEHOLDER_TOGETHER}{" "}
                 <span className="text-sm font-bold text-gray-900">days</span>
               </p>
@@ -129,7 +129,7 @@ export default function LandingPage() {
 
         <div className="nisu-stat-bold rounded-2xl px-6 py-4 mt-6 text-center ml-2">
           <p className="text-sm font-bold text-gray-900">
-            <span className="text-[var(--nisu-amber)]">&#10024;</span>{" "}
+            <span className="nisu-stat-num-amber">&#10024;</span>{" "}
             Consistency is your superpower.
           </p>
         </div>

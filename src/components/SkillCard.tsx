@@ -128,7 +128,7 @@ export default function SkillCard() {
           />
           <div>
             <h3 className="font-bold text-gray-800 text-lg">Skill</h3>
-            <p className="text-xs text-gray-400 italic">
+            <p className="text-xs nisu-text-muted italic">
               Build something. Learn something. Stay sharp.
             </p>
           </div>
@@ -149,7 +149,7 @@ export default function SkillCard() {
           className={`text-xs px-3 py-2 rounded-lg font-medium ${
             done
               ? "bg-[var(--nisu-pale-pink)] text-gray-700"
-              : "bg-gray-50 text-gray-600"
+              : "bg-gray-50 nisu-text-muted"
           }`}
         >
           {weekend ? "Weekend Skill Goal" : "Today's Skill Goal"}:{" "}
@@ -184,7 +184,7 @@ export default function SkillCard() {
                 {log.skill_name}
               </span>
               {log.skill_time && (
-                <span className="text-xs text-gray-400">
+                <span className="text-xs nisu-text-muted">
                   · {log.skill_time}
                 </span>
               )}
@@ -205,7 +205,7 @@ export default function SkillCard() {
               <p className="text-sm font-semibold text-gray-800">
                 Complete Main Skill
               </p>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs nisu-text-muted">
                 Pick an intentional skill to practice.
               </p>
             </div>
@@ -276,7 +276,7 @@ export default function SkillCard() {
             </div>
           ) : mainSkills.length === 0 ? (
             <div className="text-center py-3">
-              <p className="text-xs text-gray-500 mb-2">
+              <p className="text-xs nisu-text-caption mb-2">
                 No main skills yet.
               </p>
               <Link
@@ -300,7 +300,7 @@ export default function SkillCard() {
                     <p className="text-sm font-semibold text-gray-800 truncate">
                       {item.name}
                     </p>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs nisu-text-muted">
                       {item.time} · {item.description}
                     </p>
                   </div>
@@ -311,7 +311,7 @@ export default function SkillCard() {
           <button
             onClick={() => setFlow("idle")}
             disabled={submitting}
-            className="mt-3 text-xs font-medium text-gray-500 hover:text-gray-800 transition-colors cursor-pointer"
+            className="mt-3 text-xs font-medium nisu-text-caption hover:text-gray-800 transition-colors cursor-pointer"
           >
             Cancel
           </button>
@@ -373,12 +373,12 @@ function WheelSelectionCard({
         {selection.skill_name}
       </p>
       {selection.skill_description && (
-        <p className="text-xs text-gray-500 mb-1">
+        <p className="text-xs nisu-text-caption mb-1">
           {selection.skill_description}
         </p>
       )}
       {selection.skill_time && (
-        <p className="text-xs text-gray-400 font-medium mb-3">
+        <p className="text-xs nisu-text-muted font-medium mb-3">
           ⏱ {selection.skill_time}
         </p>
       )}

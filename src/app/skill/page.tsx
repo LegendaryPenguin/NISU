@@ -313,7 +313,7 @@ function SkillSection({
           <h2 className="font-bold text-gray-800 text-lg">
             {title}
           </h2>
-          <p className="text-xs text-gray-400">{description}</p>
+          <p className="text-xs nisu-text-muted">{description}</p>
         </div>
         {formMode === "idle" && (
           <button
@@ -327,7 +327,7 @@ function SkillSection({
 
       {items.length === 0 ? (
         <div className="nisu-empty-skill p-6 text-center">
-          <p className="text-gray-400 text-sm">
+          <p className="nisu-text-muted text-sm">
             No {title.toLowerCase()} yet.
           </p>
           {formMode === "idle" && (

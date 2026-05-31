@@ -31,7 +31,7 @@ export default function FuelCard() {
           />
           <div>
             <h3 className="font-bold text-gray-800 text-lg">Fuel</h3>
-            <p className="text-xs text-gray-400 italic">
+            <p className="text-xs nisu-text-muted italic">
               Hit the basics. Hydrate. Don&apos;t run on sugar.
             </p>
           </div>
@@ -46,7 +46,7 @@ export default function FuelCard() {
         )}
       </div>
 
-      <p className="text-xs text-gray-500 mb-3 font-medium">Mandatory:</p>
+      <p className="text-xs nisu-text-caption mb-3">Mandatory:</p>
 
       <div className="space-y-1 mb-4">
         <FuelCheckbox
@@ -65,7 +65,7 @@ export default function FuelCard() {
 
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs text-gray-500 font-medium">
+          <span className="text-xs nisu-text-caption">
             Sugary foods today:
           </span>
           <div className="flex items-center gap-2">
@@ -173,7 +173,7 @@ function FuelCheckbox({
           {label}
         </span>
         {sublabel && (
-          <span className="text-xs text-gray-400">{sublabel}</span>
+          <span className="text-xs nisu-text-muted">{sublabel}</span>
         )}
       </div>
     </button>

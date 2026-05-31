@@ -17,7 +17,8 @@ export default function ResetCard() {
   const { reset } = progress;
 
   return (
-    <div className={`nisu-card p-5 ${reset.completed ? "opacity-95" : ""}`}>
+    <div className={`nisu-pillar-reset ml-2 mb-2 ${reset.completed ? "opacity-95" : ""}`}>
+      <div className="nisu-pillar-inner p-5">
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
           <Image
@@ -133,6 +134,7 @@ export default function ResetCard() {
           sublabel="Optional – go touch grass"
           accentColor="bg-[var(--nisu-amber)]"
         />
+      </div>
       </div>
     </div>
   );

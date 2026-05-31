@@ -135,7 +135,7 @@ export default function CookPage() {
           <PageHeader title="Cook Recipe" section="fuel" showBack backHref="/fuel" backLabel="Back to Fuel" />
           <div className="nisu-card p-10 text-center">
             <p className="text-gray-800 font-bold text-lg mb-2">Recipe not found</p>
-            <Link href="/fuel" className="inline-block mt-3 nisu-cta text-sm px-6 py-2.5">
+            <Link href="/fuel" className="inline-block mt-3 nisu-cta-bold text-sm px-6 py-2.5">
               Back to Fuel
             </Link>
           </div>
@@ -180,7 +180,7 @@ export default function CookPage() {
                   initTimerForStep(recipe.recipe_steps[0]);
                   setStage("cooking");
                 }}
-                className="nisu-cta text-sm px-6 py-2.5 cursor-pointer"
+                className="nisu-cta-bold text-sm px-6 py-2.5 cursor-pointer"
               >
                 Cook Again
               </button>
@@ -247,7 +247,7 @@ export default function CookPage() {
               </p>
               <div className="flex gap-3 justify-center">
                 {!timerRunning && !timerDone && (
-                  <button onClick={startTimer} className="nisu-cta text-sm px-5 py-2 cursor-pointer">
+                  <button onClick={startTimer} className="nisu-cta-bold text-sm px-5 py-2 cursor-pointer">
                     Start
                   </button>
                 )}
@@ -279,7 +279,7 @@ export default function CookPage() {
               ← Back
             </button>
           )}
-          <button onClick={handleNext} className="nisu-cta text-sm px-6 py-2.5 cursor-pointer">
+          <button onClick={handleNext} className="nisu-cta-bold text-sm px-6 py-2.5 cursor-pointer">
             {isLastStep ? "Finish Recipe" : "Done / Next"}
           </button>
           {!isLastStep && (

@@ -180,7 +180,7 @@ export default function WorkoutStartPage() {
               </p>
               <button
                 onClick={() => router.push("/fitness")}
-                className="nisu-cta text-sm px-5 py-2.5 cursor-pointer"
+                className="nisu-cta-bold text-sm px-5 py-2.5 cursor-pointer"
               >
                 Go to Fitness Page
               </button>
@@ -216,7 +216,7 @@ export default function WorkoutStartPage() {
                         disabled={!hasExercises}
                         className={`text-sm font-bold px-5 py-2 rounded-full transition-colors ${
                           hasExercises
-                            ? "nisu-cta cursor-pointer"
+                            ? "nisu-cta-bold cursor-pointer"
                             : "bg-gray-100 text-gray-400 cursor-not-allowed"
                         }`}
                       >
@@ -304,7 +304,7 @@ export default function WorkoutStartPage() {
                   {!timerDone && !timerRunning && (
                     <button
                       onClick={handleTimerStart}
-                      className="nisu-cta font-bold px-6 py-3 cursor-pointer"
+                      className="nisu-cta-bold font-bold px-6 py-3 cursor-pointer"
                     >
                       {timerSeconds ===
                       (currentExercise.duration_seconds ?? 60)
@@ -333,7 +333,7 @@ export default function WorkoutStartPage() {
                   disabled={!timerDone}
                   className={`w-full py-3.5 rounded-full font-bold text-sm transition-colors ${
                     timerDone
-                      ? "nisu-cta cursor-pointer"
+                      ? "nisu-cta-bold cursor-pointer"
                       : "bg-gray-100 text-gray-400 cursor-not-allowed"
                   }`}
                 >
@@ -380,7 +380,7 @@ export default function WorkoutStartPage() {
 
                 <button
                   onClick={handleLogSet}
-                  className="w-full py-4 rounded-full nisu-cta font-bold text-lg cursor-pointer mb-3"
+                  className="w-full py-4 rounded-full nisu-cta-bold font-bold text-lg cursor-pointer mb-3"
                 >
                   Log {currentExercise.reps} reps ✓
                 </button>
@@ -428,7 +428,7 @@ export default function WorkoutStartPage() {
           <button
             onClick={handleFinish}
             disabled={finishing}
-            className="nisu-cta font-bold px-8 py-3.5 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+            className="nisu-cta-bold font-bold px-8 py-3.5 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
           >
             {finishing ? "Saving..." : "Finish & Mark Fitness Complete"}
           </button>

@@ -206,7 +206,7 @@ export default function JournalPage() {
 
         {/* New Entry Prompt / Form */}
         {!showForm && !editingId ? (
-          <div className="nisu-card p-6 sm:p-7 mb-8 text-center">
+          <div className="nisu-empty-journal p-6 sm:p-7 mb-8 text-center">
             {journalingDoneToday && todayEntries.length > 0 ? (
               <>
                 <span className="text-4xl block mb-3">✅</span>
@@ -218,7 +218,7 @@ export default function JournalPage() {
                 </p>
                 <button
                   onClick={() => setShowForm(true)}
-                  className="nisu-cta text-sm px-6 py-2.5 cursor-pointer"
+                  className="nisu-cta-bold text-sm px-6 py-2.5 cursor-pointer"
                 >
                   + Another Brain Dump
                 </button>
@@ -234,7 +234,7 @@ export default function JournalPage() {
                 </p>
                 <button
                   onClick={() => setShowForm(true)}
-                  className="nisu-cta text-sm px-6 py-2.5 cursor-pointer"
+                  className="nisu-cta-bold text-sm px-6 py-2.5 cursor-pointer"
                 >
                   Start Brain Dump
                 </button>
@@ -293,7 +293,7 @@ export default function JournalPage() {
               <button
                 onClick={handleSave}
                 disabled={!canSubmit}
-                className="nisu-cta text-sm px-6 py-2.5 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+                className="nisu-cta-bold text-sm px-6 py-2.5 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
               >
                 {saving
                   ? "Saving..."

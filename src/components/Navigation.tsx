@@ -20,7 +20,7 @@ export default function Navigation() {
   return (
     <>
       {/* Slim top bar: logo + NISU + Name */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-[var(--nisu-pale-pink-2)] pt-[env(safe-area-inset-top)]">
+      <header className="sticky top-0 z-50 bg-[var(--background)] border-b-2 border-[var(--nisu-border)] pt-[env(safe-area-inset-top)]">
         <div className="flex items-center justify-between px-4 py-2.5 max-w-6xl mx-auto">
           <Link href="/" className="flex items-center gap-2 min-w-0">
             <Image
@@ -52,8 +52,8 @@ export default function Navigation() {
       </header>
 
       {/* Fixed bottom icon tab bar */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-[var(--nisu-pale-pink-2)] pb-[env(safe-area-inset-bottom)]">
-        <div className="flex items-center justify-around px-1 py-1.5 max-w-lg mx-auto">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[var(--background)] border-t-2 border-[var(--nisu-border)] pb-[env(safe-area-inset-bottom)]">
+        <div className="flex items-center justify-around px-2 py-2 max-w-lg mx-auto">
           {NAV_ITEMS.map((item) => {
             const active = isActive(pathname, item.href);
             const iconSrc = NISU_ASSETS.icons[item.section];
@@ -61,17 +61,19 @@ export default function Navigation() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex flex-col items-center justify-center py-1 px-1 rounded-xl transition-all duration-200 flex-1 max-w-[52px] ${
-                  active ? "bg-[var(--nisu-pale-pink)]" : ""
+                className={`flex flex-col items-center justify-center py-1.5 px-1.5 rounded-2xl transition-all duration-200 flex-1 max-w-[56px] ${
+                  active
+                    ? "bg-[var(--nisu-coral)] ring-2 ring-[var(--nisu-border)]"
+                    : ""
                 }`}
                 aria-label={item.label}
               >
                 <Image
                   src={iconSrc}
                   alt=""
-                  width={32}
-                  height={32}
-                  className={`w-8 h-8 object-contain ${active ? "scale-105" : "opacity-80"}`}
+                  width={36}
+                  height={36}
+                  className={`w-9 h-9 object-contain ${active ? "scale-110" : ""}`}
                 />
               </Link>
             );

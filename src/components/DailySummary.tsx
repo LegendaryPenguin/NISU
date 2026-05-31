@@ -21,11 +21,7 @@ export default function DailySummary() {
   if (overallProgress === 4) {
     return (
       <div
-        className="mt-8 rounded-2xl p-6 text-center shadow-md border border-[var(--nisu-pale-pink-2)]"
-        style={{
-          background:
-            "linear-gradient(135deg, var(--nisu-cream), var(--nisu-pale-pink), var(--nisu-pale-blue))",
-        }}
+        className="mt-8 ml-2 nisu-stat-bold rounded-2xl p-6 text-center"
       >
         <Image
           src={NISU_ASSETS.penguins.daily}
@@ -45,7 +41,8 @@ export default function DailySummary() {
   }
 
   return (
-    <div className="mt-8 nisu-card p-5">
+    <div className="nisu-pillar-reset ml-2 mt-2 mb-2">
+      <div className="nisu-pillar-inner p-5">
       <h3 className="font-bold text-gray-800 text-sm mb-3">Daily Summary</h3>
 
       {completed.length > 0 && (
@@ -83,6 +80,7 @@ export default function DailySummary() {
           </p>
         </div>
       )}
+      </div>
     </div>
   );
 }

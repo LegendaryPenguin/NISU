@@ -33,26 +33,26 @@ export default function LandingPage() {
             className="w-40 h-auto object-contain mx-auto mb-4"
             priority
           />
-          <h1 className="text-3xl font-extrabold leading-tight tracking-tight">
+          <h1 className="text-3xl font-extrabold leading-tight tracking-tight text-gray-900">
             {greeting},
             <br />
             <span className="text-[var(--nisu-coral)]">{displayName}!</span>
           </h1>
-          <p className="mt-3 text-gray-500 text-sm">
+          <p className="mt-3 text-gray-700 text-sm font-medium">
             Every small step today builds your best summer.{" "}
             <span>&#10024;</span>
           </p>
           <Link
             href="/daily"
-            className="inline-flex items-center gap-2 mt-6 px-7 py-3 nisu-cta text-sm shadow-lg"
+            className="inline-flex items-center gap-2 mt-6 px-7 py-3 nisu-cta-bold text-sm"
           >
             Go to Task Board
             <span>&rarr;</span>
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 mt-8">
-          <div className="flex items-center gap-4 nisu-card px-5 py-4">
+        <div className="grid grid-cols-1 gap-4 mt-8 ml-2">
+          <div className="flex items-center gap-4 nisu-stat-light px-5 py-4">
             <Image
               src={NISU_ASSETS.penguins.streak}
               alt=""
@@ -62,7 +62,7 @@ export default function LandingPage() {
             />
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="text-sm font-semibold text-gray-600">
+                <span className="text-sm font-bold text-gray-900">
                   Your streak
                 </span>
                 <Image
@@ -75,15 +75,12 @@ export default function LandingPage() {
               </div>
               <p className="text-3xl font-extrabold leading-none mt-0.5 text-[var(--nisu-coral)]">
                 {PLACEHOLDER_STREAK}{" "}
-                <span className="text-sm font-semibold text-gray-500">days</span>
+                <span className="text-sm font-bold text-gray-900">days</span>
               </p>
             </div>
           </div>
 
-          <div
-            className="flex items-center gap-4 rounded-2xl px-5 py-4 nisu-card"
-            style={{ backgroundColor: "var(--nisu-pale-pink)" }}
-          >
+          <div className="flex items-center gap-4 nisu-stat-bold px-5 py-4">
             <Image
               src={NISU_ASSETS.penguins.partnerStreak}
               alt=""
@@ -93,7 +90,7 @@ export default function LandingPage() {
             />
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="text-sm font-semibold text-gray-600">
+                <span className="text-sm font-bold text-gray-900">
                   Partner streak
                 </span>
                 <Image
@@ -104,39 +101,36 @@ export default function LandingPage() {
                   className="w-3.5 h-3.5 object-contain"
                 />
               </div>
-              <p className="text-3xl font-extrabold leading-none mt-0.5 text-[var(--nisu-coral)]">
-                {PLACEHOLDER_PARTNER}{" "}
-                <span className="text-sm font-semibold text-gray-500">days</span>
+              <p className="text-3xl font-extrabold leading-none mt-0.5">
+                <span className="text-[var(--nisu-pale-pink)]">{PLACEHOLDER_PARTNER}</span>{" "}
+                <span className="text-sm font-bold text-gray-900">days</span>
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-4 nisu-card px-5 py-4">
+          <div className="flex items-center gap-4 nisu-stat-light px-5 py-4">
             <div
-              className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0"
+              className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 border-2 border-[var(--nisu-border)]"
               style={{ backgroundColor: "var(--nisu-cream)" }}
             >
               <span className="text-2xl">&#11088;</span>
             </div>
             <div>
-              <span className="text-sm font-semibold text-gray-600">
+              <span className="text-sm font-bold text-gray-900">
                 Completed together
               </span>
               <p className="text-3xl font-extrabold leading-none mt-0.5 text-[var(--nisu-amber)]">
                 {PLACEHOLDER_TOGETHER}{" "}
-                <span className="text-sm font-semibold text-gray-500">days</span>
+                <span className="text-sm font-bold text-gray-900">days</span>
               </p>
             </div>
           </div>
         </div>
 
-        <div
-          className="rounded-2xl px-6 py-4 mt-6 text-center"
-          style={{ backgroundColor: "var(--nisu-banner-bg)" }}
-        >
-          <p className="text-sm font-medium text-gray-700">
-            <span className="text-[var(--nisu-sky)]">&#10024;</span>{" "}
-            <span className="font-bold">Consistency is your superpower.</span>
+        <div className="nisu-stat-bold rounded-2xl px-6 py-4 mt-6 text-center ml-2">
+          <p className="text-sm font-bold text-gray-900">
+            <span className="text-[var(--nisu-amber)]">&#10024;</span>{" "}
+            Consistency is your superpower.
           </p>
         </div>
       </section>

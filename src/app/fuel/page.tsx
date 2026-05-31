@@ -193,7 +193,7 @@ export default function FuelPage() {
             cta={
               <button
                 onClick={startCreate}
-                className="nisu-cta text-sm px-6 py-2.5 cursor-pointer"
+                className="nisu-cta-bold text-sm px-6 py-2.5 cursor-pointer"
               >
                 + Add recipe
               </button>
@@ -223,7 +223,7 @@ export default function FuelPage() {
             <div className="w-8 h-8 border-3 border-[var(--nisu-pale-pink-2)] border-t-[var(--nisu-coral)] rounded-full animate-spin" />
           </div>
         ) : recipes.length === 0 ? (
-          <div className="nisu-card p-10 text-center">
+          <div className="nisu-empty-fuel p-10 text-center">
             <Image
               src={NISU_ASSETS.penguins.fuel}
               alt=""
@@ -231,16 +231,16 @@ export default function FuelPage() {
               height={80}
               className="w-20 h-20 object-contain mx-auto mb-4"
             />
-            <p className="text-gray-700 font-semibold text-lg mb-1">
+            <p className="text-gray-900 font-bold text-lg mb-1">
               No recipes yet
             </p>
-            <p className="text-gray-400 text-sm mb-5 max-w-xs mx-auto">
+            <p className="text-gray-800 text-sm mb-5 max-w-xs mx-auto font-medium">
               Add your first recipe so Future You has something easy to cook.
             </p>
             {formMode === "idle" && (
               <button
                 onClick={startCreate}
-                className="nisu-cta text-sm px-6 py-2.5 cursor-pointer"
+                className="nisu-cta-secondary text-sm px-6 py-2.5 cursor-pointer"
               >
                 + Add recipe
               </button>
@@ -266,7 +266,7 @@ export default function FuelPage() {
                 <div className="flex gap-2 mt-auto flex-wrap">
                   <Link
                     href={`/fuel/cook/${r.id}`}
-                    className="nisu-cta text-xs px-4 py-2"
+                    className="nisu-cta-bold text-xs px-4 py-2"
                   >
                     Cook
                   </Link>
@@ -526,7 +526,7 @@ function RecipeForm({
         <button
           onClick={onSave}
           disabled={saving || !canSave}
-          className="nisu-cta text-sm px-6 py-2.5 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+          className="nisu-cta-bold text-sm px-6 py-2.5 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
         >
           {saving
             ? "Saving..."

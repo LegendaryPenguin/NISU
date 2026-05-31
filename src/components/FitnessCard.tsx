@@ -65,7 +65,8 @@ export default function FitnessCard() {
         : "Fitness complete";
 
     return (
-      <div className="nisu-card p-5">
+      <div className="nisu-pillar-fitness ml-2 mt-2">
+        <div className="nisu-pillar-inner p-5">
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-3">
             <Image
@@ -106,12 +107,14 @@ export default function FitnessCard() {
         >
           Manage workouts →
         </Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="nisu-card p-5">
+    <div className="nisu-pillar-fitness ml-2 mt-2">
+      <div className="nisu-pillar-inner p-5">
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
           <Image
@@ -144,7 +147,7 @@ export default function FitnessCard() {
         <div className="space-y-2 mb-3">
           <Link
             href="/fitness/start"
-            className="flex items-center justify-between gap-3 w-full px-4 py-3 rounded-xl nisu-row-tint-fitness text-left cursor-pointer hover:opacity-90"
+            className="flex items-center justify-between gap-3 w-full px-4 py-3 rounded-xl nisu-row-action-fitness text-left cursor-pointer hover:opacity-90"
           >
             <div>
               <p className="text-sm font-semibold text-gray-800">
@@ -159,7 +162,7 @@ export default function FitnessCard() {
 
           <button
             onClick={() => setFlow("steps")}
-            className="flex items-center justify-between gap-3 w-full px-4 py-3 rounded-xl nisu-row-tint-fitness text-left cursor-pointer hover:opacity-90"
+            className="flex items-center justify-between gap-3 w-full px-4 py-3 rounded-xl nisu-row-action-fitness text-left cursor-pointer hover:opacity-90"
           >
             <div>
               <p className="text-sm font-semibold text-gray-800">
@@ -178,7 +181,7 @@ export default function FitnessCard() {
             className={`flex items-center justify-between gap-3 w-full px-4 py-3 rounded-xl text-left transition-colors ${
               funActiveLimitReached
                 ? "bg-gray-50 opacity-50 cursor-not-allowed"
-                : "nisu-row-tint-fitness cursor-pointer hover:opacity-90"
+                : "nisu-row-action-fitness cursor-pointer hover:opacity-90"
             }`}
           >
             <div>
@@ -213,7 +216,7 @@ export default function FitnessCard() {
             <button
               onClick={handleConfirmSteps}
               disabled={submitting}
-              className="flex-1 py-2.5 px-4 rounded-full nisu-cta text-sm disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+              className="flex-1 py-2.5 px-4 rounded-full nisu-cta-bold text-sm disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
             >
               {submitting ? "Saving..." : "Yes, completed 15k steps"}
             </button>
@@ -255,7 +258,7 @@ export default function FitnessCard() {
             <button
               onClick={handleSubmitFunActive}
               disabled={submitting || !funActiveDesc.trim()}
-              className="flex-1 py-2.5 px-4 rounded-full nisu-cta text-sm disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+              className="flex-1 py-2.5 px-4 rounded-full nisu-cta-bold text-sm disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
             >
               {submitting ? "Saving..." : "Complete Fun Active"}
             </button>
@@ -293,6 +296,7 @@ export default function FitnessCard() {
       >
           Manage workouts →
       </Link>
+      </div>
     </div>
   );
 }

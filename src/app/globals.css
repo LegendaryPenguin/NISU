@@ -19,15 +19,24 @@
 :root {
   --background: #faf8f6;
   --foreground: #1a1a2e;
+  --nisu-border: #1a1a1a;
+  --nisu-shadow: 0 4px 0 rgba(26, 26, 26, 0.12);
   --nisu-coral: #ff787e;
+  --nisu-coral-bold: #ff787e;
   --nisu-pink: #f9b0bf;
+  --nisu-pink-bold: #f9b0bf;
   --nisu-peach: #ffb0ab;
   --nisu-pale-pink: #fff0ef;
   --nisu-pale-pink-2: #ffdedc;
   --nisu-amber: #fdb95c;
   --nisu-cream: #ffecd0;
   --nisu-sky: #73d9ff;
+  --nisu-sky-bold: #73d9ff;
+  --nisu-sky-action: #5ecfff;
   --nisu-pale-blue: #ddf5ff;
+  --nisu-fuel-action: #ff9aa0;
+  --nisu-skill-action: #f5a0b5;
+  --nisu-reset-action: #f5c878;
   --nisu-banner-bg: #fef0ee;
 }
 
@@ -36,7 +45,6 @@ body {
   color: var(--foreground);
 }
 
-/* Scrollbar hide for horizontal nav */
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -45,48 +53,233 @@ body {
   display: none;
 }
 
-/* NISU design utilities */
-.nisu-sticky-note {
-  background-color: var(--nisu-pink);
-  border: 1px solid var(--nisu-pale-pink-2);
-}
-
-.nisu-cta {
-  background: linear-gradient(135deg, var(--nisu-coral) 0%, var(--nisu-peach) 100%);
+/* ── Buttons ── */
+.nisu-cta-bold {
+  background: var(--nisu-coral-bold);
   color: white;
   font-weight: 700;
+  border: 2px solid var(--nisu-border);
   border-radius: 9999px;
-  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: var(--nisu-shadow);
+  transition: transform 0.15s, box-shadow 0.15s;
 }
-.nisu-cta:hover {
-  transform: scale(1.02);
-  box-shadow: 0 8px 24px rgba(255, 120, 126, 0.35);
+.nisu-cta-bold:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 0 rgba(26, 26, 26, 0.15);
 }
-.nisu-cta:active {
-  transform: scale(0.98);
+.nisu-cta-bold:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 0 rgba(26, 26, 26, 0.12);
 }
 
+.nisu-cta-secondary {
+  background: white;
+  color: var(--nisu-border);
+  font-weight: 700;
+  border: 2px solid var(--nisu-border);
+  border-radius: 9999px;
+  box-shadow: var(--nisu-shadow);
+  transition: transform 0.15s;
+}
+.nisu-cta-secondary:hover {
+  transform: translateY(-1px);
+}
+
+/* Alias — all CTAs use bold style */
+.nisu-cta {
+  background: var(--nisu-coral-bold);
+  color: white;
+  font-weight: 700;
+  border: 2px solid var(--nisu-border);
+  border-radius: 9999px;
+  box-shadow: var(--nisu-shadow);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.nisu-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 0 rgba(26, 26, 26, 0.15);
+}
+.nisu-cta:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 0 rgba(26, 26, 26, 0.12);
+}
+
+/* ── Cards ── */
 .nisu-card {
   background: white;
   border-radius: 1rem;
-  border: 1px solid var(--nisu-pale-pink-2);
-  box-shadow: 0 2px 8px rgba(255, 120, 126, 0.06);
+  border: 2px solid var(--nisu-border);
+  box-shadow: var(--nisu-shadow);
 }
 
+.nisu-card-bordered {
+  background: white;
+  border-radius: 1rem;
+  border: 2px solid var(--nisu-border);
+  box-shadow: var(--nisu-shadow);
+}
+
+/* ── Home stat cards ── */
+.nisu-stat-light {
+  background: var(--nisu-pink-bold);
+  border: 2px solid var(--nisu-border);
+  border-radius: 1rem;
+  box-shadow: var(--nisu-shadow);
+}
+
+.nisu-stat-bold {
+  background: var(--nisu-coral-bold);
+  border: 2px solid var(--nisu-border);
+  border-radius: 1rem;
+  box-shadow: var(--nisu-shadow);
+}
+
+/* ── Daily pillar cards with hard offset shadow ── */
+.nisu-pillar-fitness,
+.nisu-pillar-fuel,
+.nisu-pillar-skill,
+.nisu-pillar-reset {
+  position: relative;
+}
+
+.nisu-pillar-fitness::before,
+.nisu-pillar-skill::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: 8px;
+  bottom: 8px;
+  border-radius: 1rem;
+  z-index: 0;
+}
+
+.nisu-pillar-fuel::before,
+.nisu-pillar-reset::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: -8px;
+  right: 8px;
+  bottom: -8px;
+  border-radius: 1rem;
+  z-index: 0;
+}
+
+.nisu-pillar-fitness::before {
+  background: var(--nisu-sky-bold);
+}
+.nisu-pillar-fuel::before {
+  background: var(--nisu-coral-bold);
+}
+.nisu-pillar-skill::before {
+  background: var(--nisu-pink-bold);
+}
+.nisu-pillar-reset::before {
+  background: var(--nisu-amber);
+}
+
+.nisu-pillar-inner {
+  position: relative;
+  z-index: 1;
+  border: 2px solid var(--nisu-border);
+  border-radius: 1rem;
+  box-shadow: var(--nisu-shadow);
+}
+
+.nisu-pillar-fitness .nisu-pillar-inner {
+  background: var(--nisu-pale-blue);
+}
+.nisu-pillar-fuel .nisu-pillar-inner {
+  background: var(--nisu-pink-bold);
+}
+.nisu-pillar-skill .nisu-pillar-inner {
+  background: var(--nisu-pale-pink);
+}
+.nisu-pillar-reset .nisu-pillar-inner {
+  background: var(--nisu-cream);
+}
+
+/* ── Action rows inside pillar cards ── */
+.nisu-row-action-fitness {
+  background-color: var(--nisu-sky-action);
+  border: 2px solid var(--nisu-border);
+  border-radius: 0.75rem;
+}
+
+.nisu-row-action-fuel {
+  background-color: var(--nisu-fuel-action);
+  border: 2px solid var(--nisu-border);
+  border-radius: 0.75rem;
+}
+
+.nisu-row-action-skill {
+  background-color: var(--nisu-skill-action);
+  border: 2px solid var(--nisu-border);
+  border-radius: 0.75rem;
+}
+
+.nisu-row-action-reset {
+  background-color: var(--nisu-reset-action);
+  border: 2px solid var(--nisu-border);
+  border-radius: 0.75rem;
+}
+
+/* Legacy tints — keep for any stragglers */
 .nisu-row-tint-fitness {
-  background-color: var(--nisu-pale-blue);
+  background-color: var(--nisu-sky-action);
+  border: 2px solid var(--nisu-border);
+  border-radius: 0.75rem;
 }
-
 .nisu-row-tint-fuel {
-  background-color: #ecfdf5;
+  background-color: var(--nisu-fuel-action);
+  border: 2px solid var(--nisu-border);
+  border-radius: 0.75rem;
 }
-
 .nisu-row-tint-skill {
-  background-color: var(--nisu-pale-pink);
+  background-color: var(--nisu-skill-action);
+  border: 2px solid var(--nisu-border);
+  border-radius: 0.75rem;
+}
+.nisu-row-tint-reset {
+  background-color: var(--nisu-reset-action);
+  border: 2px solid var(--nisu-border);
+  border-radius: 0.75rem;
 }
 
-.nisu-row-tint-reset {
-  background-color: var(--nisu-cream);
+/* ── Empty states (management pages) ── */
+.nisu-empty-fitness {
+  background: var(--nisu-pink-bold);
+  border: 2px solid var(--nisu-border);
+  border-radius: 1.25rem 1.25rem 1rem 1rem;
+  box-shadow: var(--nisu-shadow);
+}
+
+.nisu-empty-fuel {
+  background: var(--nisu-coral-bold);
+  border: 2px solid var(--nisu-border);
+  border-radius: 1.25rem 1.25rem 1rem 1rem;
+  box-shadow: var(--nisu-shadow);
+}
+
+.nisu-empty-skill {
+  background: var(--nisu-pink-bold);
+  border: 2px solid var(--nisu-border);
+  border-radius: 1.25rem 1.25rem 1rem 1rem;
+  box-shadow: var(--nisu-shadow);
+}
+
+.nisu-empty-journal {
+  background: var(--nisu-pink-bold);
+  border: 2px solid var(--nisu-border);
+  border-radius: 1.25rem;
+  box-shadow: var(--nisu-shadow);
+}
+
+/* ── Sticky notes ── */
+.nisu-sticky-note {
+  background-color: var(--nisu-pink);
+  border: 2px solid var(--nisu-border);
 }
 
 .nisu-input:focus {

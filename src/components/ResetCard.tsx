@@ -1,8 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useDailyProgress } from "@/context/DailyProgressContext";
 import Checkbox from "./Checkbox";
+import { NISU_ASSETS } from "@/lib/nisu-assets";
 
 export default function ResetCard() {
   const {
@@ -16,24 +18,31 @@ export default function ResetCard() {
 
   return (
     <div
-      className={`rounded-2xl p-5 shadow-md border-l-4 transition-all duration-300 ${
-        reset.completed
-          ? "border-l-amber-500 bg-amber-50/80 shadow-amber-100"
-          : "border-l-amber-400 bg-white"
+      className={`rounded-2xl p-5 shadow-md transition-all duration-300 nisu-section-card-reset ${
+        reset.completed ? "opacity-95" : ""
       }`}
     >
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
-          <span className="text-2xl">🌙</span>
+          <Image
+            src={NISU_ASSETS.penguins.reset}
+            alt=""
+            width={48}
+            height={48}
+            className="w-12 h-12 object-contain"
+          />
           <div>
             <h3 className="font-bold text-gray-800 text-lg">Reset</h3>
             <p className="text-xs text-gray-400 italic">
-              Clear your head before the day ends.
+              Clear your mind before the day ends.
             </p>
           </div>
         </div>
         {reset.completed && (
-          <span className="bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+          <span
+            className="text-white text-xs font-bold px-3 py-1 rounded-full"
+            style={{ backgroundColor: "var(--nisu-amber)" }}
+          >
             Complete
           </span>
         )}
@@ -46,13 +55,12 @@ export default function ResetCard() {
           onChange={toggleReading}
           label="Reading"
           sublabel="15 minutes"
-          accentColor="bg-amber-500"
+          accentColor="bg-[var(--nisu-amber)]"
         />
       </div>
 
       <p className="text-xs text-gray-500 mb-2 font-medium">Choose one:</p>
       <div className="space-y-1 mb-3">
-        {/* Journaling navigates to the brain dump page */}
         <Link href="/journal" className="block">
           <div
             className={`flex items-center gap-3 w-full text-left px-3 py-2.5 rounded-xl transition-all duration-200 hover:bg-black/[0.03] ${
@@ -62,9 +70,14 @@ export default function ResetCard() {
             <div
               className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200 ${
                 reset.journaling
-                  ? "bg-amber-500 border-transparent"
+                  ? "border-transparent"
                   : "border-gray-300 bg-white"
               }`}
+              style={
+                reset.journaling
+                  ? { backgroundColor: "var(--nisu-amber)" }
+                  : undefined
+              }
             >
               {reset.journaling && (
                 <svg
@@ -97,7 +110,12 @@ export default function ResetCard() {
               </span>
             </div>
             {!reset.journaling && (
-              <span className="text-xs text-amber-500 font-medium">Go →</span>
+              <span
+                className="text-xs font-medium"
+                style={{ color: "var(--nisu-amber)" }}
+              >
+                Go →
+              </span>
             )}
           </div>
         </Link>
@@ -106,7 +124,7 @@ export default function ResetCard() {
           onChange={toggleMeditation}
           label="Meditation / Mindfulness"
           sublabel="5 minutes"
-          accentColor="bg-amber-500"
+          accentColor="bg-[var(--nisu-amber)]"
         />
       </div>
 
@@ -115,9 +133,9 @@ export default function ResetCard() {
         <Checkbox
           checked={reset.outside}
           onChange={toggleOutside}
-          label="Outside nature time"
-          sublabel="Optional — go touch grass"
-          accentColor="bg-amber-500"
+          label="Outside Nature Time"
+          sublabel="Optional – go touch grass"
+          accentColor="bg-[var(--nisu-amber)]"
         />
       </div>
     </div>

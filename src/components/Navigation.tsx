@@ -1,19 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-
-const NAV_ITEMS = [
-  { href: "/daily", label: "Daily Routine", emoji: "📋" },
-  { href: "/fitness", label: "Fitness", emoji: "💪" },
-  { href: "/fuel", label: "Fuel", emoji: "🥗" },
-  { href: "/skill", label: "Skill", emoji: "🧠" },
-  { href: "/journal", label: "Journal", emoji: "📝" },
-  { href: "/accountability", label: "Streaks", emoji: "🔥" },
-  { href: "/practice", label: "Practice", emoji: "🎯" },
-];
+import { NAV_ITEMS, NISU_ASSETS } from "@/lib/nisu-assets";
 
 function isActive(pathname: string, href: string) {
   if (href === "/daily") return pathname === "/daily";
@@ -22,131 +13,79 @@ function isActive(pathname: string, href: string) {
 
 export default function Navigation() {
   const pathname = usePathname();
-  const [mobileOpen, setMobileOpen] = useState(false);
   const { user, displayName, signOut } = useAuth();
 
   if (pathname === "/login") return null;
 
   return (
-    <>
-      {/* Desktop nav */}
-      <nav className="hidden md:flex items-center justify-between px-6 py-3 bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50">
-        <Link
-          href="/"
-          className="text-lg font-extrabold tracking-tight bg-gradient-to-r from-violet-600 to-pink-500 bg-clip-text text-transparent"
-        >
-          NISU
-        </Link>
-        <div className="flex items-center gap-1">
-          {NAV_ITEMS.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-                isActive(pathname, item.href)
-                  ? "bg-gray-900 text-white"
-                  : "text-gray-500 hover:text-gray-800 hover:bg-gray-100"
-              }`}
-            >
-              <span className="mr-1">{item.emoji}</span>
-              {item.label}
-            </Link>
-          ))}
-        </div>
-        {user && (
-          <div className="flex items-center gap-3 ml-3">
-            <span className="text-xs font-medium text-gray-500">
-              {displayName}
-            </span>
-            <button
-              onClick={signOut}
-              className="text-xs font-medium text-gray-400 hover:text-red-500 px-2 py-1 rounded-lg hover:bg-red-50 transition-colors cursor-pointer"
-            >
-              Sign out
-            </button>
-          </div>
-        )}
-      </nav>
-
-      {/* Mobile nav */}
-      <nav className="md:hidden sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
-        <div className="flex items-center justify-between px-4 py-3">
-          <Link
-            href="/"
-            className="text-lg font-extrabold tracking-tight bg-gradient-to-r from-violet-600 to-pink-500 bg-clip-text text-transparent"
-          >
+    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-[var(--nisu-pale-pink-2)] pt-[env(safe-area-inset-top)]">
+      {/* Top bar: logo + user */}
+      <div className="flex items-center justify-between px-4 py-2 max-w-6xl mx-auto">
+        <Link href="/" className="flex items-center gap-2">
+          <Image
+            src={NISU_ASSETS.logoTransparent}
+            alt="NISU"
+            width={40}
+            height={40}
+            className="w-10 h-10 object-contain"
+          />
+          <span className="text-lg font-extrabold tracking-tight text-[var(--nisu-coral)] hidden sm:inline">
             NISU
-          </Link>
-          <div className="flex items-center gap-2">
-            {user && (
-              <span className="text-[10px] font-medium text-gray-400">
+          </span>
+        </Link>
+
+        <div className="flex items-center gap-3">
+          {user && (
+            <>
+              <span className="text-xs font-semibold text-gray-500 truncate max-w-[120px] sm:max-w-none">
                 {displayName}
               </span>
-            )}
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
-            >
-              {mobileOpen ? (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              ) : (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              )}
-            </button>
-          </div>
-        </div>
-        {mobileOpen && (
-          <div className="px-4 pb-3 space-y-1">
-            {NAV_ITEMS.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setMobileOpen(false)}
-                className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
-                  isActive(pathname, item.href)
-                    ? "bg-gray-900 text-white"
-                    : "text-gray-600 hover:bg-gray-100"
-                }`}
-              >
-                <span>{item.emoji}</span>
-                {item.label}
-              </Link>
-            ))}
-            {user && (
               <button
                 onClick={signOut}
-                className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 transition-colors w-full cursor-pointer"
+                className="text-xs font-medium text-gray-400 hover:text-[var(--nisu-coral)] px-2 py-1 rounded-lg hover:bg-[var(--nisu-pale-pink)] transition-colors cursor-pointer"
               >
                 Sign out
               </button>
-            )}
-          </div>
-        )}
-      </nav>
-
-      {/* Mobile bottom tab bar */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-gray-100 z-50 px-2 pb-[env(safe-area-inset-bottom)]">
-        <div className="flex items-center justify-around py-1.5">
-          {NAV_ITEMS.slice(0, 5).map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg transition-all ${
-                isActive(pathname, item.href)
-                  ? "text-violet-600"
-                  : "text-gray-400"
-              }`}
-            >
-              <span className="text-lg">{item.emoji}</span>
-              <span className="text-[10px] font-medium">{item.label.split(" ")[0]}</span>
-            </Link>
-          ))}
+            </>
+          )}
         </div>
       </div>
-    </>
+
+      {/* Horizontal icon nav — scrollable on mobile, centered on desktop */}
+      <div className="overflow-x-auto scrollbar-hide px-2 pb-2 max-w-6xl mx-auto">
+        <div className="flex items-end justify-start md:justify-center gap-1 sm:gap-2 min-w-max md:min-w-0 px-1">
+          {NAV_ITEMS.map((item) => {
+            const active = isActive(pathname, item.href);
+            const iconSrc = NISU_ASSETS.icons[item.section];
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex flex-col items-center gap-0.5 py-1.5 px-2 sm:px-3 rounded-xl transition-all duration-200 min-w-[52px] sm:min-w-[64px] ${
+                  active
+                    ? "bg-[var(--nisu-pale-pink)] ring-2 ring-[var(--nisu-coral)] ring-offset-1"
+                    : "hover:bg-[var(--nisu-pale-pink)]/50"
+                }`}
+              >
+                <Image
+                  src={iconSrc}
+                  alt=""
+                  width={36}
+                  height={36}
+                  className="w-8 h-8 sm:w-9 sm:h-9 object-contain"
+                />
+                <span
+                  className={`text-[9px] sm:text-[10px] font-semibold leading-tight text-center ${
+                    active ? "text-[var(--nisu-coral)]" : "text-gray-500"
+                  }`}
+                >
+                  {item.shortLabel}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+    </nav>
   );
 }

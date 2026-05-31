@@ -16,7 +16,7 @@ export default function DailyRoutinePage() {
   if (!isLoaded) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-[3px] border-violet-300 border-t-violet-600 rounded-full animate-spin" />
+        <div className="w-8 h-8 border-[3px] border-[var(--nisu-pale-pink-2)] border-t-[var(--nisu-coral)] rounded-full animate-spin" />
       </div>
     );
   }
@@ -29,7 +29,7 @@ export default function DailyRoutinePage() {
   };
 
   return (
-    <div className="min-h-screen pb-28 md:pb-8">
+    <div className="min-h-screen pb-8">
       <div className="max-w-2xl mx-auto px-4 py-6">
         <ProgressHeader />
 

@@ -2,6 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import PageHeader from "@/components/PageHeader";
+import { NISU_ASSETS } from "@/lib/nisu-assets";
 import type { RecipeWithDetails } from "@/lib/types";
 import { formatDuration } from "@/lib/helpers";
 import {
@@ -167,23 +170,17 @@ export default function FuelPage() {
   const preview = recipes.find((r) => r.id === previewId);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-emerald-50 via-white to-white pb-28 md:pb-8">
+    <div className="min-h-screen pb-8">
       <div className="max-w-3xl mx-auto px-4 py-6">
-        {/* Header */}
-        <div className="mb-6">
-          <div className="flex items-center gap-3 mb-1">
-            <span className="text-3xl">🥗</span>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
-              Fuel
-            </h1>
-          </div>
-          <p className="text-sm text-gray-500">
-            Recipes you can actually cook.
-          </p>
-          <p className="text-xs text-gray-400 mt-0.5">
+        <PageHeader
+          title="Fuel"
+          section="fuel"
+          subtitle="Recipes you can actually cook."
+        >
+          <p className="text-xs text-gray-400 mt-1">
             Pick a recipe, follow the steps, and make eating better easier.
           </p>
-        </div>
+        </PageHeader>
 
         {error && (
           <div className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-xl mb-4">
@@ -191,23 +188,16 @@ export default function FuelPage() {
           </div>
         )}
 
-        {/* Actions */}
-        <div className="flex gap-3 mb-6 flex-wrap">
-          {formMode === "idle" && (
+        {formMode === "idle" && (
+          <div className="mb-6">
             <button
               onClick={startCreate}
-              className="bg-emerald-500 text-white text-sm font-bold px-5 py-2.5 rounded-xl hover:bg-emerald-600 transition-colors cursor-pointer"
+              className="nisu-cta text-sm px-6 py-2.5 cursor-pointer"
             >
-              + Add Recipe
+              + Add recipe
             </button>
-          )}
-          <Link
-            href="/daily"
-            className="text-sm font-medium text-gray-500 hover:text-gray-800 px-4 py-2.5 rounded-xl hover:bg-gray-100 transition-colors"
-          >
-            ← Daily Routine
-          </Link>
-        </div>
+          </div>
+        )}
 
         {/* Form */}
         {formMode !== "idle" && (
@@ -231,8 +221,14 @@ export default function FuelPage() {
             <div className="w-8 h-8 border-3 border-emerald-200 border-t-emerald-500 rounded-full animate-spin" />
           </div>
         ) : recipes.length === 0 ? (
-          <div className="bg-white rounded-2xl p-10 shadow-sm border border-gray-100 text-center">
-            <span className="text-5xl mb-4 block">🍳</span>
+          <div className="nisu-card p-10 text-center">
+            <Image
+              src={NISU_ASSETS.penguins.fuel}
+              alt=""
+              width={80}
+              height={80}
+              className="w-20 h-20 object-contain mx-auto mb-4"
+            />
             <p className="text-gray-700 font-semibold text-lg mb-1">
               No recipes yet
             </p>
@@ -242,9 +238,9 @@ export default function FuelPage() {
             {formMode === "idle" && (
               <button
                 onClick={startCreate}
-                className="bg-emerald-500 text-white text-sm font-bold px-6 py-2.5 rounded-xl hover:bg-emerald-600 transition-colors cursor-pointer"
+                className="nisu-cta text-sm px-6 py-2.5 cursor-pointer"
               >
-                + Add Recipe
+                + Add recipe
               </button>
             )}
           </div>
@@ -253,7 +249,7 @@ export default function FuelPage() {
             {recipes.map((r) => (
               <div
                 key={r.id}
-                className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col"
+                className="nisu-card p-5 flex flex-col"
               >
                 <h3 className="font-bold text-gray-800 text-lg mb-1">
                   {r.name}

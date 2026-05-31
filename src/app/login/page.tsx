@@ -1,7 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
-import PenguinMascot from "@/components/PenguinMascot";
+import { NISU_ASSETS } from "@/lib/nisu-assets";
 
 export default function LoginPage() {
   const { signInWithGoogle, isLoading } = useAuth();
@@ -9,16 +10,23 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="max-w-sm w-full text-center">
-        <PenguinMascot variant="hero" size={200} className="mx-auto mb-2" />
+        <Image
+          src={NISU_ASSETS.penguins.daily}
+          alt="NISU penguin"
+          width={200}
+          height={200}
+          className="w-48 h-auto object-contain mx-auto mb-2"
+          priority
+        />
 
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2">
-          Welcome to{" "}
-          <span
-            className="bg-gradient-to-r from-[#ff787e] via-[#fdb95c] to-[#73d9ff] bg-clip-text text-transparent"
-          >
-            NISU
-          </span>
-        </h1>
+        <Image
+          src={NISU_ASSETS.logo}
+          alt="NISU"
+          width={120}
+          height={40}
+          className="h-10 w-auto object-contain mx-auto mb-4"
+        />
+
         <p className="text-gray-500 text-sm mb-8">
           Your Summer Life Operating System.
           <br />
@@ -28,10 +36,7 @@ export default function LoginPage() {
         <button
           onClick={signInWithGoogle}
           disabled={isLoading}
-          className="inline-flex items-center justify-center gap-3 w-full px-6 py-3.5 rounded-full text-white font-bold text-sm shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-          style={{
-            background: "linear-gradient(135deg, #ff787e 0%, #ffb0ab 100%)",
-          }}
+          className="inline-flex items-center justify-center gap-3 w-full px-6 py-3.5 nisu-cta text-sm shadow-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#fff" />

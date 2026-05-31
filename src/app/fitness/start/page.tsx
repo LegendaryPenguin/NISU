@@ -126,7 +126,7 @@ export default function WorkoutStartPage() {
   // Already complete guard
   if (progress.fitness.completed) {
     return (
-      <div className="min-h-screen pb-28 md:pb-8">
+      <div className="min-h-screen pb-8">
         <div className="max-w-2xl mx-auto px-4 py-12 text-center">
           <span className="text-5xl mb-4 block">✅</span>
           <h1 className="text-2xl font-extrabold text-gray-900 mb-2">
@@ -149,7 +149,7 @@ export default function WorkoutStartPage() {
   // PHASE: SELECT
   if (phase === "select") {
     return (
-      <div className="min-h-screen pb-28 md:pb-8">
+      <div className="min-h-screen pb-8">
         <div className="max-w-2xl mx-auto px-4 py-6">
           <div className="mb-6">
             <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight mb-1">
@@ -246,7 +246,7 @@ export default function WorkoutStartPage() {
     const progressPct = ((currentIdx + 1) / totalExercises) * 100;
 
     return (
-      <div className="min-h-screen pb-28 md:pb-8">
+      <div className="min-h-screen pb-8">
         <div className="max-w-lg mx-auto px-4 py-6">
           {/* Workout header */}
           <div className="mb-6">
@@ -412,7 +412,7 @@ export default function WorkoutStartPage() {
   // PHASE: COMPLETE
   if (phase === "complete") {
     return (
-      <div className="min-h-screen pb-28 md:pb-8">
+      <div className="min-h-screen pb-8">
         <div className="max-w-lg mx-auto px-4 py-12 text-center">
           <span className="text-6xl mb-4 block">🎉</span>
           <h1 className="text-2xl font-extrabold text-gray-900 mb-2">

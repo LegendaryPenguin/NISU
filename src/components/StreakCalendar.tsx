@@ -91,7 +91,7 @@ export default function StreakCalendar({
   }
 
   return (
-    <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 w-full max-w-md">
+    <div className="bg-white rounded-2xl p-5 shadow-sm border border-[var(--nisu-pale-pink-2)] w-full max-w-md">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">

@@ -33,7 +33,7 @@ export default function DailySummary() {
         <p className="text-lg font-extrabold text-gray-800">
           All 4 pillars complete!
         </p>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm nisu-text-muted mt-1">
           You crushed it today. Rest well and do it again tomorrow.
         </p>
       </div>
@@ -47,12 +47,12 @@ export default function DailySummary() {
 
       {completed.length > 0 && (
         <div className="mb-3">
-          <p className="text-xs text-gray-400 font-medium mb-1.5">Completed</p>
+          <p className="text-xs nisu-text-caption mb-1.5">Completed</p>
           <div className="flex flex-wrap gap-2">
             {completed.map((p) => (
               <span
                 key={p}
-                className="inline-flex items-center gap-1 text-xs font-semibold bg-[var(--nisu-pale-blue)] text-gray-700 px-2.5 py-1 rounded-full border border-[var(--nisu-pale-pink-2)]"
+                className="inline-flex items-center gap-1 text-xs font-bold bg-white text-gray-900 px-2.5 py-1 rounded-full border-2 border-[var(--nisu-border)]"
               >
                 {PILLAR_META[p].emoji} {PILLAR_META[p].label}
               </span>
@@ -63,18 +63,18 @@ export default function DailySummary() {
 
       {remaining.length > 0 && (
         <div>
-          <p className="text-xs text-gray-400 font-medium mb-1.5">Remaining</p>
+          <p className="text-xs nisu-text-caption mb-1.5">Remaining</p>
           <div className="flex flex-wrap gap-2">
             {remaining.map((p) => (
               <span
                 key={p}
-                className="inline-flex items-center gap-1 text-xs font-medium bg-[var(--nisu-pale-pink)] text-gray-500 px-2.5 py-1 rounded-full border border-[var(--nisu-pale-pink-2)]"
+                className="inline-flex items-center gap-1 text-xs font-bold bg-white text-gray-900 px-2.5 py-1 rounded-full border-2 border-[var(--nisu-border)]"
               >
                 {PILLAR_META[p].emoji} {PILLAR_META[p].label}
               </span>
             ))}
           </div>
-          <p className="text-xs text-gray-400 mt-3 italic">
+          <p className="text-xs nisu-text-muted mt-3 font-semibold">
             {remaining.length} more pillar
             {remaining.length > 1 ? "s" : ""} to complete today.
           </p>

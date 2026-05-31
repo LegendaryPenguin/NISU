@@ -78,7 +78,7 @@ export default function FitnessCard() {
             />
             <div>
               <h3 className="font-bold text-gray-800 text-lg">Fitness</h3>
-              <p className="text-xs text-gray-400 italic">
+              <p className="text-xs nisu-text-muted italic">
                 Move your body today.
               </p>
             </div>
@@ -126,14 +126,14 @@ export default function FitnessCard() {
           />
           <div>
             <h3 className="font-bold text-gray-800 text-lg">Fitness</h3>
-            <p className="text-xs text-gray-400 italic">
+            <p className="text-xs nisu-text-muted italic">
               Move your body today.
             </p>
           </div>
         </div>
       </div>
 
-      <p className="text-xs text-gray-500 mb-3 font-medium">
+      <p className="text-xs nisu-text-caption mb-3">
         Complete 1 of 3:
       </p>
 
@@ -150,10 +150,10 @@ export default function FitnessCard() {
             className="flex items-center justify-between gap-3 w-full px-4 py-3 rounded-xl nisu-row-action-fitness text-left cursor-pointer hover:opacity-90"
           >
             <div>
-              <p className="text-sm font-semibold text-gray-800">
+              <p className="text-sm font-bold text-gray-900">
                 Start workout
               </p>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs nisu-text-muted">
                 Select and complete a saved workout
               </p>
             </div>
@@ -165,10 +165,10 @@ export default function FitnessCard() {
             className="flex items-center justify-between gap-3 w-full px-4 py-3 rounded-xl nisu-row-action-fitness text-left cursor-pointer hover:opacity-90"
           >
             <div>
-              <p className="text-sm font-semibold text-gray-800">
+              <p className="text-sm font-bold text-gray-900">
                 Confirm Steps
               </p>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs nisu-text-muted">
                 Confirm you hit 15,000 steps
               </p>
             </div>
@@ -185,10 +185,10 @@ export default function FitnessCard() {
             }`}
           >
             <div>
-              <p className="text-sm font-semibold text-gray-800">
+              <p className="text-sm font-bold text-gray-900">
                 Log Fun Active
               </p>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs nisu-text-muted">
                 Sports, hiking, swimming
               </p>
             </div>
@@ -209,7 +209,7 @@ export default function FitnessCard() {
           <p className="text-sm font-semibold text-gray-800 mb-1">
             Step Count Confirmation
           </p>
-          <p className="text-xs text-gray-500 mb-4">
+          <p className="text-xs nisu-text-muted mb-4">
             Did your health app say you completed 15,000 steps today?
           </p>
           <div className="flex gap-2">
@@ -243,7 +243,7 @@ export default function FitnessCard() {
           <p className="text-sm font-semibold text-gray-800 mb-1">
             Log Fun Active
           </p>
-          <p className="text-xs text-gray-500 mb-3">
+          <p className="text-xs nisu-text-muted mb-3">
             What active fun did you do today?
           </p>
           <input
@@ -280,7 +280,7 @@ export default function FitnessCard() {
         className={`text-xs px-3 py-2 rounded-lg mb-3 ${
           funActiveLimitReached
             ? "bg-amber-50 text-amber-600"
-            : "bg-gray-50 text-gray-500"
+            : "bg-gray-50 nisu-text-muted"
         }`}
       >
         Fun Active used this week:{" "}

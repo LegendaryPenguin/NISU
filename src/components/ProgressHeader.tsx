@@ -41,16 +41,14 @@ export default function ProgressHeader() {
           <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
             Daily Routine
           </h1>
-          <p className="text-sm text-gray-400 mt-0.5">
-            {formatDateDisplay(todayKey)}
-          </p>
+          <p className="text-sm nisu-text-muted mt-0.5">{formatDateDisplay(todayKey)}</p>
         </div>
       </div>
 
       <div className="mt-4 nisu-pillar-fitness ml-2">
         <div className="nisu-pillar-inner p-4">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-semibold text-gray-700">
+          <span className="text-sm font-bold text-gray-900">
             Today&apos;s Progress
           </span>
           <span className="text-sm font-bold text-[var(--nisu-coral)]">
@@ -71,7 +69,7 @@ export default function ProgressHeader() {
           />
         </div>
 
-        <p className="text-xs text-gray-400 mt-2 italic">{getMessage()}</p>
+        <p className="text-xs nisu-text-muted mt-2 font-medium">{getMessage()}</p>
         </div>
       </div>
     </div>

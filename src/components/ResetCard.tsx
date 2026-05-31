@@ -30,7 +30,7 @@ export default function ResetCard() {
           />
           <div>
             <h3 className="font-bold text-gray-800 text-lg">Reset</h3>
-            <p className="text-xs text-gray-400 italic">
+            <p className="text-xs nisu-text-muted italic">
               Clear your mind before the day ends.
             </p>
           </div>
@@ -45,7 +45,7 @@ export default function ResetCard() {
         )}
       </div>
 
-      <p className="text-xs text-gray-500 mb-2 font-medium">Required:</p>
+      <p className="text-xs nisu-text-caption mb-2">Required:</p>
       <div className="mb-3">
         <Checkbox
           checked={reset.reading}
@@ -56,7 +56,7 @@ export default function ResetCard() {
         />
       </div>
 
-      <p className="text-xs text-gray-500 mb-2 font-medium">Choose one:</p>
+      <p className="text-xs nisu-text-caption mb-2">Choose one:</p>
       <div className="space-y-1 mb-3">
         <Link href="/journal" className="block">
           <div
@@ -102,7 +102,7 @@ export default function ResetCard() {
               >
                 Journaling / Brain Dump
               </span>
-              <span className="text-xs text-gray-400">
+              <span className="text-xs nisu-text-muted">
                 {reset.journaling ? "Done for today" : "5 minutes → open journal"}
               </span>
             </div>
@@ -125,7 +125,7 @@ export default function ResetCard() {
         />
       </div>
 
-      <p className="text-xs text-gray-500 mb-2 font-medium">Bonus:</p>
+      <p className="text-xs nisu-text-caption mb-2">Bonus:</p>
       <div className="mb-3">
         <Checkbox
           checked={reset.outside}

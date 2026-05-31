@@ -194,7 +194,7 @@ export default function FitnessManagementPage() {
             cta={
               <button
                 onClick={startCreate}
-                className="nisu-cta text-sm px-6 py-2.5 cursor-pointer"
+                className="nisu-cta-bold text-sm px-6 py-2.5 cursor-pointer"
               >
                 + Create new workout
               </button>
@@ -354,7 +354,7 @@ export default function FitnessManagementPage() {
                   !workoutName.trim() ||
                   exercises.filter((e) => e.name.trim()).length === 0
                 }
-                className="nisu-cta text-sm px-6 py-2.5 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+                className="nisu-cta-bold text-sm px-6 py-2.5 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
               >
                 {saving
                   ? "Saving..."
@@ -376,10 +376,10 @@ export default function FitnessManagementPage() {
         {/* Workouts List */}
         {loading ? (
           <div className="flex justify-center py-12">
-            <div className="w-8 h-8 border-3 border-blue-200 border-t-blue-500 rounded-full animate-spin" />
+            <div className="w-8 h-8 border-3 border-[var(--nisu-pale-pink-2)] border-t-[var(--nisu-coral)] rounded-full animate-spin" />
           </div>
         ) : workouts.length === 0 ? (
-          <div className="nisu-card p-8 text-center">
+          <div className="nisu-empty-fitness p-8 text-center">
             <Image
               src={NISU_ASSETS.penguins.fitness}
               alt=""
@@ -387,16 +387,16 @@ export default function FitnessManagementPage() {
               height={80}
               className="w-20 h-20 object-contain mx-auto mb-3"
             />
-            <p className="text-gray-600 font-semibold mb-1">
+            <p className="text-gray-900 font-bold mb-1">
               No workouts yet
             </p>
-            <p className="text-gray-400 text-sm mb-4">
+            <p className="text-gray-800 text-sm mb-4 font-medium">
               Create your first workout to get started.
             </p>
             {formMode === "idle" && (
               <button
                 onClick={startCreate}
-                className="nisu-cta text-sm px-6 py-2.5 cursor-pointer"
+                className="nisu-cta-secondary text-sm px-6 py-2.5 cursor-pointer"
               >
                 + Create new workout
               </button>

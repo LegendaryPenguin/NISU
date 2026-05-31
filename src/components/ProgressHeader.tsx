@@ -47,7 +47,8 @@ export default function ProgressHeader() {
         </div>
       </div>
 
-      <div className="mt-4 nisu-card p-4">
+      <div className="mt-4 nisu-pillar-fitness ml-2">
+        <div className="nisu-pillar-inner p-4">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-semibold text-gray-700">
             Today&apos;s Progress
@@ -71,6 +72,7 @@ export default function ProgressHeader() {
         </div>
 
         <p className="text-xs text-gray-400 mt-2 italic">{getMessage()}</p>
+        </div>
       </div>
     </div>
   );

@@ -114,7 +114,8 @@ export default function SkillCard() {
   };
 
   return (
-    <div className={`nisu-card p-5 ${done ? "opacity-95" : ""}`}>
+    <div className={`nisu-pillar-skill ml-2 mt-2 ${done ? "opacity-95" : ""}`}>
+      <div className="nisu-pillar-inner p-5">
       {/* Header */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
@@ -198,7 +199,7 @@ export default function SkillCard() {
           <button
             onClick={() => setFlow("mainSelect")}
             disabled={submitting}
-            className="flex items-center justify-between gap-3 w-full px-4 py-3 rounded-xl nisu-row-tint-skill text-left cursor-pointer hover:opacity-90"
+            className="flex items-center justify-between gap-3 w-full px-4 py-3 rounded-xl nisu-row-action-skill text-left cursor-pointer hover:opacity-90"
           >
             <div>
               <p className="text-sm font-semibold text-gray-800">
@@ -215,7 +216,7 @@ export default function SkillCard() {
             <button
               onClick={handleSpin}
               disabled={submitting}
-              className="flex items-center justify-between gap-3 w-full px-4 py-3 rounded-xl nisu-cta text-left cursor-pointer hover:opacity-90"
+              className="flex items-center justify-between gap-3 w-full px-4 py-3 rounded-xl nisu-cta-bold text-left cursor-pointer hover:opacity-90"
             >
               <div>
                 <p className="text-sm font-semibold">Spin Skill Wheel</p>
@@ -349,6 +350,7 @@ export default function SkillCard() {
       >
         Manage Skills →
       </Link>
+      </div>
     </div>
   );
 }
@@ -383,7 +385,7 @@ function WheelSelectionCard({
       <button
         onClick={onComplete}
         disabled={submitting}
-        className="w-full py-2.5 px-4 rounded-full nisu-cta text-sm disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+        className="w-full py-2.5 px-4 rounded-full nisu-cta-bold text-sm disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
       >
         {submitting ? "Saving..." : "Mark Challenge Complete"}
       </button>

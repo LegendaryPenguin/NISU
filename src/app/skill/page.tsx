@@ -236,7 +236,7 @@ export default function SkillManagementPage() {
                   !form.time.trim() ||
                   !form.description.trim()
                 }
-                className="nisu-cta text-sm px-6 py-2.5 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+                className="nisu-cta-bold text-sm px-6 py-2.5 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
               >
                 {saving ? "Saving..." : formMode === "create" ? "Add Skill" : "Save Changes"}
               </button>
@@ -318,7 +318,7 @@ function SkillSection({
         {formMode === "idle" && (
           <button
             onClick={onAdd}
-            className="nisu-cta text-xs px-4 py-2 cursor-pointer"
+            className="nisu-cta-bold text-xs px-4 py-2 cursor-pointer"
           >
             + Add
           </button>
@@ -326,7 +326,7 @@ function SkillSection({
       </div>
 
       {items.length === 0 ? (
-        <div className="nisu-card p-6 text-center">
+        <div className="nisu-empty-skill p-6 text-center">
           <p className="text-gray-400 text-sm">
             No {title.toLowerCase()} yet.
           </p>

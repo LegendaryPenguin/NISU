@@ -18,7 +18,8 @@ export default function FuelCard() {
   const overSugarLimit = fuel.sugaryFoods > 2;
 
   return (
-    <div className={`nisu-card p-5 ${fuel.completed ? "opacity-95" : ""}`}>
+    <div className={`nisu-pillar-fuel ml-2 mb-2 ${fuel.completed ? "opacity-95" : ""}`}>
+      <div className="nisu-pillar-inner p-5">
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
           <Image
@@ -116,6 +117,7 @@ export default function FuelCard() {
       >
         Open Fuel Page →
       </Link>
+      </div>
     </div>
   );
 }

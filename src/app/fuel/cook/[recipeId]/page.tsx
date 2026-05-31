@@ -221,7 +221,7 @@ export default function CookPage() {
   const isLastStep = currentStepIndex === totalSteps - 1;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 pb-28 md:pb-8">
+    <div className="min-h-screen pb-8">
       <div className="max-w-xl mx-auto px-4 py-6">
         {/* Top nav */}
         <div className="flex items-center justify-between mb-6">

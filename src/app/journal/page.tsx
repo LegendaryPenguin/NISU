@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import Link from "next/link";
+import PageHeader from "@/components/PageHeader";
 import type { JournalEntry } from "@/lib/types";
 import { getTodayKey } from "@/lib/helpers";
 import { useDailyProgress } from "@/context/DailyProgressContext";
@@ -12,11 +12,7 @@ import {
   deleteJournalEntry,
 } from "@/lib/journal-actions";
 
-const NOTE_COLORS = [
-  "bg-yellow-100 border-yellow-200",
-  "bg-amber-100 border-amber-200",
-  "bg-orange-50 border-orange-200",
-];
+const STICKY_NOTE_CLASS = "nisu-sticky-note";
 
 function formatNoteDate(iso: string): string {
   const d = new Date(iso);
@@ -157,33 +153,28 @@ export default function JournalPage() {
   const pastEntries = entries.filter((e) => e.date_key !== getTodayKey());
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50 via-white to-yellow-50 pb-28 md:pb-8">
+    <div className="min-h-screen pb-8">
       <div className="max-w-4xl mx-auto px-4 py-6">
-        {/* Header */}
-        <div className="mb-6">
-          <div className="flex items-center gap-3 mb-1">
-            <span className="text-3xl">📝</span>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
-              Brain Dump
-            </h1>
-          </div>
-          <p className="text-sm text-gray-500">
-            Get it out of your head in under 5 minutes.
-          </p>
+        <PageHeader
+          title="Brain Dump"
+          section="journal"
+          subtitle="Get it out of your head in under 5 minutes."
+        >
           <p className="text-xs text-gray-400 mt-0.5">
             No perfect answers. Just dump it, save it, and move on.
           </p>
-        </div>
+        </PageHeader>
 
         <div className="flex gap-3 mb-6 flex-wrap items-center">
-          <Link
-            href="/daily"
-            className="text-sm font-medium text-gray-500 hover:text-gray-800 px-4 py-2.5 rounded-xl hover:bg-gray-100 transition-colors"
-          >
-            ← Daily Routine
-          </Link>
           {journalingDoneToday && (
-            <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100">
+            <span
+              className="text-xs font-bold px-3 py-1.5 rounded-full"
+              style={{
+                color: "var(--nisu-coral)",
+                backgroundColor: "var(--nisu-pale-pink)",
+                border: "1px solid var(--nisu-pale-pink-2)",
+              }}
+            >
               ✓ Journaling done today
             </span>
           )}
@@ -205,7 +196,7 @@ export default function JournalPage() {
 
         {/* New Entry Prompt / Form */}
         {!showForm && !editingId ? (
-          <div className="bg-white/90 rounded-3xl shadow-lg border border-amber-100 p-6 sm:p-7 mb-8 text-center">
+          <div className="nisu-card p-6 sm:p-7 mb-8 text-center">
             {journalingDoneToday && todayEntries.length > 0 ? (
               <>
                 <span className="text-4xl block mb-3">✅</span>
@@ -217,7 +208,7 @@ export default function JournalPage() {
                 </p>
                 <button
                   onClick={() => setShowForm(true)}
-                  className="bg-amber-500 text-white text-sm font-bold px-6 py-2.5 rounded-xl hover:bg-amber-600 transition-colors cursor-pointer"
+                  className="nisu-cta text-sm px-6 py-2.5 cursor-pointer"
                 >
                   + Another Brain Dump
                 </button>
@@ -233,7 +224,7 @@ export default function JournalPage() {
                 </p>
                 <button
                   onClick={() => setShowForm(true)}
-                  className="bg-amber-500 text-white text-sm font-bold px-6 py-2.5 rounded-xl hover:bg-amber-600 transition-colors cursor-pointer"
+                  className="nisu-cta text-sm px-6 py-2.5 cursor-pointer"
                 >
                   Start Brain Dump
                 </button>
@@ -241,12 +232,12 @@ export default function JournalPage() {
             )}
           </div>
         ) : (
-          <div className="bg-white/90 rounded-3xl shadow-lg border border-amber-100 p-5 sm:p-7 mb-8">
+          <div className="nisu-card p-5 sm:p-7 mb-8">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-bold text-gray-800 text-lg">
                 {editingId ? "Edit Brain Dump" : "Guided Brain Dump"}
               </h2>
-              <span className="text-xs text-amber-500 font-medium">
+              <span className="text-xs text-[var(--nisu-coral)] font-medium">
                 ~5 min
               </span>
             </div>
@@ -292,7 +283,7 @@ export default function JournalPage() {
               <button
                 onClick={handleSave}
                 disabled={!canSubmit}
-                className="bg-amber-500 text-white text-sm font-bold px-6 py-2.5 rounded-xl hover:bg-amber-600 transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+                className="nisu-cta text-sm px-6 py-2.5 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
               >
                 {saving
                   ? "Saving..."
@@ -320,10 +311,10 @@ export default function JournalPage() {
 
         {loading ? (
           <div className="flex justify-center py-16">
-            <div className="w-8 h-8 border-[3px] border-amber-200 border-t-amber-500 rounded-full animate-spin" />
+            <div className="w-8 h-8 border-[3px] border-[var(--nisu-pale-pink-2)] border-t-[var(--nisu-coral)] rounded-full animate-spin" />
           </div>
         ) : entries.length === 0 ? (
-          <div className="bg-white rounded-2xl p-10 shadow-sm border border-gray-100 text-center">
+          <div className="nisu-card p-10 text-center">
             <span className="text-5xl mb-4 block">🗒️</span>
             <p className="text-gray-700 font-semibold text-lg mb-1">
               No sticky notes yet
@@ -340,15 +331,15 @@ export default function JournalPage() {
             {/* Today's entries */}
             {todayEntries.length > 0 && (
               <div>
-                <p className="text-xs font-bold text-amber-600 uppercase tracking-wide mb-3">
+                <p className="text-xs font-bold text-[var(--nisu-coral)] uppercase tracking-wide mb-3">
                   Today
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {todayEntries.map((entry, i) => (
+                  {todayEntries.map((entry) => (
                     <StickyNote
                       key={entry.id}
                       entry={entry}
-                      colorClass={NOTE_COLORS[i % NOTE_COLORS.length]}
+                      colorClass={STICKY_NOTE_CLASS}
                       expanded={expandedId === entry.id}
                       onToggle={() =>
                         setExpandedId(
@@ -370,11 +361,11 @@ export default function JournalPage() {
                   Past Entries
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {pastEntries.map((entry, i) => (
+                  {pastEntries.map((entry) => (
                     <StickyNote
                       key={entry.id}
                       entry={entry}
-                      colorClass={NOTE_COLORS[(i + 1) % NOTE_COLORS.length]}
+                      colorClass={STICKY_NOTE_CLASS}
                       expanded={expandedId === entry.id}
                       onToggle={() =>
                         setExpandedId(
@@ -414,14 +405,14 @@ function FormField({
     <div>
       <label className="block text-sm font-semibold text-gray-700 mb-1.5">
         {label}
-        {required && <span className="text-amber-500 ml-0.5">*</span>}
+        {required && <span className="text-[var(--nisu-coral)] ml-0.5">*</span>}
       </label>
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         rows={2}
-        className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-300 resize-none"
+        className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--nisu-pale-pink-2)] text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--nisu-pink)] resize-none"
       />
     </div>
   );
@@ -496,7 +487,7 @@ function StickyNote({
         </button>
         <button
           onClick={onEdit}
-          className="text-xs font-medium text-amber-700 px-3 py-1.5 rounded-lg hover:bg-amber-200/40 transition-colors cursor-pointer"
+          className="text-xs font-medium text-gray-700 px-3 py-1.5 rounded-lg hover:bg-[var(--nisu-pale-pink)] transition-colors cursor-pointer"
         >
           Edit
         </button>

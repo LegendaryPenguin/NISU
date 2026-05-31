@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useDailyProgress } from "@/context/DailyProgressContext";
@@ -7,6 +8,7 @@ import { isWeekend, getTodayKey } from "@/lib/helpers";
 import { fetchActiveSkillItems } from "@/lib/skill-actions";
 import type { SkillItem, DailyWheelSelection } from "@/lib/types";
 import SkillWheel from "./SkillWheel";
+import { NISU_ASSETS } from "@/lib/nisu-assets";
 
 type CardFlow = "idle" | "mainSelect" | "wheelSpinning";
 
@@ -113,16 +115,20 @@ export default function SkillCard() {
 
   return (
     <div
-      className={`rounded-2xl p-5 shadow-md border-l-4 transition-all duration-300 ${
-        done
-          ? "border-l-violet-500 bg-violet-50/80 shadow-violet-100"
-          : "border-l-violet-400 bg-white"
+      className={`rounded-2xl p-5 shadow-md transition-all duration-300 nisu-section-card-skill ${
+        done ? "opacity-95" : ""
       }`}
     >
       {/* Header */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
-          <span className="text-2xl">🧠</span>
+          <Image
+            src={NISU_ASSETS.penguins.skill}
+            alt=""
+            width={48}
+            height={48}
+            className="w-12 h-12 object-contain"
+          />
           <div>
             <h3 className="font-bold text-gray-800 text-lg">Skill</h3>
             <p className="text-xs text-gray-400 italic">
@@ -131,7 +137,10 @@ export default function SkillCard() {
           </div>
         </div>
         {done && (
-          <span className="bg-violet-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+          <span
+            className="text-white text-xs font-bold px-3 py-1 rounded-full"
+            style={{ backgroundColor: "var(--nisu-pink)" }}
+          >
             Complete
           </span>
         )}
@@ -142,7 +151,7 @@ export default function SkillCard() {
         <div
           className={`text-xs px-3 py-2 rounded-lg font-medium ${
             done
-              ? "bg-violet-100 text-violet-700"
+              ? "bg-[var(--nisu-pale-pink)] text-gray-700"
               : "bg-gray-50 text-gray-600"
           }`}
         >
@@ -152,7 +161,7 @@ export default function SkillCard() {
           </span>{" "}
           block{skill.requiredBlocks > 1 ? "s" : ""}
           {weekend && (
-            <span className="ml-1.5 text-violet-400">(weekend)</span>
+            <span className="ml-1.5 text-[var(--nisu-pink)]">(weekend)</span>
           )}
         </div>
       </div>
@@ -169,16 +178,16 @@ export default function SkillCard() {
           {todaySkillLogs.map((log) => (
             <div
               key={log.id}
-              className="flex items-center gap-2 bg-violet-50 rounded-lg px-3 py-2"
+              className="flex items-center gap-2 bg-[var(--nisu-pale-pink)] rounded-lg px-3 py-2"
             >
               <span className="text-xs">
                 {log.type === "main" ? "✅" : "🎲"}
               </span>
-              <span className="text-xs font-semibold text-violet-700">
+              <span className="text-xs font-semibold text-gray-700">
                 {log.skill_name}
               </span>
               {log.skill_time && (
-                <span className="text-xs text-violet-400">
+                <span className="text-xs text-gray-400">
                   · {log.skill_time}
                 </span>
               )}
@@ -193,7 +202,8 @@ export default function SkillCard() {
           <button
             onClick={() => setFlow("mainSelect")}
             disabled={submitting}
-            className="flex items-center gap-3 w-full px-4 py-3 rounded-xl bg-violet-50 hover:bg-violet-100 transition-colors text-left cursor-pointer"
+            className="flex items-center gap-3 w-full px-4 py-3 rounded-xl transition-colors text-left cursor-pointer hover:opacity-90"
+            style={{ backgroundColor: "var(--nisu-pale-pink)" }}
           >
             <span className="text-lg">📚</span>
             <div>
@@ -210,7 +220,8 @@ export default function SkillCard() {
             <button
               onClick={handleSpin}
               disabled={submitting}
-              className="flex items-center gap-3 w-full px-4 py-3 rounded-xl bg-violet-500 text-white hover:bg-violet-600 transition-colors text-left cursor-pointer shadow-sm"
+              className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-white transition-colors text-left cursor-pointer shadow-sm hover:opacity-90"
+              style={{ backgroundColor: "var(--nisu-coral)" }}
             >
               <span className="text-lg">🎲</span>
               <div>
@@ -340,7 +351,7 @@ export default function SkillCard() {
 
       <Link
         href="/skill"
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-violet-500 hover:text-violet-700 transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--nisu-coral)] hover:opacity-80 transition-opacity"
       >
         Manage Skills →
       </Link>

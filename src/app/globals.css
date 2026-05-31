@@ -3,6 +3,15 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-nisu-coral: var(--nisu-coral);
+  --color-nisu-pink: var(--nisu-pink);
+  --color-nisu-peach: var(--nisu-peach);
+  --color-nisu-pale-pink: var(--nisu-pale-pink);
+  --color-nisu-pale-pink-2: var(--nisu-pale-pink-2);
+  --color-nisu-amber: var(--nisu-amber);
+  --color-nisu-cream: var(--nisu-cream);
+  --color-nisu-sky: var(--nisu-sky);
+  --color-nisu-pale-blue: var(--nisu-pale-blue);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -10,9 +19,76 @@
 :root {
   --background: #faf8f6;
   --foreground: #1a1a2e;
+  --nisu-coral: #ff787e;
+  --nisu-pink: #f9b0bf;
+  --nisu-peach: #ffb0ab;
+  --nisu-pale-pink: #fff0ef;
+  --nisu-pale-pink-2: #ffdedc;
+  --nisu-amber: #fdb95c;
+  --nisu-cream: #ffecd0;
+  --nisu-sky: #73d9ff;
+  --nisu-pale-blue: #ddf5ff;
+  --nisu-banner-bg: #fef0ee;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+}
+
+/* Scrollbar hide for horizontal nav */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* NISU design utilities */
+.nisu-sticky-note {
+  background-color: var(--nisu-pink);
+  border: 1px solid var(--nisu-pale-pink-2);
+}
+
+.nisu-cta {
+  background: linear-gradient(135deg, var(--nisu-coral) 0%, var(--nisu-peach) 100%);
+  color: white;
+  font-weight: 700;
+  border-radius: 9999px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.nisu-cta:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 24px rgba(255, 120, 126, 0.35);
+}
+.nisu-cta:active {
+  transform: scale(0.98);
+}
+
+.nisu-card {
+  background: white;
+  border-radius: 1rem;
+  border: 1px solid var(--nisu-pale-pink-2);
+  box-shadow: 0 2px 8px rgba(255, 120, 126, 0.06);
+}
+
+.nisu-section-card-fitness {
+  border-left: 4px solid var(--nisu-sky);
+  background: linear-gradient(to right, var(--nisu-pale-blue), white 40%);
+}
+
+.nisu-section-card-fuel {
+  border-left: 4px solid #6ee7b7;
+  background: linear-gradient(to right, #ecfdf5, white 40%);
+}
+
+.nisu-section-card-skill {
+  border-left: 4px solid var(--nisu-pink);
+  background: linear-gradient(to right, var(--nisu-pale-pink), white 40%);
+}
+
+.nisu-section-card-reset {
+  border-left: 4px solid var(--nisu-amber);
+  background: linear-gradient(to right, var(--nisu-cream), white 40%);
 }

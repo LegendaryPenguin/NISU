@@ -35,7 +35,7 @@ export default function RootLayout({
         <AuthProvider>
           <DailyProgressProvider>
             <Navigation />
-            <main className="flex-1">{children}</main>
+            <main className="flex-1 pb-6">{children}</main>
           </DailyProgressProvider>
         </AuthProvider>
       </body>

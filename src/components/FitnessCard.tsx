@@ -1,8 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import Link from "next/link";
 import { useDailyProgress } from "@/context/DailyProgressContext";
+import { NISU_ASSETS } from "@/lib/nisu-assets";
 
 type CardFlow = "idle" | "steps" | "funActive";
 
@@ -63,10 +65,16 @@ export default function FitnessCard() {
         : "Fitness complete";
 
     return (
-      <div className="rounded-2xl p-5 shadow-md border-l-4 border-l-blue-500 bg-blue-50/80 shadow-blue-100 transition-all duration-300">
+      <div className="rounded-2xl p-5 shadow-md transition-all duration-300 nisu-section-card-fitness">
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-3">
-            <span className="text-2xl">💪</span>
+            <Image
+              src={NISU_ASSETS.penguins.fitness}
+              alt=""
+              width={48}
+              height={48}
+              className="w-12 h-12 object-contain"
+            />
             <div>
               <h3 className="font-bold text-gray-800 text-lg">Fitness</h3>
               <p className="text-xs text-gray-400 italic">
@@ -74,32 +82,45 @@ export default function FitnessCard() {
               </p>
             </div>
           </div>
-          <span className="bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+          <span
+            className="text-white text-xs font-bold px-3 py-1 rounded-full"
+            style={{ backgroundColor: "var(--nisu-sky)" }}
+          >
             Complete
           </span>
         </div>
 
-        <div className="bg-blue-100/60 rounded-xl px-4 py-3 mb-3">
-          <p className="text-sm font-semibold text-blue-800">
+        <div
+          className="rounded-xl px-4 py-3 mb-3"
+          style={{ backgroundColor: "var(--nisu-pale-blue)" }}
+        >
+          <p className="text-sm font-semibold text-gray-800">
             ✅ {completionLabel}
           </p>
         </div>
 
         <Link
           href="/fitness"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-500 hover:text-blue-700 transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold hover:opacity-80 transition-opacity"
+          style={{ color: "var(--nisu-sky)" }}
         >
-          Manage Workouts →
+          Manage workouts →
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="rounded-2xl p-5 shadow-md border-l-4 border-l-blue-400 bg-white transition-all duration-300">
+    <div className="rounded-2xl p-5 shadow-md transition-all duration-300 nisu-section-card-fitness">
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
-          <span className="text-2xl">💪</span>
+          <Image
+            src={NISU_ASSETS.penguins.fitness}
+            alt=""
+            width={48}
+            height={48}
+            className="w-12 h-12 object-contain"
+          />
           <div>
             <h3 className="font-bold text-gray-800 text-lg">Fitness</h3>
             <p className="text-xs text-gray-400 italic">
@@ -123,7 +144,8 @@ export default function FitnessCard() {
         <div className="space-y-2 mb-3">
           <Link
             href="/fitness/start"
-            className="flex items-center gap-3 w-full px-4 py-3 rounded-xl bg-blue-50 hover:bg-blue-100 transition-colors text-left"
+            className="flex items-center gap-3 w-full px-4 py-3 rounded-xl transition-colors text-left cursor-pointer"
+            style={{ backgroundColor: "var(--nisu-pale-blue)" }}
           >
             <span className="text-lg">🏋️</span>
             <div>
@@ -138,7 +160,8 @@ export default function FitnessCard() {
 
           <button
             onClick={() => setFlow("steps")}
-            className="flex items-center gap-3 w-full px-4 py-3 rounded-xl bg-blue-50 hover:bg-blue-100 transition-colors text-left cursor-pointer"
+            className="flex items-center gap-3 w-full px-4 py-3 rounded-xl transition-colors text-left cursor-pointer hover:opacity-90"
+            style={{ backgroundColor: "var(--nisu-pale-blue)" }}
           >
             <span className="text-lg">👟</span>
             <div>
@@ -157,8 +180,13 @@ export default function FitnessCard() {
             className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl text-left transition-colors ${
               funActiveLimitReached
                 ? "bg-gray-50 opacity-50 cursor-not-allowed"
-                : "bg-blue-50 hover:bg-blue-100 cursor-pointer"
+                : "cursor-pointer hover:opacity-90"
             }`}
+            style={
+              funActiveLimitReached
+                ? undefined
+                : { backgroundColor: "var(--nisu-pale-blue)" }
+            }
           >
             <span className="text-lg">🏄</span>
             <div>
@@ -175,7 +203,13 @@ export default function FitnessCard() {
 
       {/* Step Count Confirmation */}
       {flow === "steps" && (
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-3">
+        <div
+          className="rounded-xl p-4 mb-3 border"
+          style={{
+            backgroundColor: "var(--nisu-pale-blue)",
+            borderColor: "var(--nisu-sky)",
+          }}
+        >
           <p className="text-sm font-semibold text-gray-800 mb-1">
             Step Count Confirmation
           </p>
@@ -186,7 +220,8 @@ export default function FitnessCard() {
             <button
               onClick={handleConfirmSteps}
               disabled={submitting}
-              className="flex-1 py-2.5 px-4 rounded-lg bg-blue-500 text-white text-sm font-bold hover:bg-blue-600 transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+              className="flex-1 py-2.5 px-4 rounded-lg text-white text-sm font-bold transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+              style={{ backgroundColor: "var(--nisu-sky)" }}
             >
               {submitting ? "Saving..." : "Yes, completed 15k steps"}
             </button>
@@ -203,7 +238,13 @@ export default function FitnessCard() {
 
       {/* Fun Active Form */}
       {flow === "funActive" && (
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-3">
+        <div
+          className="rounded-xl p-4 mb-3 border"
+          style={{
+            backgroundColor: "var(--nisu-pale-blue)",
+            borderColor: "var(--nisu-sky)",
+          }}
+        >
           <p className="text-sm font-semibold text-gray-800 mb-1">
             Log Fun Active
           </p>
@@ -215,13 +256,15 @@ export default function FitnessCard() {
             value={funActiveDesc}
             onChange={(e) => setFunActiveDesc(e.target.value)}
             placeholder="Basketball for 45 min, long walk, swimming..."
-            className="w-full px-3 py-2.5 rounded-lg border border-blue-200 bg-white text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-300 mb-3"
+            className="w-full px-3 py-2.5 rounded-lg border bg-white text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 mb-3"
+            style={{ borderColor: "var(--nisu-sky)" }}
           />
           <div className="flex gap-2">
             <button
               onClick={handleSubmitFunActive}
               disabled={submitting || !funActiveDesc.trim()}
-              className="flex-1 py-2.5 px-4 rounded-lg bg-blue-500 text-white text-sm font-bold hover:bg-blue-600 transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+              className="flex-1 py-2.5 px-4 rounded-lg text-white text-sm font-bold transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+              style={{ backgroundColor: "var(--nisu-sky)" }}
             >
               {submitting ? "Saving..." : "Complete Fun Active"}
             </button>
@@ -254,7 +297,8 @@ export default function FitnessCard() {
 
       <Link
         href="/fitness"
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-500 hover:text-blue-700 transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs font-semibold hover:opacity-80 transition-opacity"
+        style={{ color: "var(--nisu-sky)" }}
       >
         Manage Workouts →
       </Link>

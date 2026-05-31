@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import PageHeader from "@/components/PageHeader";
 import type { SkillItem } from "@/lib/types";
 import {
   fetchSkillItems,
@@ -143,20 +144,13 @@ export default function SkillManagementPage() {
       : `Edit ${formKind === "main" ? "Main" : "Wheel"} Skill`;
 
   return (
-    <div className="min-h-screen pb-28 md:pb-8">
+    <div className="min-h-screen pb-8">
       <div className="max-w-2xl mx-auto px-4 py-6">
-        {/* Header */}
-        <div className="mb-6">
-          <div className="flex items-center gap-3 mb-1">
-            <span className="text-3xl">🧠</span>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
-              Skills
-            </h1>
-          </div>
-          <p className="text-sm text-gray-400">
-            Manage your main skills and random wheel challenges.
-          </p>
-        </div>
+        <PageHeader
+          title="Skill"
+          section="skill"
+          subtitle="Manage your main skills and random wheel challenges."
+        />
 
         {error && (
           <div className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-xl mb-4">
@@ -164,16 +158,9 @@ export default function SkillManagementPage() {
           </div>
         )}
 
-        <Link
-          href="/daily"
-          className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-800 mb-6 transition-colors"
-        >
-          ← Daily Routine
-        </Link>
-
         {/* Create / Edit Form */}
         {formMode !== "idle" && (
-          <div className="bg-white rounded-2xl shadow-md p-5 mb-6 border border-gray-100">
+          <div className="nisu-card p-5 mb-6">
             <h2 className="font-bold text-gray-800 text-lg mb-4">
               {formTitle}
             </h2>
@@ -248,7 +235,7 @@ export default function SkillManagementPage() {
                   !form.time.trim() ||
                   !form.description.trim()
                 }
-                className="bg-violet-500 text-white text-sm font-bold px-6 py-2.5 rounded-xl hover:bg-violet-600 transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+                className="nisu-cta text-sm px-6 py-2.5 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
               >
                 {saving ? "Saving..." : formMode === "create" ? "Add Skill" : "Save Changes"}
               </button>
@@ -334,7 +321,7 @@ function SkillSection({
         {formMode === "idle" && (
           <button
             onClick={onAdd}
-            className="bg-violet-500 text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-violet-600 transition-colors cursor-pointer"
+            className="nisu-cta text-xs px-4 py-2 cursor-pointer"
           >
             + Add
           </button>
@@ -342,14 +329,14 @@ function SkillSection({
       </div>
 
       {items.length === 0 ? (
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center">
+        <div className="nisu-card p-6 text-center">
           <p className="text-gray-400 text-sm">
             No {title.toLowerCase()} yet.
           </p>
           {formMode === "idle" && (
             <button
               onClick={onAdd}
-              className="mt-2 text-xs font-semibold text-violet-500 hover:text-violet-700 cursor-pointer"
+              className="mt-2 text-xs font-semibold text-[var(--nisu-coral)] hover:opacity-80 cursor-pointer"
             >
               + Add your first one
             </button>
@@ -360,7 +347,7 @@ function SkillSection({
           {items.map((item) => (
             <div
               key={item.id}
-              className={`bg-white rounded-xl p-4 shadow-sm border transition-all ${
+              className={`nisu-card p-4 transition-all ${
                 item.active ? "border-gray-100" : "border-gray-100 opacity-60"
               }`}
             >

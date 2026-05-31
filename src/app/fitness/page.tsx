@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import Link from "next/link";
+import Image from "next/image";
+import PageHeader from "@/components/PageHeader";
+import { NISU_ASSETS } from "@/lib/nisu-assets";
 import type { WorkoutWithExercises, WorkoutExercise } from "@/lib/types";
 import { formatDuration } from "@/lib/helpers";
 import {
@@ -173,20 +175,13 @@ export default function FitnessManagementPage() {
   const previewWorkout = workouts.find((w) => w.id === previewId);
 
   return (
-    <div className="min-h-screen pb-28 md:pb-8">
+    <div className="min-h-screen pb-8">
       <div className="max-w-2xl mx-auto px-4 py-6">
-        {/* Header */}
-        <div className="mb-6">
-          <div className="flex items-center gap-3 mb-1">
-            <span className="text-3xl">💪</span>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
-              Fitness
-            </h1>
-          </div>
-          <p className="text-sm text-gray-400">
-            Create and manage your designated workouts.
-          </p>
-        </div>
+        <PageHeader
+          title="Fitness"
+          section="fitness"
+          subtitle="Create and manage your designated workouts."
+        />
 
         {error && (
           <div className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-xl mb-4">
@@ -194,23 +189,16 @@ export default function FitnessManagementPage() {
           </div>
         )}
 
-        {/* Actions */}
-        <div className="flex gap-3 mb-6">
-          {formMode === "idle" && (
+        {formMode === "idle" && (
+          <div className="mb-6">
             <button
               onClick={startCreate}
-              className="bg-blue-500 text-white text-sm font-bold px-5 py-2.5 rounded-xl hover:bg-blue-600 transition-colors cursor-pointer"
+              className="nisu-cta text-sm px-6 py-2.5 cursor-pointer"
             >
-              + Create New Workout
+              + Create new workout
             </button>
-          )}
-          <Link
-            href="/daily"
-            className="text-sm font-medium text-gray-500 hover:text-gray-800 px-4 py-2.5 rounded-xl hover:bg-gray-100 transition-colors"
-          >
-            ← Daily Routine
-          </Link>
-        </div>
+          </div>
+        )}
 
         {/* Create / Edit Form */}
         {formMode !== "idle" && (
@@ -389,8 +377,14 @@ export default function FitnessManagementPage() {
             <div className="w-8 h-8 border-3 border-blue-200 border-t-blue-500 rounded-full animate-spin" />
           </div>
         ) : workouts.length === 0 ? (
-          <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 text-center">
-            <span className="text-4xl mb-3 block">🏋️</span>
+          <div className="nisu-card p-8 text-center">
+            <Image
+              src={NISU_ASSETS.penguins.fitness}
+              alt=""
+              width={80}
+              height={80}
+              className="w-20 h-20 object-contain mx-auto mb-3"
+            />
             <p className="text-gray-600 font-semibold mb-1">
               No workouts yet
             </p>
@@ -400,9 +394,9 @@ export default function FitnessManagementPage() {
             {formMode === "idle" && (
               <button
                 onClick={startCreate}
-                className="bg-blue-500 text-white text-sm font-bold px-5 py-2.5 rounded-xl hover:bg-blue-600 transition-colors cursor-pointer"
+                className="nisu-cta text-sm px-6 py-2.5 cursor-pointer"
               >
-                + Create Workout
+                + Create new workout
               </button>
             )}
           </div>
@@ -411,7 +405,7 @@ export default function FitnessManagementPage() {
             {workouts.map((w) => (
               <div
                 key={w.id}
-                className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100"
+                className="nisu-card p-5"
               >
                 <div className="flex items-start justify-between mb-2">
                   <div>

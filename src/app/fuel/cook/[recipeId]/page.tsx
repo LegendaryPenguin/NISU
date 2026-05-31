@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import PageHeader from "@/components/PageHeader";
 import type { RecipeWithDetails, RecipeStep } from "@/lib/types";
 import { fetchRecipeById } from "@/lib/fuel-actions";
 
@@ -119,30 +120,25 @@ export default function CookPage() {
     if (currentStepIndex > 0) goToStep(currentStepIndex - 1);
   };
 
-  // ----- Render stages -----
-
   if (stage === "loading") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-emerald-200 border-t-emerald-500 rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-[var(--nisu-pale-pink-2)] border-t-[var(--nisu-coral)] rounded-full animate-spin" />
       </div>
     );
   }
 
   if (stage === "error") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 flex items-center justify-center">
-        <div className="bg-white rounded-3xl shadow-lg p-10 text-center max-w-sm mx-auto">
-          <span className="text-5xl mb-4 block">🔍</span>
-          <p className="text-gray-800 font-bold text-lg mb-2">
-            Recipe not found
-          </p>
-          <Link
-            href="/fuel"
-            className="inline-block mt-3 bg-emerald-500 text-white text-sm font-bold px-6 py-2.5 rounded-xl hover:bg-emerald-600 transition-colors"
-          >
-            Back to Fuel
-          </Link>
+      <div className="min-h-screen">
+        <div className="max-w-xl mx-auto px-4 py-6">
+          <PageHeader title="Cook Recipe" section="fuel" showBack backHref="/fuel" backLabel="Back to Fuel" />
+          <div className="nisu-card p-10 text-center">
+            <p className="text-gray-800 font-bold text-lg mb-2">Recipe not found</p>
+            <Link href="/fuel" className="inline-block mt-3 nisu-cta text-sm px-6 py-2.5">
+              Back to Fuel
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -150,19 +146,15 @@ export default function CookPage() {
 
   if (stage === "no-steps") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 flex items-center justify-center">
-        <div className="bg-white rounded-3xl shadow-lg p-10 text-center max-w-sm mx-auto">
-          <span className="text-5xl mb-4 block">📝</span>
-          <p className="text-gray-800 font-bold text-lg mb-1">
-            This recipe has no steps yet
-          </p>
-          <p className="text-gray-400 text-sm mb-5">
-            Add some steps before you start cooking.
-          </p>
-          <div className="flex gap-3 justify-center">
+      <div className="min-h-screen">
+        <div className="max-w-xl mx-auto px-4 py-6">
+          <PageHeader title="Cook Recipe" section="fuel" showBack backHref="/fuel" backLabel="Back to Fuel" />
+          <div className="nisu-card p-10 text-center">
+            <p className="text-gray-800 font-bold text-lg mb-1">This recipe has no steps yet</p>
+            <p className="text-gray-400 text-sm mb-5">Add some steps before you start cooking.</p>
             <Link
               href="/fuel"
-              className="text-sm font-medium text-gray-500 px-5 py-2.5 rounded-xl hover:bg-gray-100 transition-colors"
+              className="text-sm font-semibold text-[var(--nisu-coral)] hover:opacity-80 transition-opacity"
             >
               Back to Fuel
             </Link>
@@ -174,42 +166,36 @@ export default function CookPage() {
 
   if (stage === "done" && recipe) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 flex items-center justify-center px-4">
-        <div className="bg-white rounded-3xl shadow-xl p-10 text-center max-w-md mx-auto border border-emerald-100">
-          <span className="text-6xl mb-5 block">🎉</span>
-          <p className="text-gray-800 font-extrabold text-xl mb-1">
-            Nice work!
-          </p>
-          <p className="text-gray-500 text-sm mb-2">
-            You finished cooking:
-          </p>
-          <p className="text-emerald-600 font-bold text-lg mb-6">
-            {recipe.name}
-          </p>
-          <div className="flex gap-3 justify-center flex-wrap">
-            <button
-              onClick={() => {
-                setCurrentStepIndex(0);
-                initTimerForStep(recipe.recipe_steps[0]);
-                setStage("cooking");
-              }}
-              className="bg-emerald-500 text-white text-sm font-bold px-6 py-2.5 rounded-xl hover:bg-emerald-600 transition-colors cursor-pointer"
-            >
-              Cook Again
-            </button>
-            <Link
-              href="/fuel"
-              className="text-sm font-medium text-gray-500 px-5 py-2.5 rounded-xl hover:bg-gray-100 transition-colors"
-            >
-              Back to Recipes
-            </Link>
+      <div className="min-h-screen">
+        <div className="max-w-xl mx-auto px-4 py-6">
+          <div className="nisu-card p-10 text-center">
+            <span className="text-6xl mb-5 block">🎉</span>
+            <p className="text-gray-800 font-extrabold text-xl mb-1">Nice work!</p>
+            <p className="text-gray-500 text-sm mb-2">You finished cooking:</p>
+            <p className="text-[var(--nisu-coral)] font-bold text-lg mb-6">{recipe.name}</p>
+            <div className="flex gap-3 justify-center flex-wrap">
+              <button
+                onClick={() => {
+                  setCurrentStepIndex(0);
+                  initTimerForStep(recipe.recipe_steps[0]);
+                  setStage("cooking");
+                }}
+                className="nisu-cta text-sm px-6 py-2.5 cursor-pointer"
+              >
+                Cook Again
+              </button>
+              <Link
+                href="/fuel"
+                className="text-sm font-semibold text-[var(--nisu-coral)] px-5 py-2.5 hover:opacity-80 transition-opacity"
+              >
+                Back to Recipes
+              </Link>
+            </div>
           </div>
         </div>
       </div>
     );
   }
-
-  // ----- Cooking stage -----
 
   if (!recipe) return null;
 
@@ -221,66 +207,54 @@ export default function CookPage() {
   const isLastStep = currentStepIndex === totalSteps - 1;
 
   return (
-    <div className="min-h-screen pb-8">
+    <div className="min-h-screen">
       <div className="max-w-xl mx-auto px-4 py-6">
-        {/* Top nav */}
-        <div className="flex items-center justify-between mb-6">
-          <Link
-            href="/fuel"
-            className="text-sm text-gray-500 hover:text-gray-800 font-medium transition-colors"
-          >
-            ← Recipes
-          </Link>
-          <p className="text-xs text-gray-400">
-            Step {currentStepIndex + 1} of {totalSteps}
-          </p>
-        </div>
+        <PageHeader
+          title={recipe.name}
+          section="fuel"
+          subtitle={`Step ${currentStepIndex + 1} of ${totalSteps}`}
+          showBack
+          backHref="/fuel"
+          backLabel="Back to Fuel"
+        />
 
-        {/* Recipe name */}
-        <h1 className="text-xl sm:text-2xl font-extrabold text-gray-900 text-center mb-5 tracking-tight">
-          {recipe.name}
-        </h1>
-
-        {/* Progress bar */}
         <div className="w-full bg-gray-200 rounded-full h-2 mb-8 overflow-hidden">
           <div
-            className="bg-emerald-500 h-full rounded-full transition-all duration-500 ease-out"
+            className="bg-[var(--nisu-sky)] h-full rounded-full transition-all duration-500 ease-out"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
 
-        {/* Step card */}
-        <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-6 sm:p-8 mb-6">
-          <p className="text-xs font-bold text-emerald-500 mb-3 uppercase tracking-wide">
+        <div className="nisu-card p-6 sm:p-8 mb-6">
+          <p className="text-xs font-bold text-[var(--nisu-coral)] mb-3 uppercase tracking-wide">
             Step {currentStepIndex + 1}
           </p>
           <p className="text-lg sm:text-xl text-gray-800 font-semibold leading-relaxed mb-6">
             {step.instruction}
           </p>
 
-          {/* Timer */}
           {hasTimer && (
-            <div className="bg-emerald-50 rounded-2xl p-5 text-center mb-2">
+            <div
+              className="rounded-2xl p-5 text-center mb-2"
+              style={{ backgroundColor: "var(--nisu-pale-pink)" }}
+            >
               <p
                 className={`text-4xl sm:text-5xl font-mono font-bold tracking-wider mb-4 ${
-                  timerDone ? "text-emerald-500" : "text-gray-800"
+                  timerDone ? "text-[var(--nisu-coral)]" : "text-gray-800"
                 }`}
               >
                 {timerDone ? "Time's up!" : formatTimer(timerSeconds)}
               </p>
               <div className="flex gap-3 justify-center">
                 {!timerRunning && !timerDone && (
-                  <button
-                    onClick={startTimer}
-                    className="bg-emerald-500 text-white text-sm font-bold px-5 py-2 rounded-xl hover:bg-emerald-600 transition-colors cursor-pointer"
-                  >
+                  <button onClick={startTimer} className="nisu-cta text-sm px-5 py-2 cursor-pointer">
                     Start
                   </button>
                 )}
                 {timerRunning && (
                   <button
                     onClick={pauseTimer}
-                    className="bg-yellow-500 text-white text-sm font-bold px-5 py-2 rounded-xl hover:bg-yellow-600 transition-colors cursor-pointer"
+                    className="bg-[var(--nisu-amber)] text-white text-sm font-bold px-5 py-2 rounded-full hover:opacity-90 transition-opacity cursor-pointer"
                   >
                     Pause
                   </button>
@@ -296,7 +270,6 @@ export default function CookPage() {
           )}
         </div>
 
-        {/* Navigation buttons */}
         <div className="flex gap-3 justify-center flex-wrap">
           {currentStepIndex > 0 && (
             <button
@@ -306,10 +279,7 @@ export default function CookPage() {
               ← Back
             </button>
           )}
-          <button
-            onClick={handleNext}
-            className="bg-emerald-500 text-white text-sm font-bold px-6 py-2.5 rounded-xl hover:bg-emerald-600 transition-colors cursor-pointer"
-          >
+          <button onClick={handleNext} className="nisu-cta text-sm px-6 py-2.5 cursor-pointer">
             {isLastStep ? "Finish Recipe" : "Done / Next"}
           </button>
           {!isLastStep && (

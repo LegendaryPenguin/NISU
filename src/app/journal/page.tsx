@@ -1,5 +1,8 @@
 "use client";
 
+import Image from "next/image";
+import { NISU_ASSETS } from "@/lib/nisu-assets";
+
 import { useState, useEffect, useCallback } from "react";
 import PageHeader from "@/components/PageHeader";
 import type { JournalEntry } from "@/lib/types";
@@ -153,7 +156,7 @@ export default function JournalPage() {
   const pastEntries = entries.filter((e) => e.date_key !== getTodayKey());
 
   return (
-    <div className="min-h-screen pb-8">
+    <div className="min-h-screen">
       <div className="max-w-4xl mx-auto px-4 py-6">
         <PageHeader
           title="Brain Dump"
@@ -182,7 +185,14 @@ export default function JournalPage() {
 
         {/* Success message */}
         {successMsg && (
-          <div className="bg-emerald-50 text-emerald-700 text-sm px-4 py-3 rounded-xl mb-4 border border-emerald-100">
+          <div
+            className="text-sm px-4 py-3 rounded-xl mb-4 border"
+            style={{
+              backgroundColor: "var(--nisu-pale-pink)",
+              color: "var(--nisu-coral)",
+              borderColor: "var(--nisu-pale-pink-2)",
+            }}
+          >
             {successMsg}
           </div>
         )}
@@ -304,7 +314,13 @@ export default function JournalPage() {
         {/* Sticky Notes Section */}
         <div className="mb-4">
           <h2 className="font-bold text-gray-800 text-lg flex items-center gap-2">
-            <span className="text-xl">🗒️</span>
+            <Image
+              src={NISU_ASSETS.icons.journal}
+              alt=""
+              width={24}
+              height={24}
+              className="w-6 h-6 object-contain"
+            />
             Your Sticky Notes
           </h2>
         </div>
@@ -315,7 +331,13 @@ export default function JournalPage() {
           </div>
         ) : entries.length === 0 ? (
           <div className="nisu-card p-10 text-center">
-            <span className="text-5xl mb-4 block">🗒️</span>
+            <Image
+              src={NISU_ASSETS.icons.journal}
+              alt=""
+              width={64}
+              height={64}
+              className="w-16 h-16 object-contain mx-auto mb-4 opacity-60"
+            />
             <p className="text-gray-700 font-semibold text-lg mb-1">
               No sticky notes yet
             </p>

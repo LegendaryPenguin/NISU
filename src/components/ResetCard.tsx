@@ -17,11 +17,7 @@ export default function ResetCard() {
   const { reset } = progress;
 
   return (
-    <div
-      className={`rounded-2xl p-5 shadow-md transition-all duration-300 nisu-section-card-reset ${
-        reset.completed ? "opacity-95" : ""
-      }`}
-    >
+    <div className={`nisu-card p-5 ${reset.completed ? "opacity-95" : ""}`}>
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
           <Image

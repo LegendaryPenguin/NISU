@@ -18,11 +18,7 @@ export default function FuelCard() {
   const overSugarLimit = fuel.sugaryFoods > 2;
 
   return (
-    <div
-      className={`rounded-2xl p-5 shadow-md transition-all duration-300 nisu-section-card-fuel ${
-        fuel.completed ? "opacity-95" : ""
-      }`}
-    >
+    <div className={`nisu-card p-5 ${fuel.completed ? "opacity-95" : ""}`}>
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
           <Image
@@ -40,7 +36,10 @@ export default function FuelCard() {
           </div>
         </div>
         {fuel.completed && (
-          <span className="bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+          <span
+            className="text-white text-xs font-bold px-3 py-1 rounded-full"
+            style={{ backgroundColor: "var(--nisu-coral)" }}
+          >
             Complete
           </span>
         )}
@@ -52,8 +51,8 @@ export default function FuelCard() {
         <FuelCheckbox
           checked={fuel.protein}
           onChange={toggleProtein}
-          label="Protein Goal"
-          sublabel="Hit your daily protein target"
+          label="Protien Goal"
+          sublabel="Hit your daily protien target"
         />
         <FuelCheckbox
           checked={fuel.water}
@@ -113,7 +112,7 @@ export default function FuelCard() {
 
       <Link
         href="/fuel"
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 hover:text-emerald-800 transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--nisu-coral)] hover:opacity-80 transition-opacity"
       >
         Open Fuel Page →
       </Link>
@@ -141,10 +140,11 @@ function FuelCheckbox({
     >
       <div
         className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200 ${
-          checked
-            ? "bg-emerald-500 border-transparent"
-            : "border-gray-300 bg-white"
+          checked ? "border-transparent" : "border-gray-300 bg-white"
         }`}
+        style={
+          checked ? { backgroundColor: "var(--nisu-coral)" } : undefined
+        }
       >
         {checked && (
           <svg

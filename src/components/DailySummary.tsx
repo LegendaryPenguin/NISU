@@ -5,14 +5,11 @@ import { useDailyProgress } from "@/context/DailyProgressContext";
 import { PillarName } from "@/lib/types";
 import { NISU_ASSETS } from "@/lib/nisu-assets";
 
-const PILLAR_META: Record<
-  PillarName,
-  { icon: string; label: string }
-> = {
-  fitness: { icon: NISU_ASSETS.icons.fitness, label: "Fitness" },
-  fuel: { icon: NISU_ASSETS.icons.fuel, label: "Fuel" },
-  skill: { icon: NISU_ASSETS.icons.skill, label: "Skill" },
-  reset: { icon: NISU_ASSETS.penguins.reset, label: "Reset" },
+const PILLAR_META: Record<PillarName, { emoji: string; label: string }> = {
+  fitness: { emoji: "💪", label: "Fitness" },
+  fuel: { emoji: "🥗", label: "Fuel" },
+  skill: { emoji: "🧠", label: "Skill" },
+  reset: { emoji: "🌙", label: "Reset" },
 };
 
 export default function DailySummary() {
@@ -58,16 +55,9 @@ export default function DailySummary() {
             {completed.map((p) => (
               <span
                 key={p}
-                className="inline-flex items-center gap-1.5 text-xs font-semibold bg-[var(--nisu-pale-blue)] text-gray-700 px-2.5 py-1 rounded-full border border-[var(--nisu-pale-pink-2)]"
+                className="inline-flex items-center gap-1 text-xs font-semibold bg-[var(--nisu-pale-blue)] text-gray-700 px-2.5 py-1 rounded-full border border-[var(--nisu-pale-pink-2)]"
               >
-                <Image
-                  src={PILLAR_META[p].icon}
-                  alt=""
-                  width={16}
-                  height={16}
-                  className="w-4 h-4 object-contain"
-                />
-                {PILLAR_META[p].label}
+                {PILLAR_META[p].emoji} {PILLAR_META[p].label}
               </span>
             ))}
           </div>
@@ -81,16 +71,9 @@ export default function DailySummary() {
             {remaining.map((p) => (
               <span
                 key={p}
-                className="inline-flex items-center gap-1.5 text-xs font-medium bg-[var(--nisu-pale-pink)] text-gray-500 px-2.5 py-1 rounded-full border border-[var(--nisu-pale-pink-2)]"
+                className="inline-flex items-center gap-1 text-xs font-medium bg-[var(--nisu-pale-pink)] text-gray-500 px-2.5 py-1 rounded-full border border-[var(--nisu-pale-pink-2)]"
               >
-                <Image
-                  src={PILLAR_META[p].icon}
-                  alt=""
-                  width={16}
-                  height={16}
-                  className="w-4 h-4 object-contain opacity-60"
-                />
-                {PILLAR_META[p].label}
+                {PILLAR_META[p].emoji} {PILLAR_META[p].label}
               </span>
             ))}
           </div>

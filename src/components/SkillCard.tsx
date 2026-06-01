@@ -202,7 +202,7 @@ export default function SkillCard() {
             className="flex items-center justify-between gap-3 w-full px-4 py-3 rounded-xl nisu-row-action-skill text-left cursor-pointer hover:opacity-90"
           >
             <div>
-              <p className="text-sm font-semibold text-gray-800">
+              <p className="text-sm font-bold text-gray-900">
                 Complete Main Skill
               </p>
               <p className="text-xs nisu-text-muted">
@@ -216,11 +216,13 @@ export default function SkillCard() {
             <button
               onClick={handleSpin}
               disabled={submitting}
-              className="flex items-center justify-between gap-3 w-full px-4 py-3 rounded-xl nisu-cta-bold text-left cursor-pointer hover:opacity-90"
+              className="flex items-center justify-between gap-3 w-full px-4 py-3 rounded-xl nisu-row-action-skill text-left cursor-pointer hover:opacity-90"
             >
               <div>
-                <p className="text-sm font-semibold">Spin Skill Wheel</p>
-                <p className="text-xs opacity-90">
+                <p className="text-sm font-bold text-gray-900">
+                  Spin Skill Wheel
+                </p>
+                <p className="text-xs nisu-text-muted">
                   Get a random challenge for today
                 </p>
               </div>

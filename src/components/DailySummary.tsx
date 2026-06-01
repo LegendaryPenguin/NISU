@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { useDailyProgress } from "@/context/DailyProgressContext";
-import { PillarName } from "@/lib/types";
+import { STREAK_PILLAR_THRESHOLD } from "@/lib/streak-config";
+import type { PillarName } from "@/lib/types";
 import { NISU_ASSETS } from "@/lib/nisu-assets";
 
 const PILLAR_META: Record<PillarName, { emoji: string; label: string }> = {
@@ -20,9 +21,7 @@ export default function DailySummary() {
 
   if (overallProgress === 4) {
     return (
-      <div
-        className="mt-8 ml-2 nisu-stat-bold rounded-2xl p-6 text-center"
-      >
+      <div className="mt-8 ml-2 nisu-stat-bold rounded-2xl p-6 text-center">
         <Image
           src={NISU_ASSETS.penguins.daily}
           alt=""
@@ -35,6 +34,28 @@ export default function DailySummary() {
         </p>
         <p className="text-sm nisu-text-muted mt-1">
           You crushed it today. Rest well and do it again tomorrow.
+        </p>
+      </div>
+    );
+  }
+
+  if (overallProgress >= STREAK_PILLAR_THRESHOLD) {
+    return (
+      <div className="mt-8 ml-2 nisu-stat-light rounded-2xl p-6 text-center border-2 border-[var(--nisu-border)]">
+        <Image
+          src={NISU_ASSETS.penguins.streak}
+          alt=""
+          width={64}
+          height={64}
+          className="w-16 h-16 object-contain mx-auto mb-2"
+        />
+        <p className="text-lg font-extrabold text-gray-800">
+          Streak day complete ({overallProgress}/4)
+        </p>
+        <p className="text-sm nisu-text-muted mt-1">
+          {overallProgress === 3
+            ? "You hit the 3-pillar goal. Optional: finish one more pillar."
+            : "Keep going for a perfect day."}
         </p>
       </div>
     );
@@ -75,8 +96,9 @@ export default function DailySummary() {
             ))}
           </div>
           <p className="text-xs nisu-text-muted mt-3 font-semibold">
-            {remaining.length} more pillar
-            {remaining.length > 1 ? "s" : ""} to complete today.
+            {STREAK_PILLAR_THRESHOLD - overallProgress} more pillar
+            {STREAK_PILLAR_THRESHOLD - overallProgress > 1 ? "s" : ""} needed
+            for today&apos;s streak.
           </p>
         </div>
       )}

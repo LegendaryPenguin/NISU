@@ -1,4 +1,5 @@
 import { DailyProgress } from "./types";
+import { STREAK_PILLAR_THRESHOLD } from "./streak-config";
 
 export function getTodayKey(): string {
   const now = new Date();
@@ -85,6 +86,12 @@ export function calculateOverallProgress(progress: DailyProgress): number {
   if (progress.reset.completed) count++;
   return count;
 }
+
+export function isStreakDayComplete(progress: DailyProgress): boolean {
+  return calculateOverallProgress(progress) >= STREAK_PILLAR_THRESHOLD;
+}
+
+export { STREAK_PILLAR_THRESHOLD } from "./streak-config";
 
 /** Get the Monday of the week containing the given date */
 function getWeekMonday(dateStr: string): string {

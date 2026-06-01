@@ -48,27 +48,36 @@ export default function FuelCard() {
 
       <p className="text-xs nisu-text-caption mb-3">Mandatory:</p>
 
-      <div className="space-y-1 mb-4">
-        <FuelCheckbox
+      <div className="space-y-2 mb-4">
+        <FuelActionRow
           checked={fuel.protein}
-          onChange={toggleProtein}
-          label="Protien Goal"
-          sublabel="Hit your daily protien target"
+          onClick={toggleProtein}
+          label="Protein Goal"
+          sublabel="Hit your daily protein target"
+          emoji="🥩"
         />
-        <FuelCheckbox
+        <FuelActionRow
           checked={fuel.water}
-          onChange={toggleWater}
+          onClick={toggleWater}
           label="Water Goal"
           sublabel="Stay hydrated all day"
+          emoji="💧"
         />
       </div>
 
       <div className="mb-4">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs nisu-text-caption">
-            Sugary foods today:
-          </span>
-          <div className="flex items-center gap-2">
+        <div
+          className={`flex items-center justify-between gap-3 w-full px-4 py-3 rounded-xl nisu-row-action-fuel ${
+            overSugarLimit ? "ring-2 ring-[var(--nisu-coral)]" : ""
+          }`}
+        >
+          <div>
+            <p className="text-sm font-bold text-gray-900">
+              Sugary foods today
+            </p>
+            <p className="text-xs nisu-text-muted">Track up to 2 per day</p>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
             <button
               onClick={decrementSugar}
               className="w-8 h-8 flex items-center justify-center transition-opacity hover:opacity-80 cursor-pointer"
@@ -105,7 +114,7 @@ export default function FuelCard() {
           </div>
         </div>
         {overSugarLimit && (
-          <div className="text-xs px-3 py-2 rounded-lg bg-[var(--nisu-pale-pink)] text-[var(--nisu-coral)] font-medium">
+          <div className="text-xs px-3 py-2 rounded-lg bg-[var(--nisu-pale-pink)] text-[var(--nisu-coral)] font-medium mt-2">
             Over today&apos;s sugar limit — try to dial it back.
           </div>
         )}
@@ -122,60 +131,39 @@ export default function FuelCard() {
   );
 }
 
-function FuelCheckbox({
+function FuelActionRow({
   checked,
-  onChange,
+  onClick,
   label,
   sublabel,
+  emoji,
 }: {
   checked: boolean;
-  onChange: () => void;
+  onClick: () => void;
   label: string;
-  sublabel?: string;
+  sublabel: string;
+  emoji: string;
 }) {
   return (
     <button
-      onClick={onChange}
-      className={`flex items-center gap-3 w-full text-left px-3 py-2.5 rounded-xl transition-all duration-200 hover:bg-black/[0.03] cursor-pointer ${
-        checked ? "bg-black/[0.02]" : ""
+      onClick={onClick}
+      className={`flex items-center justify-between gap-3 w-full px-4 py-3 rounded-xl text-left cursor-pointer hover:opacity-90 transition-opacity ${
+        checked
+          ? "nisu-row-action-fuel opacity-80 ring-2 ring-[var(--nisu-coral)]"
+          : "nisu-row-action-fuel"
       }`}
     >
-      <div
-        className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200 ${
-          checked ? "border-transparent" : "border-gray-300 bg-white"
-        }`}
-        style={
-          checked ? { backgroundColor: "var(--nisu-coral)" } : undefined
-        }
-      >
-        {checked && (
-          <svg
-            className="w-3 h-3 text-white"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={3}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M5 13l4 4L19 7"
-            />
-          </svg>
-        )}
-      </div>
-      <div className="flex flex-col">
-        <span
-          className={`text-sm font-medium transition-all duration-200 ${
-            checked ? "line-through text-gray-400" : "text-gray-700"
+      <div>
+        <p
+          className={`text-sm font-bold ${
+            checked ? "line-through text-gray-500" : "text-gray-900"
           }`}
         >
           {label}
-        </span>
-        {sublabel && (
-          <span className="text-xs nisu-text-muted">{sublabel}</span>
-        )}
+        </p>
+        <p className="text-xs nisu-text-muted">{sublabel}</p>
       </div>
+      <span className="text-lg flex-shrink-0">{checked ? "✅" : emoji}</span>
     </button>
   );
 }

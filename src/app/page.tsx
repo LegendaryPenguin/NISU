@@ -4,7 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useStreaks } from "@/context/StreakContext";
 import { NISU_ASSETS } from "@/lib/nisu-assets";
+import { STREAK_PILLAR_THRESHOLD } from "@/lib/streak-config";
 
 function getGreeting() {
   const h = new Date().getHours();
@@ -13,13 +15,11 @@ function getGreeting() {
   return "Good evening";
 }
 
-const PLACEHOLDER_STREAK = 18;
-const PLACEHOLDER_PARTNER = 14;
-const PLACEHOLDER_TOGETHER = 12;
-
 export default function LandingPage() {
   const greeting = useMemo(() => getGreeting(), []);
   const { displayName, partnerName } = useAuth();
+  const { yourStreak, partnerStreak, togetherCount, togetherStreak, isLoaded } =
+    useStreaks();
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -39,7 +39,7 @@ export default function LandingPage() {
             <span className="text-[var(--nisu-coral)]">{displayName}!</span>
           </h1>
           <p className="mt-3 text-gray-700 text-sm font-medium">
-            Every small step today builds your best summer.{" "}
+            Complete {STREAK_PILLAR_THRESHOLD} of 4 pillars to keep your streak.{" "}
             <span>&#10024;</span>
           </p>
           <Link
@@ -74,7 +74,7 @@ export default function LandingPage() {
                 />
               </div>
               <p className="text-3xl font-extrabold leading-none mt-0.5 nisu-stat-num-coral">
-                {PLACEHOLDER_STREAK}{" "}
+                {isLoaded ? yourStreak : "—"}{" "}
                 <span className="text-sm font-bold text-gray-900">days</span>
               </p>
             </div>
@@ -102,7 +102,9 @@ export default function LandingPage() {
                 />
               </div>
               <p className="text-3xl font-extrabold leading-none mt-0.5">
-                <span className="nisu-stat-num-on-bold">{PLACEHOLDER_PARTNER}</span>{" "}
+                <span className="nisu-stat-num-on-bold">
+                  {isLoaded ? togetherStreak : "—"}
+                </span>{" "}
                 <span className="text-sm font-bold text-gray-900">days</span>
               </p>
             </div>
@@ -119,8 +121,11 @@ export default function LandingPage() {
               <span className="text-sm font-bold text-gray-900">
                 Completed together
               </span>
+              <p className="text-xs nisu-text-muted mt-0.5">
+                {partnerName}&apos;s streak: {isLoaded ? partnerStreak : "—"} days
+              </p>
               <p className="text-3xl font-extrabold leading-none mt-0.5 nisu-stat-num-amber">
-                {PLACEHOLDER_TOGETHER}{" "}
+                {isLoaded ? togetherCount : "—"}{" "}
                 <span className="text-sm font-bold text-gray-900">days</span>
               </p>
             </div>

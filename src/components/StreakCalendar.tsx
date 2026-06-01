@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState, useMemo } from "react";
 import { NISU_ASSETS } from "@/lib/nisu-assets";
+import { getTodayKey } from "@/lib/helpers";
 
 interface StreakCalendarProps {
   youDates?: string[];
@@ -11,7 +12,7 @@ interface StreakCalendarProps {
   partnerLabel?: string;
 }
 
-const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const DAYS = ["S", "M", "T", "W", "T", "F", "S"];
 
 function getCalendarGrid(year: number, month: number) {
   const firstDay = new Date(year, month, 1).getDay();
@@ -66,6 +67,7 @@ export default function StreakCalendar({
   youLabel = "You",
   partnerLabel = "Partner",
 }: StreakCalendarProps) {
+  const todayKey = getTodayKey();
   const now = new Date();
   const [viewMonth, setViewMonth] = useState(now.getMonth());
   const [viewYear, setViewYear] = useState(now.getFullYear());
@@ -77,6 +79,15 @@ export default function StreakCalendar({
     () => getCalendarGrid(viewYear, viewMonth),
     [viewYear, viewMonth]
   );
+
+  const monthSuccessCount = useMemo(() => {
+    const prefix = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-`;
+    let n = 0;
+    for (const d of youDates) {
+      if (d.startsWith(prefix)) n++;
+    }
+    return n;
+  }, [youDates, viewYear, viewMonth]);
 
   function prevMonth() {
     if (viewMonth === 0) {
@@ -97,104 +108,178 @@ export default function StreakCalendar({
   }
 
   return (
-    <div className="nisu-stat-light rounded-2xl p-5 w-full max-w-md border-2 border-[var(--nisu-border)]">
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <span className="text-lg">📅</span>
-          <span className="font-bold text-gray-800 text-sm">
-            Streak Calendar
-          </span>
-        </div>
-        <div className="flex items-center gap-3 text-xs">
-          <span className="flex items-center gap-1">
-            <Image
-              src={NISU_ASSETS.penguins.streak}
-              alt=""
-              width={14}
-              height={14}
-              className="w-3.5 h-3.5 object-contain"
-            />
-            {youLabel}
-          </span>
-          <span className="flex items-center gap-1">
-            <Image
-              src={NISU_ASSETS.penguins.partnerStreak}
-              alt=""
-              width={14}
-              height={14}
-              className="w-3.5 h-3.5 object-contain"
-            />
-            {partnerLabel}
-          </span>
-        </div>
-      </div>
-
-      <div className="flex items-center justify-center gap-4 mb-3">
-        <button
-          onClick={prevMonth}
-          className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-gray-100 transition text-gray-500 cursor-pointer"
-        >
-          &lt;
-        </button>
-        <span className="font-semibold text-gray-800 text-sm min-w-[130px] text-center">
-          {MONTH_NAMES[viewMonth]} {viewYear}
+    <div className="nisu-stat-light rounded-2xl p-4 w-full max-w-md border-2 border-[var(--nisu-border)] shadow-[var(--nisu-shadow)]">
+      <div className="flex items-center gap-2 mb-3">
+        <span className="text-xl" aria-hidden>
+          📅
         </span>
-        <button
-          onClick={nextMonth}
-          className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-gray-100 transition text-gray-500 cursor-pointer"
-        >
-          &gt;
-        </button>
+        <div className="flex-1 min-w-0">
+          <h2 className="font-extrabold text-gray-900 text-base leading-tight">
+            Streak Calendar
+          </h2>
+          <p className="text-[11px] nisu-text-muted font-medium">
+            {monthSuccessCount > 0
+              ? `${monthSuccessCount} win${monthSuccessCount === 1 ? "" : "s"} this month`
+              : "Complete 3/4 pillars to mark a day"}
+          </p>
+        </div>
       </div>
 
-      <div className="grid grid-cols-7 mb-1">
-        {DAYS.map((d) => (
-          <div
-            key={d}
-            className="text-center text-[11px] font-semibold text-gray-400 py-1"
+      <div className="flex flex-wrap gap-2 mb-3">
+        <LegendPill
+          icon={NISU_ASSETS.penguins.streak}
+          label={youLabel}
+          tint="coral"
+        />
+        <LegendPill
+          icon={NISU_ASSETS.penguins.partnerStreak}
+          label={partnerLabel}
+          tint="sky"
+        />
+        <LegendPill icon="" label="Both" tint="both" dual />
+      </div>
+
+      <div className="bg-white rounded-xl border-2 border-[var(--nisu-border)] p-3">
+        <div className="flex items-center justify-between gap-2 mb-3">
+          <button
+            type="button"
+            onClick={prevMonth}
+            aria-label="Previous month"
+            className="w-9 h-9 flex items-center justify-center rounded-full border-2 border-[var(--nisu-border)] bg-[var(--nisu-pale-pink)] font-bold text-gray-800 hover:opacity-90 cursor-pointer"
           >
-            {d}
-          </div>
-        ))}
-      </div>
+            ‹
+          </button>
+          <span className="font-extrabold text-gray-900 text-sm text-center flex-1">
+            {MONTH_NAMES[viewMonth]} {viewYear}
+          </span>
+          <button
+            type="button"
+            onClick={nextMonth}
+            aria-label="Next month"
+            className="w-9 h-9 flex items-center justify-center rounded-full border-2 border-[var(--nisu-border)] bg-[var(--nisu-pale-pink)] font-bold text-gray-800 hover:opacity-90 cursor-pointer"
+          >
+            ›
+          </button>
+        </div>
 
-      <div className="grid grid-cols-7">
-        {cells.map((cell, i) => {
-          const hasYou = youSet.has(cell.dateKey);
-          const hasPartner = partnerSet.has(cell.dateKey);
-
-          return (
+        <div className="grid grid-cols-7 gap-1 mb-1">
+          {DAYS.map((d, i) => (
             <div
-              key={i}
-              className={`flex flex-col items-center py-1.5 ${
-                cell.currentMonth ? "text-gray-700" : "text-gray-300"
-              }`}
+              key={`${d}-${i}`}
+              className="text-center text-[10px] font-extrabold text-gray-400 py-0.5"
             >
-              <span className="text-xs font-medium">{cell.day}</span>
-              <div className="flex items-center justify-center gap-0.5 mt-0.5 min-h-[18px]">
-                {hasYou && (
-                  <Image
-                    src={NISU_ASSETS.penguins.streak}
-                    alt=""
-                    width={16}
-                    height={16}
-                    className="w-4 h-4 object-contain"
-                  />
-                )}
-                {hasPartner && (
-                  <Image
-                    src={NISU_ASSETS.penguins.partnerStreak}
-                    alt=""
-                    width={16}
-                    height={16}
-                    className="w-4 h-4 object-contain"
-                  />
-                )}
-              </div>
+              {d}
             </div>
-          );
-        })}
+          ))}
+        </div>
+
+        <div className="grid grid-cols-7 gap-1">
+          {cells.map((cell) => {
+            const hasYou = youSet.has(cell.dateKey);
+            const hasPartner = partnerSet.has(cell.dateKey);
+            const isToday = cell.dateKey === todayKey;
+            const both = hasYou && hasPartner;
+
+            return (
+              <div
+                key={cell.dateKey}
+                className={[
+                  "flex flex-col items-center justify-center rounded-lg min-h-[52px] p-0.5 transition-colors",
+                  !cell.currentMonth && "opacity-35",
+                  cell.currentMonth && !hasYou && !hasPartner && "bg-gray-50/80",
+                  hasYou && !hasPartner && "bg-[var(--nisu-pale-pink)]",
+                  hasPartner && !hasYou && "bg-[var(--nisu-pale-blue)]",
+                  both && "bg-gradient-to-br from-[var(--nisu-pale-pink)] to-[var(--nisu-pale-blue)]",
+                  isToday && "ring-2 ring-[var(--nisu-coral)] ring-offset-1",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+              >
+                <span
+                  className={`text-[11px] font-bold leading-none ${
+                    isToday ? "text-[var(--nisu-coral)]" : "text-gray-800"
+                  }`}
+                >
+                  {cell.day}
+                </span>
+                <div className="flex items-center justify-center gap-px mt-1 min-h-[22px]">
+                  {hasYou && (
+                    <Image
+                      src={NISU_ASSETS.penguins.streak}
+                      alt=""
+                      width={20}
+                      height={20}
+                      className="w-5 h-5 object-contain drop-shadow-sm"
+                    />
+                  )}
+                  {hasPartner && (
+                    <Image
+                      src={NISU_ASSETS.penguins.partnerStreak}
+                      alt=""
+                      width={20}
+                      height={20}
+                      className="w-5 h-5 object-contain drop-shadow-sm"
+                    />
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
+  );
+}
+
+function LegendPill({
+  icon,
+  label,
+  tint,
+  dual,
+}: {
+  icon: string;
+  label: string;
+  tint: "coral" | "sky" | "both";
+  dual?: boolean;
+}) {
+  const bg =
+    tint === "coral"
+      ? "bg-[var(--nisu-pale-pink)]"
+      : tint === "sky"
+        ? "bg-[var(--nisu-pale-blue)]"
+        : "bg-gradient-to-r from-[var(--nisu-pale-pink)] to-[var(--nisu-pale-blue)]";
+
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-[var(--nisu-border)] text-[11px] font-bold text-gray-800 ${bg}`}
+    >
+      {dual ? (
+        <span className="flex -space-x-1">
+          <Image
+            src={NISU_ASSETS.penguins.streak}
+            alt=""
+            width={14}
+            height={14}
+            className="w-3.5 h-3.5 object-contain"
+          />
+          <Image
+            src={NISU_ASSETS.penguins.partnerStreak}
+            alt=""
+            width={14}
+            height={14}
+            className="w-3.5 h-3.5 object-contain"
+          />
+        </span>
+      ) : icon ? (
+        <Image
+          src={icon}
+          alt=""
+          width={14}
+          height={14}
+          className="w-3.5 h-3.5 object-contain"
+        />
+      ) : null}
+      {label}
+    </span>
   );
 }

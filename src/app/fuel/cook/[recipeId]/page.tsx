@@ -1,19 +1,24 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
-import type { RecipeWithDetails, RecipeStep } from "@/lib/types";
+import CookOverview from "@/components/cook/CookOverview";
+import PrepChecklist from "@/components/cook/PrepChecklist";
+import CookStepRunner from "@/components/cook/CookStepRunner";
+import CookDone from "@/components/cook/CookDone";
+import type { RecipeWithDetails } from "@/lib/types";
 import { fetchRecipeById } from "@/lib/fuel-actions";
 
-function formatTimer(totalSeconds: number): string {
-  const m = Math.floor(totalSeconds / 60);
-  const s = totalSeconds % 60;
-  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-}
-
-type CookStage = "loading" | "error" | "no-steps" | "cooking" | "done";
+type CookStage =
+  | "loading"
+  | "error"
+  | "no-steps"
+  | "overview"
+  | "prep"
+  | "cooking"
+  | "done";
 
 export default function CookPage() {
   const params = useParams();
@@ -21,12 +26,7 @@ export default function CookPage() {
 
   const [recipe, setRecipe] = useState<RecipeWithDetails | null>(null);
   const [stage, setStage] = useState<CookStage>("loading");
-
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [timerSeconds, setTimerSeconds] = useState(0);
-  const [timerRunning, setTimerRunning] = useState(false);
-  const [timerDone, setTimerDone] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [stepIndex, setStepIndex] = useState(0);
 
   useEffect(() => {
     (async () => {
@@ -41,83 +41,16 @@ export default function CookPage() {
           setStage("no-steps");
           return;
         }
-        setStage("cooking");
-        initTimerForStep(data.recipe_steps[0]);
+        setStage("overview");
       } catch {
         setStage("error");
       }
     })();
-    return () => clearTimer();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recipeId]);
 
-  const clearTimer = useCallback(() => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-  }, []);
-
-  const initTimerForStep = (step: RecipeStep) => {
-    clearTimer();
-    setTimerRunning(false);
-    setTimerDone(false);
-    if (step.timer_seconds && step.timer_seconds > 0) {
-      setTimerSeconds(step.timer_seconds);
-    } else {
-      setTimerSeconds(0);
-    }
-  };
-
-  const startTimer = () => {
-    if (timerDone || timerSeconds <= 0) return;
-    setTimerRunning(true);
-    timerRef.current = setInterval(() => {
-      setTimerSeconds((prev) => {
-        if (prev <= 1) {
-          clearInterval(timerRef.current!);
-          timerRef.current = null;
-          setTimerRunning(false);
-          setTimerDone(true);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-  };
-
-  const pauseTimer = () => {
-    clearTimer();
-    setTimerRunning(false);
-  };
-
-  const resetTimer = () => {
-    clearTimer();
-    setTimerRunning(false);
-    setTimerDone(false);
-    const step = recipe?.recipe_steps[currentStepIndex];
-    if (step?.timer_seconds) setTimerSeconds(step.timer_seconds);
-  };
-
-  const goToStep = (idx: number) => {
-    if (!recipe) return;
-    clearTimer();
-    setCurrentStepIndex(idx);
-    initTimerForStep(recipe.recipe_steps[idx]);
-  };
-
-  const handleNext = () => {
-    if (!recipe) return;
-    if (currentStepIndex < recipe.recipe_steps.length - 1) {
-      goToStep(currentStepIndex + 1);
-    } else {
-      clearTimer();
-      setStage("done");
-    }
-  };
-
-  const handleBack = () => {
-    if (currentStepIndex > 0) goToStep(currentStepIndex - 1);
+  const restart = () => {
+    setStepIndex(0);
+    setStage("overview");
   };
 
   if (stage === "loading") {
@@ -128,13 +61,19 @@ export default function CookPage() {
     );
   }
 
-  if (stage === "error") {
+  if (stage === "error" || !recipe) {
     return (
       <div className="min-h-screen">
         <div className="max-w-xl mx-auto px-4 py-6">
-          <PageHeader title="Cook Recipe" section="fuel" showBack backHref="/fuel" backLabel="Back to Fuel" />
+          <PageHeader
+            title="Cook Recipe"
+            section="fuel"
+            showBack
+            backHref="/fuel"
+            backLabel="Back to Fuel"
+          />
           <div className="nisu-card p-10 text-center">
-            <p className="text-gray-800 font-bold text-lg mb-2">Recipe not found</p>
+            <p className="font-bold text-gray-900 mb-2">Recipe not found</p>
             <Link href="/fuel" className="inline-block mt-3 nisu-cta-bold text-sm px-6 py-2.5">
               Back to Fuel
             </Link>
@@ -148,14 +87,11 @@ export default function CookPage() {
     return (
       <div className="min-h-screen">
         <div className="max-w-xl mx-auto px-4 py-6">
-          <PageHeader title="Cook Recipe" section="fuel" showBack backHref="/fuel" backLabel="Back to Fuel" />
+          <PageHeader title={recipe.name} section="fuel" showBack backHref="/fuel" backLabel="Back to Fuel" />
           <div className="nisu-card p-10 text-center">
-            <p className="text-gray-800 font-bold text-lg mb-1">This recipe has no steps yet</p>
-            <p className="text-gray-400 text-sm mb-5">Add some steps before you start cooking.</p>
-            <Link
-              href="/fuel"
-              className="text-sm font-semibold text-[var(--nisu-coral)] hover:opacity-80 transition-opacity"
-            >
+            <p className="font-bold text-gray-900 mb-1">No steps yet</p>
+            <p className="text-sm nisu-text-muted mb-4">Add cooking steps before you start.</p>
+            <Link href="/fuel" className="text-sm font-bold text-[var(--nisu-coral)]">
               Back to Fuel
             </Link>
           </div>
@@ -164,133 +100,57 @@ export default function CookPage() {
     );
   }
 
-  if (stage === "done" && recipe) {
-    return (
-      <div className="min-h-screen">
-        <div className="max-w-xl mx-auto px-4 py-6">
-          <div className="nisu-card p-10 text-center">
-            <span className="text-6xl mb-5 block">🎉</span>
-            <p className="text-gray-800 font-extrabold text-xl mb-1">Nice work!</p>
-            <p className="text-gray-500 text-sm mb-2">You finished cooking:</p>
-            <p className="text-[var(--nisu-coral)] font-bold text-lg mb-6">{recipe.name}</p>
-            <div className="flex gap-3 justify-center flex-wrap">
-              <button
-                onClick={() => {
-                  setCurrentStepIndex(0);
-                  initTimerForStep(recipe.recipe_steps[0]);
-                  setStage("cooking");
-                }}
-                className="nisu-cta-bold text-sm px-6 py-2.5 cursor-pointer"
-              >
-                Cook Again
-              </button>
-              <Link
-                href="/fuel"
-                className="text-sm font-semibold text-[var(--nisu-coral)] px-5 py-2.5 hover:opacity-80 transition-opacity"
-              >
-                Back to Recipes
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!recipe) return null;
-
-  const steps = recipe.recipe_steps;
-  const step = steps[currentStepIndex];
-  const totalSteps = steps.length;
-  const progressPercent = ((currentStepIndex + 1) / totalSteps) * 100;
-  const hasTimer = step.timer_seconds !== null && step.timer_seconds > 0;
-  const isLastStep = currentStepIndex === totalSteps - 1;
-
   return (
     <div className="min-h-screen">
       <div className="max-w-xl mx-auto px-4 py-6">
         <PageHeader
           title={recipe.name}
           section="fuel"
-          subtitle={`Step ${currentStepIndex + 1} of ${totalSteps}`}
+          subtitle={
+            stage === "cooking"
+              ? `Step ${stepIndex + 1} of ${recipe.recipe_steps.length}`
+              : stage === "done"
+              ? "Complete"
+              : undefined
+          }
           showBack
           backHref="/fuel"
           backLabel="Back to Fuel"
         />
 
-        <div className="w-full bg-gray-200 rounded-full h-2 mb-8 overflow-hidden">
-          <div
-            className="bg-[var(--nisu-sky)] h-full rounded-full transition-all duration-500 ease-out"
-            style={{ width: `${progressPercent}%` }}
+        {stage === "overview" && (
+          <CookOverview recipe={recipe} onStart={() => setStage("prep")} />
+        )}
+
+        {stage === "prep" && (
+          <PrepChecklist
+            recipe={recipe}
+            onBack={() => setStage("overview")}
+            onContinue={() => {
+              setStepIndex(0);
+              setStage("cooking");
+            }}
           />
-        </div>
+        )}
 
-        <div className="nisu-card p-6 sm:p-8 mb-6">
-          <p className="text-xs font-bold text-[var(--nisu-coral)] mb-3 uppercase tracking-wide">
-            Step {currentStepIndex + 1}
-          </p>
-          <p className="text-lg sm:text-xl text-gray-800 font-semibold leading-relaxed mb-6">
-            {step.instruction}
-          </p>
+        {stage === "cooking" && (
+          <CookStepRunner
+            steps={recipe.recipe_steps}
+            currentIndex={stepIndex}
+            onBack={() => setStepIndex((i) => Math.max(0, i - 1))}
+            onNext={() => {
+              if (stepIndex < recipe.recipe_steps.length - 1) {
+                setStepIndex((i) => i + 1);
+              } else {
+                setStage("done");
+              }
+            }}
+          />
+        )}
 
-          {hasTimer && (
-            <div
-              className="rounded-2xl p-5 text-center mb-2"
-              style={{ backgroundColor: "var(--nisu-pale-pink)" }}
-            >
-              <p
-                className={`text-4xl sm:text-5xl font-mono font-bold tracking-wider mb-4 ${
-                  timerDone ? "text-[var(--nisu-coral)]" : "text-gray-800"
-                }`}
-              >
-                {timerDone ? "Time's up!" : formatTimer(timerSeconds)}
-              </p>
-              <div className="flex gap-3 justify-center">
-                {!timerRunning && !timerDone && (
-                  <button onClick={startTimer} className="nisu-cta-bold text-sm px-5 py-2 cursor-pointer">
-                    Start
-                  </button>
-                )}
-                {timerRunning && (
-                  <button
-                    onClick={pauseTimer}
-                    className="bg-[var(--nisu-amber)] text-white text-sm font-bold px-5 py-2 rounded-full hover:opacity-90 transition-opacity cursor-pointer"
-                  >
-                    Pause
-                  </button>
-                )}
-                <button
-                  onClick={resetTimer}
-                  className="text-sm font-medium text-gray-500 px-4 py-2 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer"
-                >
-                  Reset
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="flex gap-3 justify-center flex-wrap">
-          {currentStepIndex > 0 && (
-            <button
-              onClick={handleBack}
-              className="text-sm font-medium text-gray-500 px-5 py-2.5 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer"
-            >
-              ← Back
-            </button>
-          )}
-          <button onClick={handleNext} className="nisu-cta-bold text-sm px-6 py-2.5 cursor-pointer">
-            {isLastStep ? "Finish Recipe" : "Done / Next"}
-          </button>
-          {!isLastStep && (
-            <button
-              onClick={handleNext}
-              className="text-sm font-medium text-gray-400 px-4 py-2.5 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer"
-            >
-              Skip →
-            </button>
-          )}
-        </div>
+        {stage === "done" && (
+          <CookDone recipe={recipe} onCookAgain={restart} />
+        )}
       </div>
     </div>
   );

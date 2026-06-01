@@ -61,20 +61,24 @@ export default function Navigation() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex flex-col items-center justify-center py-1.5 px-1.5 rounded-2xl transition-all duration-200 flex-1 max-w-[56px] ${
-                  active
-                    ? "bg-[var(--nisu-coral)] ring-2 ring-[var(--nisu-border)]"
-                    : ""
-                }`}
+                className="flex flex-col items-center justify-center py-1.5 px-1.5 rounded-2xl transition-all duration-200 flex-1 max-w-[56px]"
                 aria-label={item.label}
               >
-                <Image
-                  src={iconSrc}
-                  alt=""
-                  width={36}
-                  height={36}
-                  className={`w-9 h-9 object-contain ${active ? "scale-110" : ""}`}
-                />
+                <span
+                  className={`w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200 ${
+                    active
+                      ? "bg-white ring-2 ring-[var(--nisu-border)] shadow-[var(--nisu-shadow)] scale-105"
+                      : ""
+                  }`}
+                >
+                  <Image
+                    src={iconSrc}
+                    alt=""
+                    width={32}
+                    height={32}
+                    className="w-8 h-8 object-contain object-center"
+                  />
+                </span>
               </Link>
             );
           })}

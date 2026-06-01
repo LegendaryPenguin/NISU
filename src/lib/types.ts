@@ -132,10 +132,33 @@ export interface DailyWheelSelection {
 
 // --- Fuel / Recipe types ---
 
+export type RecipeCategory =
+  | "breakfast"
+  | "dal"
+  | "rice"
+  | "curry"
+  | "bread"
+  | "snack"
+  | "dessert"
+  | "drink";
+
+export type RecipeRegion = "north" | "south" | "pan-indian";
+export type RecipeDifficulty = "easy" | "medium";
+
 export interface Recipe {
   id: string;
   user_id: string | null;
   name: string;
+  is_builtin?: boolean;
+  category?: RecipeCategory | string | null;
+  region?: RecipeRegion | string | null;
+  description?: string | null;
+  image_url?: string | null;
+  prep_minutes?: number | null;
+  cook_minutes?: number | null;
+  difficulty?: RecipeDifficulty | string | null;
+  tags?: string[] | null;
+  servings?: number | null;
 }
 
 export interface RecipeIngredient {
@@ -151,11 +174,39 @@ export interface RecipeStep {
   instruction: string;
   timer_seconds: number | null;
   order_index: number;
+  step_ingredients?: string[] | null;
+  image_url?: string | null;
+  youtube_url?: string | null;
+  tip?: string | null;
 }
 
 export interface RecipeWithDetails extends Recipe {
   recipe_ingredients: RecipeIngredient[];
   recipe_steps: RecipeStep[];
+}
+
+export interface SeedRecipeStep {
+  instruction: string;
+  timer_seconds?: number | null;
+  step_ingredients?: string[];
+  image_url?: string | null;
+  youtube_url?: string | null;
+  tip?: string | null;
+}
+
+export interface SeedRecipe {
+  name: string;
+  category: RecipeCategory;
+  region: RecipeRegion;
+  description: string;
+  image_url: string;
+  prep_minutes: number;
+  cook_minutes: number;
+  difficulty: RecipeDifficulty;
+  tags: string[];
+  servings: number;
+  ingredients: string[];
+  steps: SeedRecipeStep[];
 }
 
 // --- Journal / Brain Dump types ---

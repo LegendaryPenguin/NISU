@@ -1,17 +1,15 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import Link from "next/link";
-import Image from "next/image";
 import PageHeader, { PageActionRow } from "@/components/PageHeader";
-import { NISU_ASSETS } from "@/lib/nisu-assets";
 import type { RecipeWithDetails } from "@/lib/types";
-import { formatDuration } from "@/lib/helpers";
+import RecipeBrowser from "@/components/fuel/RecipeBrowser";
 import {
   fetchRecipes,
   saveFullRecipe,
   updateFullRecipe,
   deleteRecipe,
+  forkRecipe,
 } from "@/lib/fuel-actions";
 
 // ----- Draft types for the form -----
@@ -75,7 +73,6 @@ export default function FuelPage() {
   ]);
   const [steps, setSteps] = useState<StepDraft[]>([newStep()]);
   const [saving, setSaving] = useState(false);
-  const [previewId, setPreviewId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -109,6 +106,7 @@ export default function FuelPage() {
   };
 
   const startEdit = (r: RecipeWithDetails) => {
+    if (r.is_builtin) return;
     setFormMode("edit");
     setEditingId(r.id);
     setRecipeName(r.name);
@@ -162,12 +160,20 @@ export default function FuelPage() {
     try {
       await deleteRecipe(id);
       setRecipes((prev) => prev.filter((r) => r.id !== id));
-    } catch {
-      setError("Failed to delete recipe.");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to delete recipe.");
     }
   };
 
-  const preview = recipes.find((r) => r.id === previewId);
+  const handleFork = async (id: string) => {
+    setError(null);
+    try {
+      await forkRecipe(id);
+      await load();
+    } catch {
+      setError("Failed to save a copy.");
+    }
+  };
 
   return (
     <div className="min-h-screen">
@@ -222,125 +228,13 @@ export default function FuelPage() {
           <div className="flex justify-center py-16">
             <div className="w-8 h-8 border-3 border-[var(--nisu-pale-pink-2)] border-t-[var(--nisu-coral)] rounded-full animate-spin" />
           </div>
-        ) : recipes.length === 0 ? (
-          <div className="nisu-empty-fuel p-10 text-center">
-            <Image
-              src={NISU_ASSETS.penguins.fuel}
-              alt=""
-              width={80}
-              height={80}
-              className="w-20 h-20 object-contain mx-auto mb-4"
-            />
-            <p className="text-gray-900 font-bold text-lg mb-1">
-              No recipes yet
-            </p>
-            <p className="text-gray-800 text-sm mb-5 max-w-xs mx-auto font-medium">
-              Add your first recipe so Future You has something easy to cook.
-            </p>
-            {formMode === "idle" && (
-              <button
-                onClick={startCreate}
-                className="nisu-cta-secondary text-sm px-6 py-2.5 cursor-pointer"
-              >
-                + Add recipe
-              </button>
-            )}
-          </div>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2">
-            {recipes.map((r) => (
-              <div
-                key={r.id}
-                className="nisu-card p-5 flex flex-col"
-              >
-                <h3 className="font-bold text-gray-800 text-lg mb-1">
-                  {r.name}
-                </h3>
-                <p className="text-xs text-gray-400 mb-4">
-                  {r.recipe_ingredients.length} ingredient
-                  {r.recipe_ingredients.length !== 1 ? "s" : ""} ·{" "}
-                  {r.recipe_steps.length} step
-                  {r.recipe_steps.length !== 1 ? "s" : ""}
-                </p>
-
-                <div className="flex gap-2 mt-auto flex-wrap">
-                  <Link
-                    href={`/fuel/cook/${r.id}`}
-                    className="nisu-cta-bold text-xs px-4 py-2"
-                  >
-                    Cook
-                  </Link>
-                  <button
-                    onClick={() =>
-                      setPreviewId(previewId === r.id ? null : r.id)
-                    }
-                    className="text-xs font-medium text-gray-500 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
-                  >
-                    {previewId === r.id ? "Hide" : "Preview"}
-                  </button>
-                  <button
-                    onClick={() => startEdit(r)}
-                    className="text-xs font-medium text-[var(--nisu-coral)] px-3 py-2 rounded-lg hover:bg-[var(--nisu-pale-pink)] transition-colors cursor-pointer"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(r.id, r.name)}
-                    className="text-xs font-medium text-red-500 px-3 py-2 rounded-lg hover:bg-red-50 transition-colors cursor-pointer"
-                  >
-                    Delete
-                  </button>
-                </div>
-
-                {/* Preview */}
-                {previewId === r.id && preview && (
-                  <div className="mt-4 pt-4 border-t border-gray-100 space-y-3">
-                    <div>
-                      <p className="text-xs font-semibold text-gray-500 mb-1.5">
-                        Ingredients
-                      </p>
-                      <ul className="space-y-0.5">
-                        {preview.recipe_ingredients.map((ing) => (
-                          <li
-                            key={ing.id}
-                            className="text-sm text-gray-600 flex items-start gap-1.5"
-                          >
-                            <span className="text-[var(--nisu-coral)] mt-0.5">•</span>
-                            {ing.text}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold text-gray-500 mb-1.5">
-                        Steps
-                      </p>
-                      <ol className="space-y-1">
-                        {preview.recipe_steps.map((s, i) => (
-                          <li
-                            key={s.id}
-                            className="text-sm text-gray-600 flex items-start gap-2"
-                          >
-                            <span className="text-xs text-gray-400 font-mono min-w-[18px] mt-0.5">
-                              {i + 1}.
-                            </span>
-                            <span>
-                              {s.instruction}
-                              {s.timer_seconds && (
-                                <span className="ml-1.5 text-xs text-[var(--nisu-coral)] font-medium">
-                                  ⏱ {formatDuration(s.timer_seconds)}
-                                </span>
-                              )}
-                            </span>
-                          </li>
-                        ))}
-                      </ol>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+          <RecipeBrowser
+            recipes={recipes}
+            onEdit={startEdit}
+            onDelete={handleDelete}
+            onFork={handleFork}
+          />
         )}
       </div>
     </div>

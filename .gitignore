@@ -38,4 +38,21 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# generated seed artifacts
+/scripts/seed-all-combined.sql
+/scripts/seed-part-*.sql
+/scripts/seed-indian-recipes.sql
+/scripts/_*
+/scripts/mcp-*
+/scripts/read-batch-json.mjs
+/scripts/run-all-batches-mcp.mjs
+/scripts/run-mcp-batch.mjs
+/scripts/seed-batches/_*
+/scripts/seed-batches/.**
+/scripts/seed-batches/*.json
+/scripts/seed-batches/*.query
+/scripts/seed-batches/mcp-*
+/scripts/seed-batches/get-mcp-query.mjs
+/scripts/seed-batches/run-mcp-batches.mjs
+
 .vercel

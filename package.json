@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed:recipes": "npx tsx scripts/seed-indian-recipes.ts",
+    "seed:generate": "npx tsx scripts/generate-seed-batches.ts",
+    "seed:apply": "npx tsx scripts/apply-seed-batches.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.3",
@@ -24,6 +27,7 @@
     "eslint-config-next": "16.2.6",
     "pg": "^8.21.0",
     "tailwindcss": "^4",
+    "tsx": "^4.19.4",
     "typescript": "^5"
   }
 }

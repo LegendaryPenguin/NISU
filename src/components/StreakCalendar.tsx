@@ -97,7 +97,7 @@ export default function StreakCalendar({
   }
 
   return (
-    <div className="bg-white rounded-2xl p-5 shadow-sm border border-[var(--nisu-pale-pink-2)] w-full max-w-md">
+    <div className="nisu-stat-light rounded-2xl p-5 w-full max-w-md border-2 border-[var(--nisu-border)]">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="text-lg">📅</span>
@@ -171,23 +171,23 @@ export default function StreakCalendar({
               }`}
             >
               <span className="text-xs font-medium">{cell.day}</span>
-              <div className="flex items-center gap-0.5 mt-0.5 h-4">
+              <div className="flex items-center justify-center gap-0.5 mt-0.5 min-h-[18px]">
                 {hasYou && (
                   <Image
                     src={NISU_ASSETS.penguins.streak}
                     alt=""
-                    width={12}
-                    height={12}
-                    className="w-3 h-3 object-contain"
+                    width={16}
+                    height={16}
+                    className="w-4 h-4 object-contain"
                   />
                 )}
                 {hasPartner && (
                   <Image
                     src={NISU_ASSETS.penguins.partnerStreak}
                     alt=""
-                    width={12}
-                    height={12}
-                    className="w-3 h-3 object-contain"
+                    width={16}
+                    height={16}
+                    className="w-4 h-4 object-contain"
                   />
                 )}
               </div>

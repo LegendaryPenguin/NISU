@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useMemo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useStreaks } from "@/context/StreakContext";
+import StreakCalendar from "@/components/StreakCalendar";
 import { NISU_ASSETS } from "@/lib/nisu-assets";
 import { STREAK_PILLAR_THRESHOLD } from "@/lib/streak-config";
 
@@ -18,8 +19,15 @@ function getGreeting() {
 export default function LandingPage() {
   const greeting = useMemo(() => getGreeting(), []);
   const { displayName, partnerName } = useAuth();
-  const { yourStreak, partnerStreak, togetherCount, togetherStreak, isLoaded } =
-    useStreaks();
+  const {
+    yourStreak,
+    partnerStreak,
+    togetherCount,
+    togetherStreak,
+    yourSuccessDates,
+    partnerSuccessDates,
+    isLoaded,
+  } = useStreaks();
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -130,6 +138,15 @@ export default function LandingPage() {
               </p>
             </div>
           </div>
+        </div>
+
+        <div className="flex justify-center mt-6 ml-2">
+          <StreakCalendar
+            youDates={yourSuccessDates}
+            partnerDates={partnerSuccessDates}
+            youLabel={displayName}
+            partnerLabel={partnerName}
+          />
         </div>
 
         <div className="nisu-stat-bold rounded-2xl px-6 py-4 mt-6 text-center ml-2">

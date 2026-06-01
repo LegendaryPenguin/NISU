@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useDailyProgress } from "@/context/DailyProgressContext";
-import { formatDateDisplay, getTodayKey } from "@/lib/helpers";
+import { formatDateDisplay, getTodayKey, STREAK_PILLAR_THRESHOLD } from "@/lib/helpers";
 import { NISU_ASSETS } from "@/lib/nisu-assets";
 
 export default function ProgressHeader() {
@@ -10,16 +10,21 @@ export default function ProgressHeader() {
   const todayKey = getTodayKey();
   const pct = (overallProgress / 4) * 100;
 
+  const streakEligible = overallProgress >= STREAK_PILLAR_THRESHOLD;
+
   const getMessage = () => {
+    if (streakEligible && overallProgress < 4) {
+      return `Streak earned! ${overallProgress}/4 pillars — optional bonus left.`;
+    }
     switch (overallProgress) {
       case 0:
-        return "Fresh start. Let's get after it.";
+        return `Complete ${STREAK_PILLAR_THRESHOLD} of 4 pillars to keep your streak.`;
       case 1:
-        return "One down. Keep the momentum going.";
+        return "One down. Two more for today's streak.";
       case 2:
-        return "Halfway there. You're locked in.";
+        return "Halfway there. One more pillar for your streak.";
       case 3:
-        return "Almost done. Finish strong.";
+        return "Streak day secured! Finish a 4th pillar if you want.";
       case 4:
         return "All pillars complete. Legendary day.";
       default:
@@ -53,6 +58,9 @@ export default function ProgressHeader() {
           </span>
           <span className="text-sm font-bold text-[var(--nisu-coral)]">
             {overallProgress} / 4 pillars
+            {streakEligible && (
+              <span className="text-gray-600 font-semibold"> · streak ✓</span>
+            )}
           </span>
         </div>
 

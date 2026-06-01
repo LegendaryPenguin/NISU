@@ -26,7 +26,9 @@ import {
   calculateResetCompletion,
   getWeeklyFunActiveCount,
   getRequiredSkillBlocks,
+  calculateOverallProgress,
 } from "@/lib/helpers";
+import { syncDayStreak } from "@/lib/streak-actions";
 import {
   getTodayFitnessLog,
   getWeeklyFunActiveCountFromDb,
@@ -192,6 +194,14 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
     saveDailyProgress(updated, userId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [progress, isLoaded]);
+
+  useEffect(() => {
+    if (!isLoaded || !userId) return;
+    const pillars = calculateOverallProgress(progress);
+    syncDayStreak(todayKey, pillars).catch(() => {
+      /* offline or migration pending */
+    });
+  }, [progress, isLoaded, userId, todayKey]);
 
   const localFunActiveCount = getWeeklyFunActiveCount(
     allProgress,
@@ -503,11 +513,7 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
     }
   }, [todayKey, allProgress, userId]);
 
-  const overallProgress =
-    (progress.fitness.completed ? 1 : 0) +
-    (progress.fuel.completed ? 1 : 0) +
-    (progress.skill.completed ? 1 : 0) +
-    (progress.reset.completed ? 1 : 0);
+  const overallProgress = calculateOverallProgress(progress);
 
   return (
     <DailyProgressContext.Provider

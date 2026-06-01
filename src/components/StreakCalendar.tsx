@@ -1,10 +1,14 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useMemo } from "react";
+import { NISU_ASSETS } from "@/lib/nisu-assets";
 
 interface StreakCalendarProps {
   youDates?: string[];
   partnerDates?: string[];
+  youLabel?: string;
+  partnerLabel?: string;
 }
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -59,6 +63,8 @@ const MONTH_NAMES = [
 export default function StreakCalendar({
   youDates = [],
   partnerDates = [],
+  youLabel = "You",
+  partnerLabel = "Partner",
 }: StreakCalendarProps) {
   const now = new Date();
   const [viewMonth, setViewMonth] = useState(now.getMonth());
@@ -92,7 +98,6 @@ export default function StreakCalendar({
 
   return (
     <div className="bg-white rounded-2xl p-5 shadow-sm border border-[var(--nisu-pale-pink-2)] w-full max-w-md">
-      {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="text-lg">📅</span>
@@ -102,23 +107,28 @@ export default function StreakCalendar({
         </div>
         <div className="flex items-center gap-3 text-xs">
           <span className="flex items-center gap-1">
-            <span
-              className="inline-block w-2.5 h-2.5 rounded-full"
-              style={{ backgroundColor: "#ff787e" }}
+            <Image
+              src={NISU_ASSETS.penguins.streak}
+              alt=""
+              width={14}
+              height={14}
+              className="w-3.5 h-3.5 object-contain"
             />
-            You
+            {youLabel}
           </span>
           <span className="flex items-center gap-1">
-            <span
-              className="inline-block w-2.5 h-2.5 rounded-full"
-              style={{ backgroundColor: "#73d9ff" }}
+            <Image
+              src={NISU_ASSETS.penguins.partnerStreak}
+              alt=""
+              width={14}
+              height={14}
+              className="w-3.5 h-3.5 object-contain"
             />
-            Partner
+            {partnerLabel}
           </span>
         </div>
       </div>
 
-      {/* Month nav */}
       <div className="flex items-center justify-center gap-4 mb-3">
         <button
           onClick={prevMonth}
@@ -137,7 +147,6 @@ export default function StreakCalendar({
         </button>
       </div>
 
-      {/* Day headers */}
       <div className="grid grid-cols-7 mb-1">
         {DAYS.map((d) => (
           <div
@@ -149,7 +158,6 @@ export default function StreakCalendar({
         ))}
       </div>
 
-      {/* Calendar grid */}
       <div className="grid grid-cols-7">
         {cells.map((cell, i) => {
           const hasYou = youSet.has(cell.dateKey);
@@ -163,17 +171,23 @@ export default function StreakCalendar({
               }`}
             >
               <span className="text-xs font-medium">{cell.day}</span>
-              <div className="flex items-center gap-0.5 mt-0.5 h-2.5">
+              <div className="flex items-center gap-0.5 mt-0.5 h-4">
                 {hasYou && (
-                  <span
-                    className="w-1.5 h-1.5 rounded-full"
-                    style={{ backgroundColor: "#ff787e" }}
+                  <Image
+                    src={NISU_ASSETS.penguins.streak}
+                    alt=""
+                    width={12}
+                    height={12}
+                    className="w-3 h-3 object-contain"
                   />
                 )}
                 {hasPartner && (
-                  <span
-                    className="w-1.5 h-1.5 rounded-full"
-                    style={{ backgroundColor: "#73d9ff" }}
+                  <Image
+                    src={NISU_ASSETS.penguins.partnerStreak}
+                    alt=""
+                    width={12}
+                    height={12}
+                    className="w-3 h-3 object-contain"
                   />
                 )}
               </div>

@@ -28,7 +28,6 @@ import {
   getRequiredSkillBlocks,
   calculateOverallProgress,
 } from "@/lib/helpers";
-import { syncDayStreak } from "@/lib/streak-actions";
 import {
   getTodayFitnessLog,
   getWeeklyFunActiveCountFromDb,
@@ -194,14 +193,6 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
     saveDailyProgress(updated, userId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [progress, isLoaded]);
-
-  useEffect(() => {
-    if (!isLoaded || !userId) return;
-    const pillars = calculateOverallProgress(progress);
-    syncDayStreak(todayKey, pillars).catch(() => {
-      /* offline or migration pending */
-    });
-  }, [progress, isLoaded, userId, todayKey]);
 
   const localFunActiveCount = getWeeklyFunActiveCount(
     allProgress,

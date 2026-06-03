@@ -5,7 +5,6 @@ import Navigation from "@/components/Navigation";
 import { AuthProvider } from "@/context/AuthContext";
 import { DailyProgressProvider } from "@/context/DailyProgressContext";
 import { StreakProvider } from "@/context/StreakContext";
-import StreakSync from "@/components/StreakSync";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,7 +36,6 @@ export default function RootLayout({
         <AuthProvider>
           <DailyProgressProvider>
             <StreakProvider>
-              <StreakSync />
               <Navigation />
               <main className="flex-1 pb-20">{children}</main>
             </StreakProvider>

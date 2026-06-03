@@ -9,10 +9,13 @@ import {
   ReactNode,
 } from "react";
 import { useAuth } from "./AuthContext";
+import { useDailyProgress } from "./DailyProgressContext";
+import { getTodayKey, calculateOverallProgress } from "@/lib/helpers";
 import { isCoupleMember } from "@/lib/streak-config";
 import {
   fetchStreakDashboard,
   registerCoupleMember,
+  syncDayStreak,
   type StreakDashboard,
 } from "@/lib/streak-actions";
 
@@ -34,10 +37,12 @@ const StreakContext = createContext<StreakContextValue | null>(null);
 
 export function StreakProvider({ children }: { children: ReactNode }) {
   const { user, isLoading: authLoading } = useAuth();
+  const { progress, isLoaded: progressLoaded } = useDailyProgress();
+  const todayKey = getTodayKey();
   const [stats, setStats] = useState<StreakDashboard>(EMPTY);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const refreshStreaks = useCallback(async () => {
+  const syncAndRefreshStreaks = useCallback(async () => {
     if (!user?.email || !isCoupleMember(user.email)) {
       setStats(EMPTY);
       setIsLoaded(true);
@@ -45,24 +50,50 @@ export function StreakProvider({ children }: { children: ReactNode }) {
     }
     try {
       await registerCoupleMember(user.email);
+      const pillars = calculateOverallProgress(progress);
+      await syncDayStreak(todayKey, pillars);
       const data = await fetchStreakDashboard(user.email);
       setStats(data);
     } catch {
-      setStats(EMPTY);
+      try {
+        const data = await fetchStreakDashboard(user.email);
+        setStats(data);
+      } catch {
+        setStats(EMPTY);
+      }
     } finally {
       setIsLoaded(true);
     }
-  }, [user?.email]);
+  }, [user?.email, progress, todayKey]);
+
+  const refreshStreaks = syncAndRefreshStreaks;
 
   useEffect(() => {
-    if (authLoading) return;
+    if (authLoading || !progressLoaded) return;
     if (!user) {
       setStats(EMPTY);
       setIsLoaded(true);
       return;
     }
-    refreshStreaks();
-  }, [authLoading, user, refreshStreaks]);
+    syncAndRefreshStreaks();
+  }, [authLoading, user, progressLoaded, progress, syncAndRefreshStreaks]);
+
+  useEffect(() => {
+    if (!user || !progressLoaded) return;
+
+    const onVisible = () => {
+      if (document.visibilityState === "visible") {
+        syncAndRefreshStreaks();
+      }
+    };
+
+    window.addEventListener("focus", syncAndRefreshStreaks);
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      window.removeEventListener("focus", syncAndRefreshStreaks);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [user, progressLoaded, syncAndRefreshStreaks]);
 
   return (
     <StreakContext.Provider value={{ ...stats, isLoaded, refreshStreaks }}>

@@ -10,11 +10,11 @@ import {
 } from "react";
 import { createClient } from "@/utils/supabase/client";
 import type { User } from "@supabase/supabase-js";
-
-const USER_MAP: Record<string, { displayName: string; partnerName: string }> = {
-  "nisch.rawal@gmail.com": { displayName: "Nischay", partnerName: "Supritha" },
-  "suprithachak@gmail.com": { displayName: "Supritha", partnerName: "Nischay" },
-};
+import {
+  displayNameFromUser,
+  getStaticCoupleNames,
+  normalizeEmail,
+} from "@/lib/couple-profile";
 
 interface AuthContextValue {
   user: User | null;
@@ -27,16 +27,46 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-function getUserNames(user: User | null) {
-  if (!user?.email) return { displayName: "User", partnerName: "Partner" };
-  const mapped = USER_MAP[user.email];
-  if (mapped) return mapped;
-  const name = user.user_metadata?.full_name || user.email.split("@")[0];
-  return { displayName: name, partnerName: "Partner" };
+const DEFAULT_NAMES = { displayName: "User", partnerName: "Partner" };
+
+async function resolveCoupleNames(
+  user: User
+): Promise<{ displayName: string; partnerName: string }> {
+  const email = normalizeEmail(user.email);
+  const staticNames = getStaticCoupleNames(email);
+  if (staticNames) return staticNames;
+
+  try {
+    const supabase = createClient();
+    const { data: partnerRow } = await supabase
+      .from("nisu_couple_members")
+      .select("email")
+      .neq("user_id", user.id)
+      .limit(1)
+      .maybeSingle();
+
+    if (partnerRow?.email) {
+      const partnerStatic = getStaticCoupleNames(partnerRow.email);
+      if (partnerStatic) {
+        return {
+          displayName: displayNameFromUser(email, user.user_metadata),
+          partnerName: partnerStatic.displayName,
+        };
+      }
+    }
+  } catch {
+    /* offline */
+  }
+
+  return {
+    displayName: displayNameFromUser(email, user.user_metadata),
+    partnerName: "Partner",
+  };
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [names, setNames] = useState(DEFAULT_NAMES);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -57,6 +87,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
+  useEffect(() => {
+    if (!user) {
+      setNames(DEFAULT_NAMES);
+      return;
+    }
+    let cancelled = false;
+    resolveCoupleNames(user).then((resolved) => {
+      if (!cancelled) setNames(resolved);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
+
   const signInWithGoogle = useCallback(async () => {
     const supabase = createClient();
     await supabase.auth.signInWithOAuth({
@@ -74,11 +118,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     window.location.href = "/login";
   }, []);
 
-  const { displayName, partnerName } = getUserNames(user);
-
   return (
     <AuthContext.Provider
-      value={{ user, displayName, partnerName, isLoading, signInWithGoogle, signOut }}
+      value={{
+        user,
+        displayName: names.displayName,
+        partnerName: names.partnerName,
+        isLoading,
+        signInWithGoogle,
+        signOut,
+      }}
     >
       {children}
     </AuthContext.Provider>

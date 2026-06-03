@@ -1,6 +1,9 @@
 import { createClient } from "@/utils/supabase/client";
 import { getAuthUserId } from "./auth-helpers";
-import { getPartnerEmail } from "./streak-config";
+import {
+  getPartnerEmailFromConfig,
+  normalizeEmail,
+} from "./couple-profile";
 
 const supabase = () => createClient();
 
@@ -15,10 +18,15 @@ export interface StreakDashboard {
 
 export async function registerCoupleMember(email: string): Promise<void> {
   const userId = await getAuthUserId();
+  const normalized = normalizeEmail(email);
   const { error } = await supabase()
     .from("nisu_couple_members")
     .upsert(
-      { user_id: userId, email: email.toLowerCase(), updated_at: new Date().toISOString() },
+      {
+        user_id: userId,
+        email: normalized,
+        updated_at: new Date().toISOString(),
+      },
       { onConflict: "user_id" }
     );
   if (error) throw error;
@@ -28,9 +36,30 @@ async function getUserIdByEmail(email: string): Promise<string | null> {
   const { data } = await supabase()
     .from("nisu_couple_members")
     .select("user_id")
-    .eq("email", email.toLowerCase())
+    .eq("email", normalizeEmail(email))
     .maybeSingle();
   return data?.user_id ?? null;
+}
+
+/** Partner id from config email, or the other row in nisu_couple_members */
+async function resolvePartnerUserId(
+  userId: string,
+  userEmail: string | undefined
+): Promise<string | null> {
+  const partnerEmail = getPartnerEmailFromConfig(userEmail);
+  if (partnerEmail) {
+    const id = await getUserIdByEmail(partnerEmail);
+    if (id) return id;
+  }
+
+  const { data, error } = await supabase()
+    .from("nisu_couple_members")
+    .select("user_id")
+    .neq("user_id", userId)
+    .limit(1);
+
+  if (error) throw error;
+  return data?.[0]?.user_id ?? null;
 }
 
 export async function syncDayStreak(
@@ -69,10 +98,7 @@ export async function fetchStreakDashboard(
   userEmail: string | undefined
 ): Promise<StreakDashboard> {
   const userId = await getAuthUserId();
-  const partnerEmail = getPartnerEmail(userEmail);
-  const partnerId = partnerEmail
-    ? await getUserIdByEmail(partnerEmail)
-    : null;
+  const partnerId = await resolvePartnerUserId(userId, userEmail);
 
   const [yourStats, partnerStreak, coupleRow, yourDates, partnerDates] =
     await Promise.all([
@@ -86,6 +112,9 @@ export async function fetchStreakDashboard(
       getSuccessDates(userId),
       partnerId ? getSuccessDates(partnerId) : Promise.resolve([]),
     ]);
+
+  if (yourStats.error) throw yourStats.error;
+  if (coupleRow.error) throw coupleRow.error;
 
   const couple = coupleRow.data;
 

@@ -11,7 +11,6 @@ import {
 import { useAuth } from "./AuthContext";
 import { useDailyProgress } from "./DailyProgressContext";
 import { getTodayKey, calculateOverallProgress } from "@/lib/helpers";
-import { isCoupleMember } from "@/lib/streak-config";
 import {
   fetchStreakDashboard,
   registerCoupleMember,
@@ -43,7 +42,7 @@ export function StreakProvider({ children }: { children: ReactNode }) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   const syncAndRefreshStreaks = useCallback(async () => {
-    if (!user?.email || !isCoupleMember(user.email)) {
+    if (!user?.email) {
       setStats(EMPTY);
       setIsLoaded(true);
       return;

@@ -9,20 +9,9 @@ import { getTodayKey } from "@/lib/helpers";
 import { STREAK_PILLAR_THRESHOLD } from "@/lib/streak-config";
 import { NISU_ASSETS } from "@/lib/nisu-assets";
 import { shouldReduceMotion } from "@/lib/motion";
-import PenguinBounce from "@/components/motion/PenguinBounce";
+import "./streak-cinematic/cinematic.css";
 
 export type CelebrationKind = "streak" | "perfect";
-
-const CONFETTI = [
-  { color: "var(--nisu-coral)", left: "8%", delay: "0ms", rotate: "-12deg" },
-  { color: "var(--nisu-sky)", left: "18%", delay: "60ms", rotate: "8deg" },
-  { color: "var(--nisu-pink)", left: "78%", delay: "30ms", rotate: "-6deg" },
-  { color: "var(--nisu-amber)", left: "88%", delay: "90ms", rotate: "14deg" },
-  { color: "var(--nisu-coral-bold)", left: "42%", delay: "45ms", rotate: "-18deg" },
-  { color: "var(--nisu-sky)", left: "55%", delay: "75ms", rotate: "6deg" },
-  { color: "var(--nisu-pink-bold)", left: "30%", delay: "120ms", rotate: "10deg" },
-  { color: "var(--nisu-amber)", left: "65%", delay: "15ms", rotate: "-8deg" },
-] as const;
 
 function celebrationStorageKey(
   todayKey: string,
@@ -38,7 +27,9 @@ function wasCelebrated(
   kind: CelebrationKind
 ): boolean {
   if (typeof window === "undefined") return true;
-  return localStorage.getItem(celebrationStorageKey(todayKey, userId, kind)) === "1";
+  return (
+    localStorage.getItem(celebrationStorageKey(todayKey, userId, kind)) === "1"
+  );
 }
 
 function markCelebrated(
@@ -108,6 +99,8 @@ export default function StreakCelebration({
     useStreaks();
   const { overallProgress } = useDailyProgress();
   const todayKey = getTodayKey();
+  const canvasRef = useRef<HTMLDivElement>(null);
+  const started = useRef(false);
   const reduced = shouldReduceMotion();
 
   const partnerAlsoToday =
@@ -115,6 +108,40 @@ export default function StreakCelebration({
     partnerSuccessDates.includes(todayKey);
 
   const isPerfect = kind === "perfect";
+
+  const handleComplete = useCallback(() => {
+    onDismiss();
+  }, [onDismiss]);
+
+  useEffect(() => {
+    if (reduced) return;
+    if (!canvasRef.current || started.current) return;
+    started.current = true;
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    let cleanup: (() => void) | undefined;
+
+    void import("./streak-cinematic/main").then(({ bootstrapStreakCinematic }) => {
+      if (!canvasRef.current) return;
+      cleanup = bootstrapStreakCinematic({
+        rootEl: canvasRef.current,
+        kind,
+        heroTextureUrl: isPerfect
+          ? NISU_ASSETS.penguins.daily
+          : NISU_ASSETS.penguins.streak,
+        partnerTextureUrl: NISU_ASSETS.penguins.partnerStreak,
+        onComplete: handleComplete,
+      });
+    });
+
+    return () => {
+      cleanup?.();
+      document.body.style.overflow = prevOverflow;
+      started.current = false;
+    };
+  }, [reduced, kind, isPerfect, handleComplete]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -124,134 +151,81 @@ export default function StreakCelebration({
     return () => window.removeEventListener("keydown", onKey);
   }, [onDismiss]);
 
-  return (
-    <div
-      className="nisu-celebration-backdrop fixed inset-0 z-[100] flex items-center justify-center p-4"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="streak-celebration-title"
-      onClick={onDismiss}
-    >
-      <div
-        className="nisu-celebration-panel relative w-full max-w-sm"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {!reduced && (
-          <div className="nisu-celebration-confetti pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-            {CONFETTI.map((piece, i) => (
-              <span
-                key={i}
-                className="nisu-celebration-confetti-piece"
-                style={{
-                  left: piece.left,
-                  backgroundColor: piece.color,
-                  animationDelay: piece.delay,
-                  ["--nisu-confetti-rotate" as string]: piece.rotate,
-                }}
-              />
-            ))}
-          </div>
-        )}
-
-        <div
-          className={`nisu-celebration-card nisu-card p-6 text-center ${
-            isPerfect ? "nisu-celebration-card-perfect" : "nisu-celebration-card-streak"
-          }`}
+  if (reduced) {
+    return (
+      <div className="nisu-cinematic-fallback" role="dialog" aria-modal="true">
+        <Image
+          src={NISU_ASSETS.penguins.streak}
+          alt=""
+          width={96}
+          height={96}
+          className="w-24 h-24 object-contain"
+        />
+        <p className="text-xl font-extrabold text-gray-900">
+          {isPerfect ? "Perfect day!" : "Streak saved!"}
+        </p>
+        <p className="text-sm font-semibold text-gray-700 max-w-xs">
+          {isPerfect
+            ? "All 4 pillars complete."
+            : `${overallProgress}/4 pillars — streak locked in.`}
+        </p>
+        <button
+          type="button"
+          onClick={onDismiss}
+          className="nisu-cta-bold font-bold px-8 py-3 cursor-pointer"
         >
-          <div className="flex items-end justify-center gap-2 mb-3">
-            <PenguinBounce
-              src={
-                isPerfect
-                  ? NISU_ASSETS.penguins.daily
-                  : NISU_ASSETS.penguins.streak
-              }
-              width={72}
-              height={72}
-              className="w-[4.5rem] h-[4.5rem] object-contain"
-              bounceKey={kind}
-            />
-            <Image
-              src={NISU_ASSETS.ui.heart}
-              alt=""
-              width={28}
-              height={28}
-              className={`w-7 h-7 object-contain mb-2 ${reduced ? "" : "nisu-celebration-heart"}`}
-            />
-            <PenguinBounce
-              src={NISU_ASSETS.penguins.partnerStreak}
-              width={72}
-              height={72}
-              className={`w-[4.5rem] h-[4.5rem] object-contain ${reduced ? "" : "nisu-celebration-partner-delay"}`}
-              bounceKey={`${kind}-partner`}
-            />
-          </div>
-
-          <p
-            id="streak-celebration-title"
-            className="text-xl font-extrabold text-gray-900 mb-1"
-          >
-            {isPerfect ? "Perfect day!" : "Streak saved!"}
-          </p>
-          <p className="text-sm font-semibold text-gray-700 mb-1">
-            {isPerfect
-              ? "All 4 pillars complete — you crushed it."
-              : `${overallProgress}/4 pillars — today's streak is locked in.`}
-          </p>
-
-          {yourStreak > 0 && (
-            <p className="text-xs nisu-text-muted mb-3">
-              {displayName}&apos;s streak:{" "}
-              <span className="font-bold text-[var(--nisu-coral-dark)]">
-                {yourStreak}
-              </span>
-              {togetherStreak > 0 && (
-                <>
-                  {" "}
-                  · Together:{" "}
-                  <span className="font-bold text-[var(--nisu-sky)]">
-                    {togetherStreak}
-                  </span>
-                </>
-              )}
-            </p>
-          )}
-
-          {partnerAlsoToday && (
-            <div
-              className="nisu-celebration-together text-xs font-bold px-3 py-2 rounded-xl mb-4"
-              style={{
-                backgroundColor: "var(--nisu-pale-blue)",
-                color: "var(--nisu-sky)",
-              }}
-            >
-              You & {partnerName} both showed up today
-            </div>
-          )}
-
-          <div className="flex justify-center gap-1.5 mb-5">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <span
-                key={i}
-                className={`w-3 h-3 rounded-full border-2 border-[var(--nisu-border)] ${
-                  i < overallProgress
-                    ? isPerfect
-                      ? "bg-[var(--nisu-coral-bold)]"
-                      : "bg-[var(--nisu-pink-bold)]"
-                    : "bg-white"
-                }`}
-              />
-            ))}
-          </div>
-
-          <button
-            type="button"
-            onClick={onDismiss}
-            className="nisu-cta-bold font-bold px-8 py-3 cursor-pointer nisu-focus-ring"
-          >
-            {isPerfect ? "Amazing — keep going" : "Nice work!"}
-          </button>
-        </div>
+          Continue
+        </button>
       </div>
+    );
+  }
+
+  return (
+    <div className="nisu-cinematic-root" role="dialog" aria-modal="true">
+      <div ref={canvasRef} className="nisu-cinematic-canvas" />
+
+      <div className="nisu-cinematic-bar is-top" aria-hidden />
+      <div className="nisu-cinematic-bar is-bottom" aria-hidden />
+
+      <div className="nisu-cinematic-hud">
+        <p className="nisu-cinematic-chip">
+          {isPerfect ? "Perfect Day" : "Streak Day"}
+        </p>
+        <h2 className="nisu-cinematic-title">
+          {isPerfect ? "Summit cleared" : "You reached the summit"}
+        </h2>
+        <p className="nisu-cinematic-subtitle">
+          {isPerfect
+            ? "All four pillars done — the penguins made it to the top together."
+            : `${overallProgress} of 4 pillars — today's streak is locked in.`}
+        </p>
+        {(yourStreak > 0 || partnerAlsoToday) && (
+          <p className="nisu-cinematic-stats">
+            {yourStreak > 0 && (
+              <>
+                {displayName}&apos;s streak: {yourStreak}
+                {togetherStreak > 0 && ` · Together: ${togetherStreak}`}
+              </>
+            )}
+            {partnerAlsoToday && (
+              <>
+                {yourStreak > 0 && " · "}
+                You & {partnerName} both showed up today
+              </>
+            )}
+          </p>
+        )}
+      </div>
+
+      <div className="nisu-cinematic-fade" aria-hidden />
+
+      <button
+        type="button"
+        className="nisu-cinematic-skip nisu-focus-ring"
+        onClick={onDismiss}
+      >
+        Skip
+      </button>
     </div>
   );
 }

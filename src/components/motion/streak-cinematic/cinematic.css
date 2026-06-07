@@ -1,0 +1,212 @@
+/* NISU streak summit cinematic — letterbox + timed captions (HackKU26-style) */
+
+.nisu-cinematic-root {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: #1a1020;
+  overflow: hidden;
+}
+
+.nisu-cinematic-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+.nisu-cinematic-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  height: 9vh;
+  background: #000;
+  pointer-events: none;
+  transform: translateY(-100%);
+  animation: nisu-cinematic-bar-top 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.nisu-cinematic-bar.is-top {
+  top: 0;
+}
+
+.nisu-cinematic-bar.is-bottom {
+  bottom: 0;
+  transform: translateY(100%);
+  animation-name: nisu-cinematic-bar-bottom;
+}
+
+@keyframes nisu-cinematic-bar-top {
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes nisu-cinematic-bar-bottom {
+  to {
+    transform: translateY(0);
+  }
+}
+
+.nisu-cinematic-hud {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 24px 15vh;
+  pointer-events: none;
+  text-align: center;
+  text-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.72),
+    0 6px 22px rgba(0, 0, 0, 0.58);
+}
+
+.nisu-cinematic-hud::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: min(48vh, 22rem);
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.62) 0%,
+    rgba(0, 0, 0, 0.28) 40%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.nisu-cinematic-chip,
+.nisu-cinematic-title,
+.nisu-cinematic-subtitle,
+.nisu-cinematic-stats {
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: nisu-cinematic-caption 1.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  color: #fff8f0;
+}
+
+.nisu-cinematic-chip {
+  margin: 0;
+  font-size: clamp(0.7rem, 1.4vw, 0.82rem);
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #ffb8a8;
+  animation-delay: 4.2s;
+}
+
+.nisu-cinematic-title {
+  margin: 10px 0 0;
+  font-size: clamp(1.75rem, 5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: #fffdf8;
+  animation-delay: 5.5s;
+}
+
+.nisu-cinematic-subtitle {
+  margin: 12px 0 0;
+  max-width: 34ch;
+  font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+  font-weight: 600;
+  color: rgba(255, 248, 240, 0.92);
+  animation-delay: 7s;
+}
+
+.nisu-cinematic-stats {
+  margin: 10px 0 0;
+  font-size: clamp(0.78rem, 1.5vw, 0.92rem);
+  font-weight: 600;
+  color: rgba(255, 230, 220, 0.88);
+  animation-delay: 8.2s;
+}
+
+@keyframes nisu-cinematic-caption {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.nisu-cinematic-fade {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  background: #fff8f5;
+  opacity: 0;
+  pointer-events: none;
+  animation: nisu-cinematic-fade-out 1.4s ease-in 10.5s forwards;
+}
+
+@keyframes nisu-cinematic-fade-out {
+  to {
+    opacity: 1;
+  }
+}
+
+.nisu-cinematic-skip {
+  position: fixed;
+  right: 16px;
+  bottom: calc(9vh + 12px);
+  z-index: 40;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+  padding: 8px 14px;
+  cursor: pointer;
+  opacity: 0;
+  animation: nisu-cinematic-caption 0.8s ease forwards;
+  animation-delay: 2.5s;
+}
+
+.nisu-cinematic-skip:hover {
+  color: #fff;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.nisu-cinematic-fallback {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px;
+  background: linear-gradient(180deg, #ffd4c8 0%, #5eb8ff 100%);
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nisu-cinematic-bar,
+  .nisu-cinematic-bar.is-bottom,
+  .nisu-cinematic-chip,
+  .nisu-cinematic-title,
+  .nisu-cinematic-subtitle,
+  .nisu-cinematic-stats,
+  .nisu-cinematic-fade,
+  .nisu-cinematic-skip {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .nisu-cinematic-fade {
+    opacity: 0 !important;
+  }
+}

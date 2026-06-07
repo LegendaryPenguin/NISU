@@ -126,15 +126,32 @@ export async function logFitnessActivity(
 export async function getTodayFitnessLog(
   dateKey: string
 ): Promise<FitnessActivityLog | null> {
+  const userId = await getAuthUserId();
   const { data, error } = await supabase()
     .from("fitness_activity_log")
     .select()
+    .eq("user_id", userId)
     .eq("date_key", dateKey)
     .order("completed_at", { ascending: false })
     .limit(1)
     .maybeSingle();
   if (error) throw error;
   return data;
+}
+
+export async function fetchWorkoutHistory(
+  limit = 60
+): Promise<FitnessActivityLog[]> {
+  const userId = await getAuthUserId();
+  const { data, error } = await supabase()
+    .from("fitness_activity_log")
+    .select()
+    .eq("user_id", userId)
+    .eq("type", "workout")
+    .order("completed_at", { ascending: false })
+    .limit(limit);
+  if (error) throw error;
+  return data ?? [];
 }
 
 export async function deleteTodayFitnessLog(dateKey: string): Promise<void> {

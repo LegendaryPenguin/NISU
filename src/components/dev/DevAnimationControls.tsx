@@ -32,7 +32,9 @@ export default function DevAnimationControls() {
   const [splashKey, setSplashKey] = useState(0);
   const [showSplash, setShowSplash] = useState(false);
 
-  if (!hasAnimationDevAccess(user?.email)) return null;
+  const dismissHarbor = useCallback(() => setPreviewKind(null), []);
+
+  const canAccess = hasAnimationDevAccess(user?.email);
 
   const toggleForceMotion = () => {
     const next = !forceMotion;
@@ -51,13 +53,13 @@ export default function DevAnimationControls() {
     setSplashKey((k) => k + 1);
   };
 
-  const dismissHarbor = useCallback(() => setPreviewKind(null), []);
-
   const handleClearFlags = () => {
     if (!user?.id) return;
     clearCelebrationFlags(user.id);
     alert("Cleared today's celebration flags — real triggers can fire again.");
   };
+
+  if (!canAccess) return null;
 
   return (
     <>

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import PageHeader, { PageActionRow } from "@/components/PageHeader";
 import type { RecipeWithDetails } from "@/lib/types";
 import RecipeBrowser from "@/components/fuel/RecipeBrowser";
+import LoadingFade from "@/components/motion/LoadingFade";
 import {
   fetchRecipes,
   saveFullRecipe,
@@ -224,18 +225,21 @@ export default function FuelPage() {
         )}
 
         {/* Recipes */}
-        {loading ? (
-          <div className="flex justify-center py-16">
-            <div className="w-8 h-8 border-3 border-[var(--nisu-pale-pink-2)] border-t-[var(--nisu-coral)] rounded-full animate-spin" />
-          </div>
-        ) : (
+        <LoadingFade
+          loading={loading}
+          spinner={
+            <div className="flex justify-center py-16">
+              <div className="w-8 h-8 border-3 border-[var(--nisu-pale-pink-2)] border-t-[var(--nisu-coral)] rounded-full animate-spin" />
+            </div>
+          }
+        >
           <RecipeBrowser
             recipes={recipes}
             onEdit={startEdit}
             onDelete={handleDelete}
             onFork={handleFork}
           />
-        )}
+        </LoadingFade>
       </div>
     </div>
   );

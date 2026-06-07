@@ -42,6 +42,22 @@
   --nisu-skill-action: #f5a0b5;
   --nisu-reset-action: #f5c878;
   --nisu-banner-bg: #fef0ee;
+  --nisu-motion-fast: 150ms;
+  --nisu-motion-standard: 280ms;
+  --nisu-motion-slow: 420ms;
+  --nisu-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --nisu-ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 body {
@@ -83,10 +99,16 @@ body {
   border: 2px solid var(--nisu-border);
   border-radius: 9999px;
   box-shadow: var(--nisu-shadow);
-  transition: transform 0.15s;
+  transition: transform var(--nisu-motion-fast) var(--nisu-ease-out),
+    box-shadow var(--nisu-motion-fast) var(--nisu-ease-out);
 }
 .nisu-cta-secondary:hover {
   transform: translateY(-1px);
+  box-shadow: 0 6px 0 rgba(26, 26, 26, 0.15);
+}
+.nisu-cta-secondary:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 0 rgba(26, 26, 26, 0.12);
 }
 
 /* Alias — all CTAs use bold style */
@@ -316,4 +338,278 @@ body {
 .nisu-input:focus {
   outline: none;
   box-shadow: 0 0 0 2px var(--nisu-pink);
+}
+
+/* ── Motion primitives (sticker physics) ── */
+.nisu-motion-enter {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity var(--nisu-motion-standard) var(--nisu-ease-out),
+    transform var(--nisu-motion-standard) var(--nisu-ease-out);
+}
+.nisu-motion-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.nisu-number-settle {
+  display: inline-block;
+  animation: nisu-number-settle var(--nisu-motion-standard) var(--nisu-ease-out);
+}
+@keyframes nisu-number-settle {
+  from {
+    opacity: 0.6;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.nisu-loading-fade {
+  transition: opacity var(--nisu-motion-fast) var(--nisu-ease-out);
+}
+.nisu-loading-fade-show {
+  opacity: 1;
+}
+.nisu-loading-fade-hide {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+}
+
+.nisu-complete-badge {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(-4px);
+  box-shadow: 0 4px 0 rgba(26, 26, 26, 0.12);
+  transition: opacity var(--nisu-motion-fast) var(--nisu-ease-out),
+    transform var(--nisu-motion-fast) var(--nisu-ease-out),
+    box-shadow var(--nisu-motion-fast) var(--nisu-ease-out);
+}
+.nisu-complete-badge-settled {
+  opacity: 1;
+  transform: translateY(0);
+  box-shadow: 0 2px 0 rgba(26, 26, 26, 0.1);
+}
+
+.nisu-penguin-bounce {
+  animation: nisu-penguin-bounce var(--nisu-motion-slow) var(--nisu-ease-out);
+}
+@keyframes nisu-penguin-bounce {
+  0% {
+    transform: scale(0.92);
+  }
+  40% {
+    transform: scale(1.04);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.nisu-penguin-pop {
+  animation: nisu-penguin-pop 200ms var(--nisu-ease-out);
+}
+@keyframes nisu-penguin-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.nisu-calendar-grid-fade {
+  animation: nisu-fade-in var(--nisu-motion-fast) var(--nisu-ease-out);
+}
+@keyframes nisu-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.nisu-progress-fill {
+  transform-origin: left center;
+  transition: transform var(--nisu-motion-slow) var(--nisu-ease-out);
+}
+.nisu-progress-fill-bright {
+  filter: brightness(1.12);
+  transition: filter 200ms var(--nisu-ease-out), transform var(--nisu-motion-slow) var(--nisu-ease-out);
+}
+
+.nisu-message-crossfade {
+  animation: nisu-fade-in var(--nisu-motion-fast) var(--nisu-ease-out);
+}
+
+.nisu-workout-phase-enter {
+  animation: nisu-workout-enter var(--nisu-motion-standard) var(--nisu-ease-out);
+}
+@keyframes nisu-workout-enter {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.nisu-workout-complete-card {
+  animation: nisu-sticker-settle var(--nisu-motion-slow) var(--nisu-ease-out);
+}
+@keyframes nisu-sticker-settle {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+    box-shadow: 0 4px 0 rgba(26, 26, 26, 0.12);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    box-shadow: 0 2px 0 rgba(26, 26, 26, 0.1);
+  }
+}
+
+.nisu-error-enter {
+  animation: nisu-fade-in var(--nisu-motion-fast) var(--nisu-ease-out);
+}
+
+.nisu-row-action-fitness,
+.nisu-row-action-fuel,
+.nisu-row-action-skill,
+.nisu-row-action-reset,
+.nisu-row-tint-fitness,
+.nisu-row-tint-fuel,
+.nisu-row-tint-skill,
+.nisu-row-tint-reset {
+  transition: transform var(--nisu-motion-fast) var(--nisu-ease-out),
+    box-shadow var(--nisu-motion-fast) var(--nisu-ease-out);
+}
+.nisu-row-action-fitness:active,
+.nisu-row-action-fuel:active,
+.nisu-row-action-skill:active,
+.nisu-row-action-reset:active,
+button.nisu-row-action-fitness:active,
+button.nisu-row-action-fuel:active,
+button.nisu-row-action-skill:active,
+button.nisu-row-action-reset:active {
+  transform: translateY(1px);
+}
+
+.nisu-focus-ring:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--nisu-coral);
+  transition: box-shadow 100ms var(--nisu-ease-out);
+}
+
+.nisu-checkbox-press:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+/* ── Streak celebration overlay (rare delight) ── */
+.nisu-celebration-backdrop {
+  background: rgba(255, 248, 245, 0.82);
+  animation: nisu-celebration-backdrop-in var(--nisu-motion-standard) var(--nisu-ease-out);
+}
+@keyframes nisu-celebration-backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.nisu-celebration-card {
+  animation: nisu-celebration-card-in var(--nisu-motion-slow) var(--nisu-ease-out);
+}
+@keyframes nisu-celebration-card-in {
+  0% {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+    box-shadow: 0 8px 0 rgba(26, 26, 26, 0.08);
+  }
+  70% {
+    transform: translateY(-2px) scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    box-shadow: var(--nisu-shadow);
+  }
+}
+
+.nisu-celebration-card-streak {
+  background: linear-gradient(
+    180deg,
+    var(--nisu-pale-pink) 0%,
+    white 45%
+  );
+}
+
+.nisu-celebration-card-perfect {
+  background: linear-gradient(
+    180deg,
+    var(--nisu-pale-pink-2) 0%,
+    white 50%
+  );
+}
+
+.nisu-celebration-heart {
+  animation: nisu-celebration-heart 600ms var(--nisu-ease-out) 200ms both;
+}
+@keyframes nisu-celebration-heart {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  50% {
+    transform: scale(1.12);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.nisu-celebration-partner-delay.nisu-penguin-bounce {
+  animation-delay: 80ms;
+}
+
+.nisu-celebration-together {
+  animation: nisu-fade-in var(--nisu-motion-standard) var(--nisu-ease-out) 300ms both;
+}
+
+.nisu-celebration-confetti-piece {
+  position: absolute;
+  top: -8px;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--nisu-border);
+  border-radius: 3px;
+  box-shadow: 0 2px 0 rgba(26, 26, 26, 0.1);
+  animation: nisu-celebration-confetti-fall 900ms var(--nisu-ease-out) both;
+}
+@keyframes nisu-celebration-confetti-fall {
+  0% {
+    opacity: 0;
+    transform: translateY(0) rotate(var(--nisu-confetti-rotate, 0deg)) scale(0.6);
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(72px) rotate(calc(var(--nisu-confetti-rotate, 0deg) + 180deg)) scale(1);
+  }
 }

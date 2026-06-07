@@ -7,6 +7,7 @@ import PageHeader from "@/components/PageHeader";
 import { NISU_ASSETS } from "@/lib/nisu-assets";
 import { formatDateDisplay } from "@/lib/helpers";
 import { fetchWorkoutHistory } from "@/lib/fitness-actions";
+import LoadingFade from "@/components/motion/LoadingFade";
 import type { FitnessActivityLog } from "@/lib/types";
 
 function formatCompletedTime(iso: string): string {
@@ -62,11 +63,15 @@ export default function WorkoutHistoryPage() {
           </div>
         )}
 
-        {loading ? (
-          <div className="flex justify-center py-12">
-            <div className="w-8 h-8 border-3 border-[var(--nisu-pale-pink-2)] border-t-[var(--nisu-coral)] rounded-full animate-spin" />
-          </div>
-        ) : entries.length === 0 ? (
+        <LoadingFade
+          loading={loading}
+          spinner={
+            <div className="flex justify-center py-12">
+              <div className="w-8 h-8 border-3 border-[var(--nisu-pale-pink-2)] border-t-[var(--nisu-coral)] rounded-full animate-spin" />
+            </div>
+          }
+        >
+        {entries.length === 0 ? (
           <div className="nisu-empty-fitness p-8 text-center ml-2">
             <Image
               src={NISU_ASSETS.penguins.fitness}
@@ -114,6 +119,7 @@ export default function WorkoutHistoryPage() {
             ))}
           </div>
         )}
+        </LoadingFade>
       </div>
     </div>
   );

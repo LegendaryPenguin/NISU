@@ -8,9 +8,14 @@ import FuelCard from "@/components/FuelCard";
 import SkillCard from "@/components/SkillCard";
 import ResetCard from "@/components/ResetCard";
 import DailySummary from "@/components/DailySummary";
+import StreakCelebration, {
+  useStreakCelebration,
+} from "@/components/motion/StreakCelebration";
 
 export default function DailyRoutinePage() {
   const { isLoaded, resetToday } = useDailyProgress();
+  const { kind: celebrationKind, dismiss: dismissCelebration } =
+    useStreakCelebration();
   const [resetting, setResetting] = useState(false);
 
   if (!isLoaded) {
@@ -30,6 +35,12 @@ export default function DailyRoutinePage() {
 
   return (
     <div className="min-h-screen">
+      {celebrationKind && (
+        <StreakCelebration
+          kind={celebrationKind}
+          onDismiss={dismissCelebration}
+        />
+      )}
       <div className="max-w-2xl mx-auto px-4 py-6">
         <ProgressHeader />
 

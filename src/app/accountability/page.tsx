@@ -6,6 +6,7 @@ import { useStreaks } from "@/context/StreakContext";
 import StreakCalendar from "@/components/StreakCalendar";
 import { NISU_ASSETS } from "@/lib/nisu-assets";
 import { STREAK_PILLAR_THRESHOLD } from "@/lib/streak-config";
+import AnimatedNumber from "@/components/motion/AnimatedNumber";
 
 export default function AccountabilityPage() {
   const { displayName, partnerName } = useAuth();
@@ -117,7 +118,7 @@ function StatChip({
         className="text-2xl font-extrabold leading-none mt-1"
         style={{ color }}
       >
-        {value}
+        <AnimatedNumber value={value} />
       </p>
       <p className="text-[10px] font-semibold text-gray-500 mt-0.5">days</p>
     </div>

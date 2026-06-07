@@ -8,6 +8,7 @@ import { useStreaks } from "@/context/StreakContext";
 import StreakCalendar from "@/components/StreakCalendar";
 import { NISU_ASSETS } from "@/lib/nisu-assets";
 import { STREAK_PILLAR_THRESHOLD } from "@/lib/streak-config";
+import AnimatedNumber from "@/components/motion/AnimatedNumber";
 
 function getGreeting() {
   const h = new Date().getHours();
@@ -82,7 +83,7 @@ export default function LandingPage() {
                 />
               </div>
               <p className="text-3xl font-extrabold leading-none mt-0.5 nisu-stat-num-coral">
-                {isLoaded ? yourStreak : "—"}{" "}
+                <AnimatedNumber value={isLoaded ? yourStreak : "—"} />{" "}
                 <span className="text-sm font-bold text-gray-900">days</span>
               </p>
             </div>
@@ -111,7 +112,7 @@ export default function LandingPage() {
               </div>
               <p className="text-3xl font-extrabold leading-none mt-0.5">
                 <span className="nisu-stat-num-on-bold">
-                  {isLoaded ? togetherStreak : "—"}
+                  <AnimatedNumber value={isLoaded ? togetherStreak : "—"} />
                 </span>{" "}
                 <span className="text-sm font-bold text-gray-900">days</span>
               </p>
@@ -130,10 +131,11 @@ export default function LandingPage() {
                 Completed together
               </span>
               <p className="text-xs nisu-text-muted mt-0.5">
-                {partnerName}&apos;s streak: {isLoaded ? partnerStreak : "—"} days
+                {partnerName}&apos;s streak:{" "}
+                <AnimatedNumber value={isLoaded ? partnerStreak : "—"} /> days
               </p>
               <p className="text-3xl font-extrabold leading-none mt-0.5 nisu-stat-num-amber">
-                {isLoaded ? togetherCount : "—"}{" "}
+                <AnimatedNumber value={isLoaded ? togetherCount : "—"} />{" "}
                 <span className="text-sm font-bold text-gray-900">days</span>
               </p>
             </div>

@@ -61,13 +61,13 @@ export default function Navigation() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex flex-col items-center justify-center py-1.5 px-1.5 rounded-2xl transition-all duration-200 flex-1 max-w-[56px]"
+                className="nisu-focus-ring flex flex-col items-center justify-center py-1.5 px-1.5 rounded-2xl transition-[box-shadow] duration-[var(--nisu-motion-fast)] flex-1 max-w-[56px]"
                 aria-label={item.label}
               >
                 <span
-                  className={`w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200 ${
+                  className={`w-10 h-10 flex items-center justify-center rounded-full transition-[box-shadow,background-color] duration-[var(--nisu-motion-fast)] ${
                     active
-                      ? "bg-white ring-2 ring-[var(--nisu-border)] shadow-[var(--nisu-shadow)] scale-105"
+                      ? "bg-white ring-2 ring-[var(--nisu-border)] shadow-[var(--nisu-shadow)]"
                       : ""
                   }`}
                 >

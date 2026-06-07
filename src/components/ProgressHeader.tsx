@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import { useDailyProgress } from "@/context/DailyProgressContext";
 import { formatDateDisplay, getTodayKey, STREAK_PILLAR_THRESHOLD } from "@/lib/helpers";
 import { NISU_ASSETS } from "@/lib/nisu-assets";
@@ -8,9 +9,26 @@ import { NISU_ASSETS } from "@/lib/nisu-assets";
 export default function ProgressHeader() {
   const { overallProgress } = useDailyProgress();
   const todayKey = getTodayKey();
-  const pct = (overallProgress / 4) * 100;
+  const scale = overallProgress / 4;
+  const prevProgress = useRef(overallProgress);
+  const [brighten, setBrighten] = useState(false);
 
   const streakEligible = overallProgress >= STREAK_PILLAR_THRESHOLD;
+
+  useEffect(() => {
+    if (overallProgress !== prevProgress.current) {
+      if (
+        overallProgress >= STREAK_PILLAR_THRESHOLD ||
+        overallProgress === 4
+      ) {
+        setBrighten(true);
+        const t = setTimeout(() => setBrighten(false), 400);
+        prevProgress.current = overallProgress;
+        return () => clearTimeout(t);
+      }
+      prevProgress.current = overallProgress;
+    }
+  }, [overallProgress]);
 
   const getMessage = () => {
     if (streakEligible && overallProgress < 4) {
@@ -52,32 +70,39 @@ export default function ProgressHeader() {
 
       <div className="mt-4 nisu-pillar-fitness ml-2">
         <div className="nisu-pillar-inner p-4">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-bold text-gray-900">
-            Today&apos;s Progress
-          </span>
-          <span className="text-sm font-bold text-[var(--nisu-coral)]">
-            {overallProgress} / 4 pillars
-            {streakEligible && (
-              <span className="text-gray-600 font-semibold"> · streak ✓</span>
-            )}
-          </span>
-        </div>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-bold text-gray-900">
+              Today&apos;s Progress
+            </span>
+            <span className="text-sm font-bold text-[var(--nisu-coral)]">
+              {overallProgress} / 4 pillars
+              {streakEligible && (
+                <span className="text-gray-600 font-semibold"> · streak ✓</span>
+              )}
+            </span>
+          </div>
 
-        <div className="w-full h-3 bg-[var(--nisu-pale-pink)] rounded-full overflow-hidden">
-          <div
-            className="h-full rounded-full transition-all duration-500 ease-out"
-            style={{
-              width: `${pct}%`,
-              background:
-                overallProgress === 4
-                  ? "linear-gradient(90deg, var(--nisu-coral), var(--nisu-amber), var(--nisu-sky))"
-                  : "linear-gradient(90deg, var(--nisu-sky), var(--nisu-coral))",
-            }}
-          />
-        </div>
+          <div className="w-full h-3 bg-[var(--nisu-pale-pink)] rounded-full overflow-hidden">
+            <div
+              className={`h-full w-full rounded-full nisu-progress-fill ${
+                brighten ? "nisu-progress-fill-bright" : ""
+              }`}
+              style={{
+                transform: `scaleX(${scale})`,
+                background:
+                  overallProgress === 4
+                    ? "linear-gradient(90deg, var(--nisu-coral), var(--nisu-amber), var(--nisu-sky))"
+                    : "linear-gradient(90deg, var(--nisu-sky), var(--nisu-coral))",
+              }}
+            />
+          </div>
 
-        <p className="text-xs nisu-text-muted mt-2 font-medium">{getMessage()}</p>
+          <p
+            key={overallProgress}
+            className="text-xs nisu-text-muted mt-2 font-medium nisu-message-crossfade"
+          >
+            {getMessage()}
+          </p>
         </div>
       </div>
     </div>

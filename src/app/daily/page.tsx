@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 import { useDailyProgress } from "@/context/DailyProgressContext";
+import { hasAnimationDevAccess } from "@/lib/dev-animation-access";
 import ProgressHeader from "@/components/ProgressHeader";
 import FitnessCard from "@/components/FitnessCard";
 import FuelCard from "@/components/FuelCard";
@@ -13,7 +15,9 @@ import StreakCelebration, {
 } from "@/components/motion/StreakCelebration";
 
 export default function DailyRoutinePage() {
+  const { user } = useAuth();
   const { isLoaded, resetToday } = useDailyProgress();
+  const showDevTools = hasAnimationDevAccess(user?.email);
   const { kind: celebrationKind, dismiss: dismissCelebration } =
     useStreakCelebration();
   const [resetting, setResetting] = useState(false);
@@ -53,19 +57,20 @@ export default function DailyRoutinePage() {
 
         <DailySummary />
 
-        {/* Dev tools */}
-        <div className="mt-8 pt-6 border-t border-dashed border-gray-200">
-          <p className="text-[10px] uppercase tracking-widest text-gray-300 font-bold mb-2">
-            Dev Tools
-          </p>
-          <button
-            onClick={handleReset}
-            disabled={resetting}
-            className="text-xs font-medium text-red-400 border border-red-200 px-4 py-2 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
-          >
-            {resetting ? "Resetting..." : "Reset Day (Dev)"}
-          </button>
-        </div>
+        {showDevTools && (
+          <div className="mt-8 pt-6 border-t border-dashed border-gray-200">
+            <p className="text-[10px] uppercase tracking-widest text-gray-300 font-bold mb-2">
+              Dev Tools
+            </p>
+            <button
+              onClick={handleReset}
+              disabled={resetting}
+              className="text-xs font-medium text-red-400 border border-red-200 px-4 py-2 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+            >
+              {resetting ? "Resetting..." : "Reset Day (Dev)"}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

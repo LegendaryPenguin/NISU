@@ -2,22 +2,31 @@
 
 import { useEffect, useRef } from "react";
 import { NISU_ASSETS } from "@/lib/nisu-assets";
-import { shouldReduceMotion } from "@/lib/motion";
+import { isMotionAllowed } from "@/lib/motion";
 
 interface WorkoutVictorySplashProps {
   active: boolean;
+  /** Bump to replay (dev preview) */
+  replayKey?: number;
 }
 
 /**
  * Short 4s splash overlay — plays once when `active` becomes true.
  * Self-contained; does not block the complete-phase UI underneath.
  */
-export default function WorkoutVictorySplash({ active }: WorkoutVictorySplashProps) {
+export default function WorkoutVictorySplash({
+  active,
+  replayKey = 0,
+}: WorkoutVictorySplashProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const played = useRef(false);
 
   useEffect(() => {
-    if (!active || played.current || shouldReduceMotion()) return;
+    played.current = false;
+  }, [replayKey]);
+
+  useEffect(() => {
+    if (!active || played.current || !isMotionAllowed()) return;
     if (!rootRef.current) return;
     played.current = true;
 
@@ -33,9 +42,9 @@ export default function WorkoutVictorySplash({ active }: WorkoutVictorySplashPro
     return () => {
       cleanup?.();
     };
-  }, [active]);
+  }, [active, replayKey]);
 
-  if (!active || shouldReduceMotion()) return null;
+  if (!active || !isMotionAllowed()) return null;
 
   return (
     <div

@@ -9,7 +9,7 @@ import { getTodayKey } from "@/lib/helpers";
 import { STREAK_PILLAR_THRESHOLD } from "@/lib/streak-config";
 import { NISU_ASSETS } from "@/lib/nisu-assets";
 import { shouldReduceMotion } from "@/lib/motion";
-import "./streak-cinematic/cinematic.css";
+import "./cinematic-shell.css";
 
 export type CelebrationKind = "streak" | "perfect";
 
@@ -123,11 +123,12 @@ export default function StreakCelebration({
 
     let cleanup: (() => void) | undefined;
 
-    void import("./streak-cinematic/main").then(({ bootstrapStreakCinematic }) => {
+    void import("./harbor-cinematic/main").then(({ bootstrapHarborCinematic }) => {
       if (!canvasRef.current) return;
-      cleanup = bootstrapStreakCinematic({
+      cleanup = bootstrapHarborCinematic({
         rootEl: canvasRef.current,
         kind,
+        pillarCount: overallProgress,
         heroTextureUrl: isPerfect
           ? NISU_ASSETS.penguins.daily
           : NISU_ASSETS.penguins.streak,
@@ -141,7 +142,7 @@ export default function StreakCelebration({
       document.body.style.overflow = prevOverflow;
       started.current = false;
     };
-  }, [reduced, kind, isPerfect, handleComplete]);
+  }, [reduced, kind, isPerfect, overallProgress, handleComplete]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -189,15 +190,15 @@ export default function StreakCelebration({
 
       <div className="nisu-cinematic-hud">
         <p className="nisu-cinematic-chip">
-          {isPerfect ? "Perfect Day" : "Streak Day"}
+          {isPerfect ? "Full Crew" : "Harbor Lights"}
         </p>
         <h2 className="nisu-cinematic-title">
-          {isPerfect ? "Summit cleared" : "You reached the summit"}
+          {isPerfect ? "Every lantern lit" : "Dockside reunion"}
         </h2>
         <p className="nisu-cinematic-subtitle">
           {isPerfect
-            ? "All four pillars done — the penguins made it to the top together."
-            : `${overallProgress} of 4 pillars — today's streak is locked in.`}
+            ? "All four pillars glowing — you and your partner made it home for the night."
+            : `${overallProgress} of 4 pillars — the streak lanterns are burning bright.`}
         </p>
         {(yourStreak > 0 || partnerAlsoToday) && (
           <p className="nisu-cinematic-stats">

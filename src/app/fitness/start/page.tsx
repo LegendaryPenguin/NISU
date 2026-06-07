@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import PageHeader from "@/components/PageHeader";
 import PenguinBounce from "@/components/motion/PenguinBounce";
+import WorkoutVictorySplash from "@/components/motion/WorkoutVictorySplash";
 import { NISU_ASSETS } from "@/lib/nisu-assets";
 import type { WorkoutWithExercises, WorkoutExercise } from "@/lib/types";
 import { formatDuration } from "@/lib/helpers";
@@ -411,6 +412,7 @@ export default function WorkoutStartPage() {
   if (phase === "complete") {
     return (
       <div className="min-h-screen">
+        <WorkoutVictorySplash active />
         <div className="max-w-lg mx-auto px-4 py-12 text-center">
           <div className="nisu-card p-8 nisu-workout-complete-card mb-6">
             <PenguinBounce

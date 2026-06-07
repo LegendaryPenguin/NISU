@@ -21,14 +21,14 @@ export default function Checkbox({
     <button
       onClick={onChange}
       disabled={disabled}
-      className={`flex items-center gap-3 w-full text-left px-3 py-2.5 rounded-xl transition-all duration-200 ${
+      className={`nisu-checkbox-press nisu-focus-ring flex items-center gap-3 w-full text-left px-3 py-2.5 rounded-xl transition-[background-color,transform] duration-[var(--nisu-motion-fast)] ${
         disabled
           ? "opacity-50 cursor-not-allowed"
           : "hover:bg-black/[0.03] cursor-pointer"
       } ${checked ? "bg-black/[0.02]" : ""}`}
     >
       <div
-        className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200 ${
+        className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-[background-color,border-color] duration-[var(--nisu-motion-fast)] ${
           checked
             ? `${accentColor} border-transparent`
             : "border-gray-300 bg-white"
@@ -52,7 +52,7 @@ export default function Checkbox({
       </div>
       <div className="flex flex-col">
         <span
-          className={`text-sm font-medium transition-all duration-200 ${
+          className={`text-sm font-medium transition-[color,text-decoration-color] duration-[var(--nisu-motion-fast)] ${
             checked ? "line-through text-gray-400" : "text-gray-700"
           }`}
         >

@@ -7,6 +7,7 @@ import PageHeader, { PageActionRow } from "@/components/PageHeader";
 import { NISU_ASSETS } from "@/lib/nisu-assets";
 import type { WorkoutWithExercises, WorkoutExercise } from "@/lib/types";
 import { formatDuration } from "@/lib/helpers";
+import LoadingFade from "@/components/motion/LoadingFade";
 import {
   fetchWorkouts,
   createWorkout,
@@ -383,11 +384,15 @@ export default function FitnessManagementPage() {
         )}
 
         {/* Workouts List */}
-        {loading ? (
-          <div className="flex justify-center py-12">
-            <div className="w-8 h-8 border-3 border-[var(--nisu-pale-pink-2)] border-t-[var(--nisu-coral)] rounded-full animate-spin" />
-          </div>
-        ) : workouts.length === 0 ? (
+        <LoadingFade
+          loading={loading}
+          spinner={
+            <div className="flex justify-center py-12">
+              <div className="w-8 h-8 border-3 border-[var(--nisu-pale-pink-2)] border-t-[var(--nisu-coral)] rounded-full animate-spin" />
+            </div>
+          }
+        >
+        {workouts.length === 0 ? (
           <div className="nisu-empty-fitness p-8 text-center">
             <Image
               src={NISU_ASSETS.penguins.fitness}
@@ -494,6 +499,7 @@ export default function FitnessManagementPage() {
             ))}
           </div>
         )}
+        </LoadingFade>
       </div>
     </div>
   );

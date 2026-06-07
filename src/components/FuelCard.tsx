@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useDailyProgress } from "@/context/DailyProgressContext";
 import { NISU_ASSETS } from "@/lib/nisu-assets";
+import CompleteBadge from "@/components/motion/CompleteBadge";
 
 export default function FuelCard() {
   const {
@@ -37,12 +38,7 @@ export default function FuelCard() {
           </div>
         </div>
         {fuel.completed && (
-          <span
-            className="text-white text-xs font-bold px-3 py-1 rounded-full"
-            style={{ backgroundColor: "var(--nisu-coral)" }}
-          >
-            Complete
-          </span>
+          <CompleteBadge backgroundColor="var(--nisu-coral)" />
         )}
       </div>
 

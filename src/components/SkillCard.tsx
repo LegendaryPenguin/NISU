@@ -9,6 +9,8 @@ import { fetchActiveSkillItems } from "@/lib/skill-actions";
 import type { SkillItem, DailyWheelSelection } from "@/lib/types";
 import SkillWheel from "./SkillWheel";
 import { NISU_ASSETS } from "@/lib/nisu-assets";
+import CompleteBadge from "@/components/motion/CompleteBadge";
+import MotionPanel from "@/components/motion/MotionPanel";
 
 type CardFlow = "idle" | "mainSelect" | "wheelSpinning";
 
@@ -134,12 +136,7 @@ export default function SkillCard() {
           </div>
         </div>
         {done && (
-          <span
-            className="text-white text-xs font-bold px-3 py-1 rounded-full"
-            style={{ backgroundColor: "var(--nisu-pink)" }}
-          >
-            Complete
-          </span>
+          <CompleteBadge backgroundColor="var(--nisu-pink)" />
         )}
       </div>
 
@@ -164,7 +161,10 @@ export default function SkillCard() {
       </div>
 
       {error && (
-        <div className="text-xs bg-red-50 text-red-500 px-3 py-2 rounded-lg mb-3">
+        <div
+          key={error}
+          className="nisu-error-enter text-xs bg-red-50 text-red-500 px-3 py-2 rounded-lg mb-3"
+        >
           {error}
         </div>
       )}
@@ -193,8 +193,10 @@ export default function SkillCard() {
         </div>
       )}
 
+      {!done && (
+      <MotionPanel panelKey={flow} origin="top">
       {/* Action buttons — only when more blocks are needed */}
-      {!done && flow === "idle" && (
+      {flow === "idle" && (
         <div className="space-y-2 mb-4">
           <button
             onClick={() => setFlow("mainSelect")}
@@ -318,6 +320,8 @@ export default function SkillCard() {
             Cancel
           </button>
         </div>
+      )}
+      </MotionPanel>
       )}
 
       {/* Wheel selection that persists after idle (when blocks remain and already spun) */}

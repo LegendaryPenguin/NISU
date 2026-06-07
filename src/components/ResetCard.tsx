@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useDailyProgress } from "@/context/DailyProgressContext";
 import { NISU_ASSETS } from "@/lib/nisu-assets";
+import CompleteBadge from "@/components/motion/CompleteBadge";
 
 export default function ResetCard() {
   const {
@@ -35,12 +36,7 @@ export default function ResetCard() {
           </div>
         </div>
         {reset.completed && (
-          <span
-            className="text-white text-xs font-bold px-3 py-1 rounded-full"
-            style={{ backgroundColor: "var(--nisu-amber)" }}
-          >
-            Complete
-          </span>
+          <CompleteBadge backgroundColor="var(--nisu-amber)" />
         )}
       </div>
 

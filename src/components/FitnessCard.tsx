@@ -5,6 +5,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useDailyProgress } from "@/context/DailyProgressContext";
 import { NISU_ASSETS } from "@/lib/nisu-assets";
+import MotionPanel from "@/components/motion/MotionPanel";
+import CompleteBadge from "@/components/motion/CompleteBadge";
 
 type CardFlow = "idle" | "steps" | "funActive";
 
@@ -83,12 +85,7 @@ export default function FitnessCard() {
               </p>
             </div>
           </div>
-          <span
-            className="text-white text-xs font-bold px-3 py-1 rounded-full"
-            style={{ backgroundColor: "var(--nisu-sky)" }}
-          >
-            Complete
-          </span>
+          <CompleteBadge backgroundColor="var(--nisu-sky)" />
         </div>
 
         <div
@@ -147,11 +144,15 @@ export default function FitnessCard() {
       </p>
 
       {error && (
-        <div className="text-xs bg-red-50 text-red-500 px-3 py-2 rounded-lg mb-3">
+        <div
+          key={error}
+          className="nisu-error-enter text-xs bg-red-50 text-red-500 px-3 py-2 rounded-lg mb-3"
+        >
           {error}
         </div>
       )}
 
+      <MotionPanel panelKey={flow} origin="top">
       {flow === "idle" && (
         <div className="space-y-2 mb-3">
           <Link
@@ -284,6 +285,7 @@ export default function FitnessCard() {
           </div>
         </div>
       )}
+      </MotionPanel>
 
       <div
         className={`text-xs px-3 py-2 rounded-lg mb-3 ${

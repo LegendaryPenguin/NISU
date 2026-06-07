@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import PageHeader from "@/components/PageHeader";
+import PenguinBounce from "@/components/motion/PenguinBounce";
+import { NISU_ASSETS } from "@/lib/nisu-assets";
 import type { WorkoutWithExercises, WorkoutExercise } from "@/lib/types";
 import { formatDuration } from "@/lib/helpers";
 import { fetchWorkouts } from "@/lib/fitness-actions";
@@ -269,7 +271,10 @@ export default function WorkoutStartPage() {
           )}
 
           {/* Current Exercise Card */}
-          <div className="nisu-card p-6 text-center">
+          <div
+            key={`exercise-${currentIdx}`}
+            className="nisu-card p-6 text-center nisu-workout-phase-enter"
+          >
             <h2 className="text-xl font-extrabold text-gray-900 mb-2">
               {currentExercise.name}
             </h2>
@@ -407,20 +412,28 @@ export default function WorkoutStartPage() {
     return (
       <div className="min-h-screen">
         <div className="max-w-lg mx-auto px-4 py-12 text-center">
-          <span className="text-6xl mb-4 block">🎉</span>
+          <div className="nisu-card p-8 nisu-workout-complete-card mb-6">
+            <PenguinBounce
+              src={NISU_ASSETS.penguins.fitness}
+              width={80}
+              height={80}
+              className="w-20 h-20 object-contain mx-auto mb-4"
+              bounceKey="workout-complete"
+            />
           <h1 className="text-2xl font-extrabold text-gray-900 mb-2">
             Workout Complete!
           </h1>
           <p className="text-sm text-gray-500 mb-2">
             {selectedWorkout?.name}
           </p>
-          <p className="text-xs text-gray-400 mb-8">
+          <p className="text-xs text-gray-400 mb-6">
             {totalExercises} exercise{totalExercises !== 1 ? "s" : ""}{" "}
             finished
           </p>
+          </div>
 
           {error && (
-            <div className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-xl mb-4">
+            <div className="nisu-error-enter bg-red-50 text-red-600 text-sm px-4 py-3 rounded-xl mb-4">
               {error}
             </div>
           )}

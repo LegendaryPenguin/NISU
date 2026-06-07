@@ -173,7 +173,10 @@ export default function StreakCalendar({
           ))}
         </div>
 
-        <div className="grid grid-cols-7 gap-1">
+        <div
+          key={`${viewYear}-${viewMonth}`}
+          className="grid grid-cols-7 gap-1 nisu-calendar-grid-fade"
+        >
           {cells.map((cell) => {
             const hasYou = youSet.has(cell.dateKey);
             const hasPartner = partnerSet.has(cell.dateKey);
@@ -209,7 +212,7 @@ export default function StreakCalendar({
                       alt=""
                       width={20}
                       height={20}
-                      className="w-5 h-5 object-contain drop-shadow-sm"
+                      className="w-5 h-5 object-contain drop-shadow-sm nisu-penguin-pop"
                     />
                   )}
                   {hasPartner && (
@@ -218,7 +221,8 @@ export default function StreakCalendar({
                       alt=""
                       width={20}
                       height={20}
-                      className="w-5 h-5 object-contain drop-shadow-sm"
+                      className="w-5 h-5 object-contain drop-shadow-sm nisu-penguin-pop"
+                      style={{ animationDelay: hasYou ? "80ms" : undefined }}
                     />
                   )}
                 </div>

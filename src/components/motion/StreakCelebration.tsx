@@ -8,7 +8,7 @@ import { useDailyProgress } from "@/context/DailyProgressContext";
 import { getTodayKey } from "@/lib/helpers";
 import { STREAK_PILLAR_THRESHOLD } from "@/lib/streak-config";
 import { NISU_ASSETS } from "@/lib/nisu-assets";
-import { shouldReduceMotion } from "@/lib/motion";
+import { isMotionAllowed } from "@/lib/motion";
 import "./cinematic-shell.css";
 
 export type CelebrationKind = "streak" | "perfect";
@@ -88,11 +88,14 @@ export function useStreakCelebration(): {
 interface StreakCelebrationProps {
   kind: CelebrationKind;
   onDismiss: () => void;
+  /** Dev preview — lantern count when overallProgress is lower */
+  previewPillarCount?: number;
 }
 
 export default function StreakCelebration({
   kind,
   onDismiss,
+  previewPillarCount,
 }: StreakCelebrationProps) {
   const { displayName, partnerName } = useAuth();
   const { yourStreak, togetherStreak, yourSuccessDates, partnerSuccessDates } =
@@ -101,7 +104,8 @@ export default function StreakCelebration({
   const todayKey = getTodayKey();
   const canvasRef = useRef<HTMLDivElement>(null);
   const started = useRef(false);
-  const reduced = shouldReduceMotion();
+  const reduced = !isMotionAllowed();
+  const pillarCount = previewPillarCount ?? overallProgress;
 
   const partnerAlsoToday =
     yourSuccessDates.includes(todayKey) &&
@@ -128,7 +132,7 @@ export default function StreakCelebration({
       cleanup = bootstrapHarborCinematic({
         rootEl: canvasRef.current,
         kind,
-        pillarCount: overallProgress,
+        pillarCount,
         heroTextureUrl: isPerfect
           ? NISU_ASSETS.penguins.daily
           : NISU_ASSETS.penguins.streak,
@@ -142,7 +146,7 @@ export default function StreakCelebration({
       document.body.style.overflow = prevOverflow;
       started.current = false;
     };
-  }, [reduced, kind, isPerfect, overallProgress, handleComplete]);
+  }, [reduced, kind, isPerfect, pillarCount, handleComplete]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -168,7 +172,7 @@ export default function StreakCelebration({
         <p className="text-sm font-semibold text-gray-700 max-w-xs">
           {isPerfect
             ? "All 4 pillars complete."
-            : `${overallProgress}/4 pillars — streak locked in.`}
+            : `${pillarCount}/4 pillars — streak locked in.`}
         </p>
         <button
           type="button"
@@ -198,7 +202,7 @@ export default function StreakCelebration({
         <p className="nisu-cinematic-subtitle">
           {isPerfect
             ? "All four pillars glowing — you and your partner made it home for the night."
-            : `${overallProgress} of 4 pillars — the streak lanterns are burning bright.`}
+            : `${pillarCount} of 4 pillars — the streak lanterns are burning bright.`}
         </p>
         {(yourStreak > 0 || partnerAlsoToday) && (
           <p className="nisu-cinematic-stats">

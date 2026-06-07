@@ -29,6 +29,13 @@ export function shouldReduceMotion(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
+/** True when motion is allowed — respects OS setting unless dev force-motion is on. */
+export function isMotionAllowed(): boolean {
+  if (typeof window === "undefined") return true;
+  if (localStorage.getItem("nisu-dev-force-motion") === "1") return true;
+  return !shouldReduceMotion();
+}
+
 export function motionTransition(
   properties: string,
   duration: keyof typeof MOTION_DURATION = "standard"

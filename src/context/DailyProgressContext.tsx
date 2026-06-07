@@ -108,7 +108,12 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
     useState<DailyWheelSelection | null>(null);
 
   useEffect(() => {
-    if (authLoading || !userId) return;
+    if (authLoading) return;
+
+    if (!userId) {
+      setIsLoaded(true);
+      return;
+    }
 
     const stored = loadAllProgress(userId);
     setAllProgress(stored);

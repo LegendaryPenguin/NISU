@@ -15,14 +15,14 @@ import StreakCelebration, {
 } from "@/components/motion/StreakCelebration";
 
 export default function DailyRoutinePage() {
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const { isLoaded, resetToday } = useDailyProgress();
   const showDevTools = hasAnimationDevAccess(user?.email);
   const { kind: celebrationKind, dismiss: dismissCelebration } =
     useStreakCelebration();
   const [resetting, setResetting] = useState(false);
 
-  if (!isLoaded) {
+  if (authLoading || !isLoaded) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="w-8 h-8 border-[3px] border-[var(--nisu-pale-pink-2)] border-t-[var(--nisu-coral)] rounded-full animate-spin" />

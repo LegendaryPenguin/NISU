@@ -1,10 +1,10 @@
-/* NISU streak summit cinematic — letterbox + timed captions (HackKU26-style) */
+/* Shared NISU cinematic shell — letterbox, captions, skip (HackKU26-style) */
 
 .nisu-cinematic-root {
   position: fixed;
   inset: 0;
   z-index: 200;
-  background: #1a1020;
+  background: #120818;
   overflow: hidden;
 }
 
@@ -99,7 +99,7 @@
   letter-spacing: 0.28em;
   text-transform: uppercase;
   color: #ffb8a8;
-  animation-delay: 4.2s;
+  animation-delay: 3.8s;
 }
 
 .nisu-cinematic-title {
@@ -109,7 +109,7 @@
   line-height: 1.08;
   letter-spacing: -0.02em;
   color: #fffdf8;
-  animation-delay: 5.5s;
+  animation-delay: 5s;
 }
 
 .nisu-cinematic-subtitle {
@@ -118,7 +118,7 @@
   font-size: clamp(0.9rem, 1.8vw, 1.1rem);
   font-weight: 600;
   color: rgba(255, 248, 240, 0.92);
-  animation-delay: 7s;
+  animation-delay: 6.5s;
 }
 
 .nisu-cinematic-stats {
@@ -126,7 +126,7 @@
   font-size: clamp(0.78rem, 1.5vw, 0.92rem);
   font-weight: 600;
   color: rgba(255, 230, 220, 0.88);
-  animation-delay: 8.2s;
+  animation-delay: 7.8s;
 }
 
 @keyframes nisu-cinematic-caption {
@@ -143,7 +143,7 @@
   background: #fff8f5;
   opacity: 0;
   pointer-events: none;
-  animation: nisu-cinematic-fade-out 1.4s ease-in 10.5s forwards;
+  animation: nisu-cinematic-fade-out 1.4s ease-in 9.8s forwards;
 }
 
 @keyframes nisu-cinematic-fade-out {

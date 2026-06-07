@@ -100,13 +100,22 @@ export default function FitnessCard() {
           </p>
         </div>
 
-        <Link
-          href="/fitness"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold hover:opacity-80 transition-opacity"
-          style={{ color: "var(--nisu-sky)" }}
-        >
-          Manage workouts →
-        </Link>
+        <div className="flex flex-wrap gap-3">
+          <Link
+            href="/fitness/history"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold hover:opacity-80 transition-opacity"
+            style={{ color: "var(--nisu-sky)" }}
+          >
+            Workout history →
+          </Link>
+          <Link
+            href="/fitness"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold hover:opacity-80 transition-opacity"
+            style={{ color: "var(--nisu-sky)" }}
+          >
+            Manage workouts →
+          </Link>
+        </div>
         </div>
       </div>
     );
@@ -289,13 +298,22 @@ export default function FitnessCard() {
           " — Weekly limit reached. Choose Workout or Steps."}
       </div>
 
-      <Link
-        href="/fitness"
-        className="inline-flex items-center gap-1.5 text-xs font-semibold hover:opacity-80 transition-opacity"
-        style={{ color: "var(--nisu-sky)" }}
-      >
+      <div className="flex flex-wrap gap-3">
+        <Link
+          href="/fitness/history"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold hover:opacity-80 transition-opacity"
+          style={{ color: "var(--nisu-sky)" }}
+        >
+          Workout history →
+        </Link>
+        <Link
+          href="/fitness"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold hover:opacity-80 transition-opacity"
+          style={{ color: "var(--nisu-sky)" }}
+        >
           Manage workouts →
-      </Link>
+        </Link>
+      </div>
       </div>
     </div>
   );

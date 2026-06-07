@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import PageHeader, { PageActionRow } from "@/components/PageHeader";
 import { NISU_ASSETS } from "@/lib/nisu-assets";
 import type { WorkoutWithExercises, WorkoutExercise } from "@/lib/types";
@@ -192,12 +193,20 @@ export default function FitnessManagementPage() {
         {formMode === "idle" && (
           <PageActionRow
             cta={
-              <button
-                onClick={startCreate}
-                className="nisu-cta-bold text-sm px-6 py-2.5 cursor-pointer"
-              >
-                + Create new workout
-              </button>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  onClick={startCreate}
+                  className="nisu-cta-bold text-sm px-6 py-2.5 cursor-pointer"
+                >
+                  + Create new workout
+                </button>
+                <Link
+                  href="/fitness/history"
+                  className="text-sm font-semibold text-[var(--nisu-sky)] px-4 py-2.5 rounded-xl border-2 border-[var(--nisu-border)] bg-white hover:bg-[var(--nisu-pale-blue)] transition-colors"
+                >
+                  Workout history
+                </Link>
+              </div>
             }
           />
         )}

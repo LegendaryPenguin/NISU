@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 225" fill="none">
+  <rect width="400" height="225" fill="#FFB8A8"/>
+  <path d="M180 140 L200 70 L220 140 Z" fill="#FF7A6A"/>
+  <text x="200" y="200" text-anchor="middle" font-family="system-ui,sans-serif" font-size="28" font-weight="800" fill="#1A1A1A">HIIT</text>
+</svg>

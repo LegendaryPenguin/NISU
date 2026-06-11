@@ -52,10 +52,48 @@ export type PillarName = "fitness" | "fuel" | "skill" | "reset";
 
 // --- Fitness / Supabase types ---
 
+export type WorkoutCategory =
+  | "pilates"
+  | "home"
+  | "weights"
+  | "full_body"
+  | "hiit"
+  | "upper"
+  | "lower"
+  | "mobility";
+
+export type WorkoutDifficulty = "easy" | "medium" | "hard";
+
+export interface Exercise {
+  id: string;
+  slug: string;
+  name: string;
+  description?: string | null;
+  instructions?: string[] | null;
+  image_url?: string | null;
+  gif_url?: string | null;
+  muscle_group?: string | null;
+  equipment?: string | null;
+  difficulty?: WorkoutDifficulty | string | null;
+  mechanic?: string | null;
+  source?: string | null;
+  source_id?: string | null;
+  is_builtin?: boolean;
+}
+
 export interface Workout {
   id: string;
   user_id: string | null;
   name: string;
+  is_builtin?: boolean;
+  category?: WorkoutCategory | string | null;
+  description?: string | null;
+  cover_image_url?: string | null;
+  difficulty?: WorkoutDifficulty | string | null;
+  estimated_minutes?: number | null;
+  equipment_tags?: string[] | null;
+  tags?: string[] | null;
+  calories_estimate?: number | null;
   created_at: string;
   updated_at: string;
 }
@@ -63,18 +101,58 @@ export interface Workout {
 export interface WorkoutExercise {
   id: string;
   workout_id: string;
+  exercise_id?: string | null;
   name: string;
   type: "sets_reps" | "timed";
   sets: number | null;
   reps: number | null;
   duration_seconds: number | null;
+  rest_seconds?: number | null;
+  notes?: string | null;
+  instructions_override?: string | null;
   order_index: number;
   created_at: string;
   updated_at: string;
+  exercise?: Exercise | null;
 }
 
 export interface WorkoutWithExercises extends Workout {
   workout_exercises: WorkoutExercise[];
+}
+
+export interface SeedExercise {
+  slug: string;
+  name: string;
+  description?: string;
+  instructions?: string[];
+  muscle_group?: string;
+  equipment?: string;
+  difficulty?: WorkoutDifficulty;
+  mechanic?: string;
+  source_id?: string;
+  exercisedb_name?: string;
+  gif_url?: string;
+  image_url?: string;
+}
+
+export interface SeedWorkoutExercise {
+  exerciseSlug: string;
+  type?: "sets_reps" | "timed";
+  sets?: number;
+  reps?: number;
+  duration_seconds?: number;
+  rest_seconds?: number;
+  notes?: string;
+}
+
+export interface SeedWorkout {
+  name: string;
+  category: WorkoutCategory;
+  difficulty: WorkoutDifficulty;
+  description: string;
+  tags: string[];
+  equipment_tags: string[];
+  exercises: SeedWorkoutExercise[];
 }
 
 export interface FitnessActivityLog {

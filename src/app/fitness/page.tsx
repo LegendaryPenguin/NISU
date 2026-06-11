@@ -4,17 +4,19 @@ import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import PageHeader, { PageActionRow } from "@/components/PageHeader";
+import WorkoutBrowser from "@/components/fitness/WorkoutBrowser";
 import { NISU_ASSETS } from "@/lib/nisu-assets";
 import type { WorkoutWithExercises, WorkoutExercise } from "@/lib/types";
 import { formatDuration } from "@/lib/helpers";
 import LoadingFade from "@/components/motion/LoadingFade";
 import {
-  fetchWorkouts,
+  fetchUserWorkouts,
   createWorkout,
   updateWorkout,
   deleteWorkout,
   replaceExercises,
 } from "@/lib/fitness-actions";
+import { fetchBuiltinWorkouts } from "@/lib/workout-library-actions";
 
 type ExerciseDraft = {
   tempId: string;
@@ -48,6 +50,8 @@ function exercisesToDrafts(exercises: WorkoutExercise[]): ExerciseDraft[] {
 }
 
 export default function FitnessManagementPage() {
+  const [tab, setTab] = useState<"library" | "mine">("library");
+  const [libraryWorkouts, setLibraryWorkouts] = useState<WorkoutWithExercises[]>([]);
   const [workouts, setWorkouts] = useState<WorkoutWithExercises[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -64,8 +68,12 @@ export default function FitnessManagementPage() {
   const loadWorkouts = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await fetchWorkouts();
-      setWorkouts(data);
+      const [builtins, mine] = await Promise.all([
+        fetchBuiltinWorkouts(),
+        fetchUserWorkouts(),
+      ]);
+      setLibraryWorkouts(builtins);
+      setWorkouts(mine);
     } catch {
       setError("Failed to load workouts.");
     } finally {
@@ -76,6 +84,12 @@ export default function FitnessManagementPage() {
   useEffect(() => {
     loadWorkouts();
   }, [loadWorkouts]);
+
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search);
+    if (p.get("tab") === "mine") setTab("mine");
+    if (p.get("tab") === "library") setTab("library");
+  }, []);
 
   const resetForm = () => {
     setFormMode("idle");
@@ -182,8 +196,37 @@ export default function FitnessManagementPage() {
         <PageHeader
           title="Fitness"
           section="fitness"
-          subtitle="Create and manage your designated workouts."
+          subtitle={
+            tab === "library"
+              ? "150+ guided workouts with animated demos."
+              : "Create and manage your custom workouts."
+          }
         />
+
+        <div className="flex gap-2 mb-6">
+          <button
+            type="button"
+            onClick={() => setTab("library")}
+            className={`flex-1 text-sm font-bold py-2.5 rounded-xl border-2 cursor-pointer transition-colors ${
+              tab === "library"
+                ? "bg-[var(--nisu-coral)] text-white border-[var(--nisu-border)]"
+                : "bg-white border-[var(--nisu-border)] text-gray-900"
+            }`}
+          >
+            NISU Gym
+          </button>
+          <button
+            type="button"
+            onClick={() => setTab("mine")}
+            className={`flex-1 text-sm font-bold py-2.5 rounded-xl border-2 cursor-pointer transition-colors ${
+              tab === "mine"
+                ? "bg-[var(--nisu-coral)] text-white border-[var(--nisu-border)]"
+                : "bg-white border-[var(--nisu-border)] text-gray-900"
+            }`}
+          >
+            My Workouts
+          </button>
+        </div>
 
         {error && (
           <div className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-xl mb-4">
@@ -191,7 +234,20 @@ export default function FitnessManagementPage() {
           </div>
         )}
 
-        {formMode === "idle" && (
+        {tab === "library" && (
+          <LoadingFade
+            loading={loading}
+            spinner={
+              <div className="flex justify-center py-12">
+                <div className="w-8 h-8 border-3 border-[var(--nisu-pale-pink-2)] border-t-[var(--nisu-coral)] rounded-full animate-spin" />
+              </div>
+            }
+          >
+            <WorkoutBrowser workouts={libraryWorkouts} />
+          </LoadingFade>
+        )}
+
+        {tab === "mine" && formMode === "idle" && (
           <PageActionRow
             cta={
               <div className="flex flex-wrap items-center gap-2">
@@ -213,7 +269,7 @@ export default function FitnessManagementPage() {
         )}
 
         {/* Create / Edit Form */}
-        {formMode !== "idle" && (
+        {tab === "mine" && formMode !== "idle" && (
           <div className="nisu-card p-5 mb-6">
             <h2 className="font-bold text-gray-800 text-lg mb-4">
               {formMode === "create" ? "Create Workout" : "Edit Workout"}
@@ -384,6 +440,7 @@ export default function FitnessManagementPage() {
         )}
 
         {/* Workouts List */}
+        {tab === "mine" && (
         <LoadingFade
           loading={loading}
           spinner={
@@ -500,6 +557,7 @@ export default function FitnessManagementPage() {
           </div>
         )}
         </LoadingFade>
+        )}
       </div>
     </div>
   );

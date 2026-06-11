@@ -156,18 +156,33 @@ export default function FitnessCard() {
       {flow === "idle" && (
         <div className="space-y-2 mb-3">
           <Link
+            href="/fitness?tab=library"
+            className="flex items-center justify-between gap-3 w-full px-4 py-3 rounded-xl nisu-row-action-fitness text-left cursor-pointer hover:opacity-90"
+          >
+            <div>
+              <p className="text-sm font-bold text-gray-900">
+                Browse workouts
+              </p>
+              <p className="text-xs nisu-text-muted">
+                150+ guided workouts with animated demos
+              </p>
+            </div>
+            <span className="text-lg flex-shrink-0">🏋</span>
+          </Link>
+
+          <Link
             href="/fitness/start"
             className="flex items-center justify-between gap-3 w-full px-4 py-3 rounded-xl nisu-row-action-fitness text-left cursor-pointer hover:opacity-90"
           >
             <div>
               <p className="text-sm font-bold text-gray-900">
-                Start workout
+                Quick start
               </p>
               <p className="text-xs nisu-text-muted">
-                Select and complete a saved workout
+                Jump into a saved custom workout
               </p>
             </div>
-            <span className="text-lg flex-shrink-0">🏋</span>
+            <span className="text-lg flex-shrink-0">⚡</span>
           </Link>
 
           <button

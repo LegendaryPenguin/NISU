@@ -9,7 +9,10 @@
     "lint": "eslint",
     "seed:recipes": "npx tsx scripts/seed-indian-recipes.ts",
     "seed:generate": "npx tsx scripts/generate-seed-batches.ts",
-    "seed:apply": "npx tsx scripts/apply-seed-batches.ts"
+    "seed:apply": "npx tsx scripts/apply-seed-batches.ts",
+    "seed:exercises": "npx tsx scripts/fetch-exercisedb.ts",
+    "seed:workouts": "npx tsx scripts/seed-workout-library.ts",
+    "seed:workouts:sql": "npx tsx scripts/generate-workout-seed-sql.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.3",

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 225" fill="none">
+  <rect width="400" height="225" fill="#FFE8C8"/>
+  <rect x="100" y="100" width="50" height="30" rx="4" fill="#FF7A6A"/>
+  <rect x="250" y="100" width="50" height="30" rx="4" fill="#FF7A6A"/>
+  <rect x="150" y="110" width="100" height="10" fill="#1A1A1A"/>
+  <text x="200" y="200" text-anchor="middle" font-family="system-ui,sans-serif" font-size="28" font-weight="800" fill="#1A1A1A">Weights</text>
+</svg>

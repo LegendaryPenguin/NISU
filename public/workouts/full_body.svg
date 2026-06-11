@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 225" fill="none">
+  <rect width="400" height="225" fill="#C8F0D8"/>
+  <circle cx="200" cy="90" r="25" fill="#5EB8FF"/>
+  <rect x="185" y="115" width="30" height="50" rx="8" fill="#FF8AB8"/>
+  <text x="200" y="200" text-anchor="middle" font-family="system-ui,sans-serif" font-size="24" font-weight="800" fill="#1A1A1A">Full Body</text>
+</svg>

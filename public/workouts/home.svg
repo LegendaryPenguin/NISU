@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 225" fill="none">
+  <rect width="400" height="225" fill="#B8E8FF"/>
+  <rect x="120" y="80" width="160" height="90" rx="8" fill="#5EB8FF" opacity="0.6"/>
+  <text x="200" y="200" text-anchor="middle" font-family="system-ui,sans-serif" font-size="28" font-weight="800" fill="#1A1A1A">At Home</text>
+</svg>

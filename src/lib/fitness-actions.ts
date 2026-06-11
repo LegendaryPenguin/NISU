@@ -12,18 +12,58 @@ const supabase = () => createClient();
 
 // ----- Workouts -----
 
+const WORKOUT_SELECT = `
+  *,
+  workout_exercises (
+    *,
+    exercise:exercises (*)
+  )
+`;
+
+function normalizeWorkoutRow(w: Record<string, unknown>): WorkoutWithExercises {
+  const row = w as unknown as WorkoutWithExercises;
+  return {
+    ...row,
+    workout_exercises: ((w.workout_exercises ?? []) as WorkoutExercise[]).sort(
+      (a, b) => a.order_index - b.order_index
+    ),
+  };
+}
+
 export async function fetchWorkouts(): Promise<WorkoutWithExercises[]> {
+  const [builtins, mine] = await Promise.all([
+    fetchBuiltinWorkoutsInternal(),
+    fetchUserWorkoutsInternal(),
+  ]);
+  return [...builtins, ...mine];
+}
+
+async function fetchBuiltinWorkoutsInternal(): Promise<WorkoutWithExercises[]> {
   const { data, error } = await supabase()
     .from("workouts")
-    .select("*, workout_exercises(*)")
-    .order("created_at", { ascending: false });
+    .select(WORKOUT_SELECT)
+    .eq("is_builtin", true)
+    .order("name");
   if (error) throw error;
-  return (data ?? []).map((w) => ({
-    ...w,
-    workout_exercises: (w.workout_exercises ?? []).sort(
-      (a: WorkoutExercise, b: WorkoutExercise) => a.order_index - b.order_index
-    ),
-  }));
+  return (data ?? []).map((w) => normalizeWorkoutRow(w as Record<string, unknown>));
+}
+
+export async function fetchUserWorkouts(): Promise<WorkoutWithExercises[]> {
+  return fetchUserWorkoutsInternal();
+}
+
+async function fetchUserWorkoutsInternal(): Promise<WorkoutWithExercises[]> {
+  const { data: auth } = await supabase().auth.getUser();
+  const userId = auth.user?.id;
+  let query = supabase()
+    .from("workouts")
+    .select(WORKOUT_SELECT)
+    .eq("is_builtin", false)
+    .order("created_at", { ascending: false });
+  if (userId) query = query.eq("user_id", userId);
+  const { data, error } = await query;
+  if (error) throw error;
+  return (data ?? []).map((w) => normalizeWorkoutRow(w as Record<string, unknown>));
 }
 
 export async function fetchWorkoutById(
@@ -31,17 +71,12 @@ export async function fetchWorkoutById(
 ): Promise<WorkoutWithExercises | null> {
   const { data, error } = await supabase()
     .from("workouts")
-    .select("*, workout_exercises(*)")
+    .select(WORKOUT_SELECT)
     .eq("id", id)
     .maybeSingle();
   if (error) throw error;
   if (!data) return null;
-  return {
-    ...data,
-    workout_exercises: (data.workout_exercises ?? []).sort(
-      (a: WorkoutExercise, b: WorkoutExercise) => a.order_index - b.order_index
-    ),
-  };
+  return normalizeWorkoutRow(data as Record<string, unknown>);
 }
 
 export async function createWorkout(name: string): Promise<Workout> {

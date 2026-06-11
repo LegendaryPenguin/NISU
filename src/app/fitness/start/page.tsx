@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import PageHeader from "@/components/PageHeader";
 import PenguinBounce from "@/components/motion/PenguinBounce";
@@ -8,7 +9,8 @@ import WorkoutVictorySplash from "@/components/motion/WorkoutVictorySplash";
 import { NISU_ASSETS } from "@/lib/nisu-assets";
 import type { WorkoutWithExercises, WorkoutExercise } from "@/lib/types";
 import { formatDuration } from "@/lib/helpers";
-import { fetchWorkouts } from "@/lib/fitness-actions";
+import { fetchUserWorkouts } from "@/lib/fitness-actions";
+import { fetchBuiltinWorkouts } from "@/lib/workout-library-actions";
 import { useDailyProgress } from "@/context/DailyProgressContext";
 
 type Phase = "select" | "running" | "complete";
@@ -39,8 +41,8 @@ export default function WorkoutStartPage() {
   const [finishing, setFinishing] = useState(false);
 
   useEffect(() => {
-    fetchWorkouts()
-      .then(setWorkouts)
+    Promise.all([fetchBuiltinWorkouts(), fetchUserWorkouts()])
+      .then(([builtins, mine]) => setWorkouts([...builtins.slice(0, 5), ...mine]))
       .catch(() => setError("Failed to load workouts."))
       .finally(() => setLoading(false));
   }, []);
@@ -156,11 +158,19 @@ export default function WorkoutStartPage() {
       <div className="min-h-screen">
         <div className="max-w-2xl mx-auto px-4 py-6">
           <PageHeader
-            title="Start Workout"
+            title="Quick Start"
             section="fitness"
-            subtitle="Select a saved workout to begin."
+            subtitle="Recent library picks and your custom workouts."
             showBack
           />
+
+          <Link
+            href="/fitness?tab=library"
+            className="block mb-4 nisu-card p-4 border-2 border-[var(--nisu-sky)] hover:opacity-95 transition-opacity"
+          >
+            <p className="text-sm font-bold text-gray-900">Browse full NISU Gym library →</p>
+            <p className="text-xs nisu-text-muted">150+ workouts with GIF demos</p>
+          </Link>
 
           {error && (
             <div className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-xl mb-4">
@@ -214,17 +224,26 @@ export default function WorkoutStartPage() {
                           )}
                         </p>
                       </div>
-                      <button
-                        onClick={() => hasExercises && startWorkout(w)}
-                        disabled={!hasExercises}
-                        className={`text-sm font-bold px-5 py-2 rounded-full transition-colors ${
-                          hasExercises
-                            ? "nisu-cta-bold cursor-pointer"
-                            : "bg-gray-100 text-gray-400 cursor-not-allowed"
-                        }`}
-                      >
-                        {hasExercises ? "Start" : "No exercises"}
-                      </button>
+                      {w.is_builtin && hasExercises ? (
+                        <Link
+                          href={`/fitness/workout/${w.id}`}
+                          className="text-sm font-bold px-5 py-2 rounded-full nisu-cta-bold"
+                        >
+                          Start
+                        </Link>
+                      ) : (
+                        <button
+                          onClick={() => hasExercises && startWorkout(w)}
+                          disabled={!hasExercises}
+                          className={`text-sm font-bold px-5 py-2 rounded-full transition-colors ${
+                            hasExercises
+                              ? "nisu-cta-bold cursor-pointer"
+                              : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                          }`}
+                        >
+                          {hasExercises ? "Start" : "No exercises"}
+                        </button>
+                      )}
                     </div>
                   </div>
                 );

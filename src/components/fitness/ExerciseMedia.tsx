@@ -34,7 +34,8 @@ export default function ExerciseMedia({
   }, []);
 
   const resolved = still ? resolveExerciseStill(exercise) : resolveExerciseGif(exercise);
-  const src = failed ? "/workouts/home.svg" : resolved;
+  const brokenCdn = resolved.includes("static.exercisedb.dev");
+  const src = failed || brokenCdn ? "/workouts/home.svg" : resolved;
   const isExternal = src.startsWith("http");
 
   if (isExternal) {

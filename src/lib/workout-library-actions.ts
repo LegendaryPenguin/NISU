@@ -99,7 +99,9 @@ export function workoutCoverUrl(w: WorkoutWithExercises): string {
     if (ex?.slug) return exercisedbGifUrl(ex.slug);
     if (ex?.source_id) return exercisedbGifUrl(ex.source_id);
   }
-  if (w.cover_image_url?.startsWith("http")) return w.cover_image_url;
+  if (w.cover_image_url?.startsWith("http") && !w.cover_image_url.includes("static.exercisedb.dev")) {
+    return w.cover_image_url;
+  }
   return categoryCoverUrl(w.category ?? "home");
 }
 

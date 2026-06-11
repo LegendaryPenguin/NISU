@@ -16,35 +16,36 @@ export default function WorkoutCoverImage({
   src,
   alt = "",
   category = "home",
-  className = "w-full h-full object-cover",
+  className = "object-cover",
   sizes = "400px",
 }: WorkoutCoverImageProps) {
   const [failed, setFailed] = useState(false);
   const fallback = categoryCoverUrl(category ?? "home");
-  const active = failed ? fallback : src;
+  const brokenCdn = src.includes("static.exercisedb.dev");
+  const active = failed || brokenCdn ? fallback : src;
   const isExternal = active.startsWith("http");
 
-  if (isExternal) {
-    return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={active}
-        alt={alt}
-        className={className}
-        loading="lazy"
-        onError={() => setFailed(true)}
-      />
-    );
-  }
-
   return (
-    <Image
-      src={active}
-      alt={alt}
-      fill
-      className={className}
-      sizes={sizes}
-      onError={() => setFailed(true)}
-    />
+    <div className="absolute inset-0">
+      {isExternal ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={active}
+          alt={alt}
+          className={`w-full h-full ${className}`}
+          loading="lazy"
+          onError={() => setFailed(true)}
+        />
+      ) : (
+        <Image
+          src={active}
+          alt={alt}
+          fill
+          className={className}
+          sizes={sizes}
+          onError={() => setFailed(true)}
+        />
+      )}
+    </div>
   );
 }
